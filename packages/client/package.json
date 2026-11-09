@@ -1,0 +1,11 @@
+{
+  "name": "@bstock/client",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/client.ts",
+    "./types": "./src/types.ts",
+    "./http": "./src/http.ts"
+  }
+}

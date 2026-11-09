@@ -1,0 +1,262 @@
+{
+ "uniqueBidders": 5,
+ "numberOfBids": 32,
+ "bids": [
+  {
+   "createdAt": "2026-11-07T23:44:20.360Z",
+   "bidAmount": 4275,
+   "uniqueId": "bfaf4ca6995677989ccf9ad12bb3ae54571ea23d236e2b8e196e8ab34168148c",
+   "winning": true,
+   "userBid": false,
+   "currency": "USD"
+  },
+  {
+   "createdAt": "2026-11-08T20:18:47.881Z",
+   "bidAmount": 4250,
+   "uniqueId": "b24edc6f865c381c00375f6ea8f7256c406d32cdc8b4b8716fade5e34fc3ebc6",
+   "winning": false,
+   "userBid": false,
+   "currency": "USD"
+  },
+  {
+   "createdAt": "2026-11-08T20:18:31.906Z",
+   "bidAmount": 4100,
+   "uniqueId": "b24edc6f865c381c00375f6ea8f7256c406d32cdc8b4b8716fade5e34fc3ebc6",
+   "winning": false,
+   "userBid": false,
+   "currency": "USD"
+  },
+  {
+   "createdAt": "2026-11-08T20:18:14.686Z",
+   "bidAmount": 4000,
+   "uniqueId": "b24edc6f865c381c00375f6ea8f7256c406d32cdc8b4b8716fade5e34fc3ebc6",
+   "winning": false,
+   "userBid": false,
+   "currency": "USD"
+  },
+  {
+   "createdAt": "2026-11-08T20:18:04.496Z",
+   "bidAmount": 3750,
+   "uniqueId": "b24edc6f865c381c00375f6ea8f7256c406d32cdc8b4b8716fade5e34fc3ebc6",
+   "winning": false,
+   "userBid": false,
+   "currency": "USD"
+  },
+  {
+   "createdAt": "2026-11-08T20:17:52.828Z",
+   "bidAmount": 3500,
+   "uniqueId": "b24edc6f865c381c00375f6ea8f7256c406d32cdc8b4b8716fade5e34fc3ebc6",
+   "winning": false,
+   "userBid": false,
+   "currency": "USD"
+  },
+  {
+   "createdAt": "2026-11-08T20:17:42.533Z",
+   "bidAmount": 3250,
+   "uniqueId": "b24edc6f865c381c00375f6ea8f7256c406d32cdc8b4b8716fade5e34fc3ebc6",
+   "winning": false,
+   "userBid": false,
+   "currency": "USD"
+  },
+  {
+   "createdAt": "2026-11-08T20:17:32.277Z",
+   "bidAmount": 3000,
+   "uniqueId": "b24edc6f865c381c00375f6ea8f7256c406d32cdc8b4b8716fade5e34fc3ebc6",
+   "winning": false,
+   "userBid": false,
+   "currency": "USD"
+  },
+  {
+   "createdAt": "2026-11-08T20:17:12.464Z",
+   "bidAmount": 2750,
+   "uniqueId": "b24edc6f865c381c00375f6ea8f7256c406d32cdc8b4b8716fade5e34fc3ebc6",
+   "winning": false,
+   "userBid": false,
+   "currency": "USD"
+  },
+  {
+   "createdAt": "2026-11-07T23:47:00.276Z",
+   "bidAmount": 2700,
+   "uniqueId": "b24edc6f865c381c00375f6ea8f7256c406d32cdc8b4b8716fade5e34fc3ebc6",
+   "winning": false,
+   "userBid": false,
+   "currency": "USD"
+  },
+  {
+   "createdAt": "2026-11-07T23:46:46.964Z",
+   "bidAmount": 2600,
+   "uniqueId": "b24edc6f865c381c00375f6ea8f7256c406d32cdc8b4b8716fade5e34fc3ebc6",
+   "winning": false,
+   "userBid": false,
+   "currency": "USD"
+  },
+  {
+   "createdAt": "2026-11-07T23:46:35.890Z",
+   "bidAmount": 2500,
+   "uniqueId": "b24edc6f865c381c00375f6ea8f7256c406d32cdc8b4b8716fade5e34fc3ebc6",
+   "winning": false,
+   "userBid": false,
+   "currency": "USD"
+  },
+  {
+   "createdAt": "2026-11-07T23:46:24.059Z",
+   "bidAmount": 2400,
+   "uniqueId": "b24edc6f865c381c00375f6ea8f7256c406d32cdc8b4b8716fade5e34fc3ebc6",
+   "winning": false,
+   "userBid": false,
+   "currency": "USD"
+  },
+  {
+   "createdAt": "2026-11-07T23:45:58.412Z",
+   "bidAmount": 2300,
+   "uniqueId": "b24edc6f865c381c00375f6ea8f7256c406d32cdc8b4b8716fade5e34fc3ebc6",
+   "winning": false,
+   "userBid": false,
+   "currency": "USD"
+  },
+  {
+   "createdAt": "2026-11-07T23:45:48.387Z",
+   "bidAmount": 2200,
+   "uniqueId": "b24edc6f865c381c00375f6ea8f7256c406d32cdc8b4b8716fade5e34fc3ebc6",
+   "winning": false,
+   "userBid": false,
+   "currency": "USD"
+  },
+  {
+   "createdAt": "2026-11-07T23:45:21.914Z",
+   "bidAmount": 2125,
+   "uniqueId": "b24edc6f865c381c00375f6ea8f7256c406d32cdc8b4b8716fade5e34fc3ebc6",
+   "winning": false,
+   "userBid": false,
+   "currency": "USD"
+  },
+  {
+   "createdAt": "2026-11-07T19:40:41.969Z",
+   "bidAmount": 2075,
+   "uniqueId": "b24edc6f865c381c00375f6ea8f7256c406d32cdc8b4b8716fade5e34fc3ebc6",
+   "winning": false,
+   "userBid": false,
+   "currency": "USD"
+  },
+  {
+   "createdAt": "2026-11-07T01:57:36.940Z",
+   "bidAmount": 2000,
+   "uniqueId": "c2ad7cf3a7817d420e1c50140dc8d7e891530506601a2ec03bf32e2823ca11e3",
+   "winning": false,
+   "userBid": false,
+   "currency": "USD"
+  },
+  {
+   "createdAt": "2026-11-07T19:40:27.255Z",
+   "bidAmount": 1925,
+   "uniqueId": "b24edc6f865c381c00375f6ea8f7256c406d32cdc8b4b8716fade5e34fc3ebc6",
+   "winning": false,
+   "userBid": false,
+   "currency": "USD"
+  },
+  {
+   "createdAt": "2026-11-07T19:40:09.583Z",
+   "bidAmount": 1775,
+   "uniqueId": "b24edc6f865c381c00375f6ea8f7256c406d32cdc8b4b8716fade5e34fc3ebc6",
+   "winning": false,
+   "userBid": false,
+   "currency": "USD"
+  },
+  {
+   "createdAt": "2026-11-07T19:40:01.167Z",
+   "bidAmount": 1625,
+   "uniqueId": "b24edc6f865c381c00375f6ea8f7256c406d32cdc8b4b8716fade5e34fc3ebc6",
+   "winning": false,
+   "userBid": false,
+   "currency": "USD"
+  },
+  {
+   "createdAt": "2026-11-07T19:39:55.722Z",
+   "bidAmount": 1475,
+   "uniqueId": "b24edc6f865c381c00375f6ea8f7256c406d32cdc8b4b8716fade5e34fc3ebc6",
+   "winning": false,
+   "userBid": false,
+   "currency": "USD"
+  },
+  {
+   "createdAt": "2026-11-07T19:39:49.070Z",
+   "bidAmount": 1400,
+   "uniqueId": "b24edc6f865c381c00375f6ea8f7256c406d32cdc8b4b8716fade5e34fc3ebc6",
+   "winning": false,
+   "userBid": false,
+   "currency": "USD"
+  },
+  {
+   "createdAt": "2026-11-07T13:57:39.823Z",
+   "bidAmount": 1350,
+   "uniqueId": "3d97a6d5ff8c23b4e09914dd70471c32eafdcf3e2013838ff4779486a39da563",
+   "winning": false,
+   "userBid": false,
+   "currency": "USD"
+  },
+  {
+   "createdAt": "2026-11-07T13:57:28.515Z",
+   "bidAmount": 1200,
+   "uniqueId": "3d97a6d5ff8c23b4e09914dd70471c32eafdcf3e2013838ff4779486a39da563",
+   "winning": false,
+   "userBid": false,
+   "currency": "USD"
+  },
+  {
+   "createdAt": "2026-11-07T13:57:17.051Z",
+   "bidAmount": 1125,
+   "uniqueId": "3d97a6d5ff8c23b4e09914dd70471c32eafdcf3e2013838ff4779486a39da563",
+   "winning": false,
+   "userBid": false,
+   "currency": "USD"
+  },
+  {
+   "createdAt": "2026-11-07T13:55:37.013Z",
+   "bidAmount": 1050,
+   "uniqueId": "3d97a6d5ff8c23b4e09914dd70471c32eafdcf3e2013838ff4779486a39da563",
+   "winning": false,
+   "userBid": false,
+   "currency": "USD"
+  },
+  {
+   "createdAt": "2026-11-07T13:55:18.473Z",
+   "bidAmount": 1000,
+   "uniqueId": "3d97a6d5ff8c23b4e09914dd70471c32eafdcf3e2013838ff4779486a39da563",
+   "winning": false,
+   "userBid": false,
+   "currency": "USD"
+  },
+  {
+   "createdAt": "2026-11-07T13:54:58.435Z",
+   "bidAmount": 950,
+   "uniqueId": "3d97a6d5ff8c23b4e09914dd70471c32eafdcf3e2013838ff4779486a39da563",
+   "winning": false,
+   "userBid": false,
+   "currency": "USD"
+  },
+  {
+   "createdAt": "2026-11-07T13:54:41.289Z",
+   "bidAmount": 875,
+   "uniqueId": "3d97a6d5ff8c23b4e09914dd70471c32eafdcf3e2013838ff4779486a39da563",
+   "winning": false,
+   "userBid": false,
+   "currency": "USD"
+  },
+  {
+   "createdAt": "2026-11-07T13:54:33.251Z",
+   "bidAmount": 800,
+   "uniqueId": "3d97a6d5ff8c23b4e09914dd70471c32eafdcf3e2013838ff4779486a39da563",
+   "winning": false,
+   "userBid": false,
+   "currency": "USD"
+  },
+  {
+   "createdAt": "2026-11-06T23:26:48.279Z",
+   "bidAmount": 750,
+   "uniqueId": "3945f2570530ee8d00b4eab07b7036ccd1d28624fe55939a9fa99d269affc347",
+   "winning": false,
+   "userBid": false,
+   "currency": "USD"
+  }
+ ]
+}

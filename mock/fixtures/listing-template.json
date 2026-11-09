@@ -1,0 +1,83 @@
+{
+ "allowedShipmentTypes": [
+  "BINDING"
+ ],
+ "auctionId": "6aeb7698881cb5445c77b895",
+ "auctionUrl": "https://bstock.com/buy/listings/details/6aeb76981adc9f0e3c4df0ee",
+ "bidBasis": "PRICE",
+ "bidUnits": null,
+ "biddingStartTime": "2026-11-06T22:00:00.000Z",
+ "bstockGrade": [],
+ "buyNow": false,
+ "buyNowEndTime": null,
+ "capacity": [],
+ "carrier": [],
+ "categories": [
+  "Home & Garden"
+ ],
+ "condition": [
+  "New"
+ ],
+ "countryCode": "US",
+ "currency": "USD",
+ "customRank": 1258,
+ "displayedCondition": "New",
+ "endTime": "2026-11-09T21:05:00.000Z",
+ "inspection": [
+  "UNINSPECTED"
+ ],
+ "inventoryType": "Overstock",
+ "isCreditCardEnabled": false,
+ "listingId": "6aeb76981adc9f0e3c4df0ee",
+ "listingType": "SPOT",
+ "lotCategories": [
+  {
+   "category": "Home & Garden",
+   "percentageByQuantity": 100,
+   "percentageByRetailValue": 100
+  }
+ ],
+ "lotId": "6aeb76970617aa64e806619b",
+ "manifest": true,
+ "manufacturer": [],
+ "memory": [],
+ "model": [],
+ "nPopcorn": 0,
+ "numberOfBids": 32,
+ "offeringId": null,
+ "packagingCondition": [
+  "ORIGINAL"
+ ],
+ "palletCount": 4,
+ "pricingStrategy": "AUCTION",
+ "primaryImageUrl": "https://storage.googleapis.com/bfile-prod-assets-img/tmp/img/f40b8738-f977-41e4-93d0-0d578c6fb483-original.png",
+ "problemFreeOrderRate": 0.843137255,
+ "provinceCode": "TX",
+ "randomSetLabel": 1,
+ "region": "Desoto, TX, United States",
+ "retailPrice": 54126.11,
+ "sellerCity": "Desoto",
+ "sellerGrade": [],
+ "sellerId": "69e6bb6f0f8876a1735b3d6e",
+ "sellerLotId": [
+  "DT_041026_1311"
+ ],
+ "sellerZipCode": "75115",
+ "shipmentType": "LTL",
+ "siteAbb": "TMP",
+ "siteLogoUrl": "https://docserv.bstock.com/v1/documents/69e6bbc1589a8453e7006130",
+ "siteName": "TMP",
+ "siteVectorLogoUrl": "https://docserv.bstock.com/v1/documents/69e6bbc0836cfc8d0261baec",
+ "sku": "6aeb76970617aa64e806619b",
+ "startTime": "2026-11-06T22:00:00.000Z",
+ "storefrontId": "69e6bb90a00b3e578b06c340",
+ "storefrontName": "Kohler",
+ "termsRestrictions": [],
+ "title": "4 Pallets of Kitchen Faucets by Kohler",
+ "transportMode": "LTL",
+ "typicalSellingPrice": 3744,
+ "units": 174,
+ "winningBidAmount": 4275,
+ "effectiveFlatRateCost": null,
+ "id": "6aeb76981adc9f0e3c4df0ee"
+}

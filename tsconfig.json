@@ -1,0 +1,30 @@
+{
+  "compilerOptions": {
+    "target": "ES2023",
+    "lib": ["ES2023", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+    "strict": true,
+    "noUncheckedIndexedAccess": false,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "jsx": "react-jsx",
+    "baseUrl": ".",
+    "types": ["node"],
+    "paths": {
+      "@bstock/client": ["./packages/client/src/client.ts"],
+      "@bstock/analytics": ["./packages/analytics/src/index.ts"]
+    }
+  },
+  "include": [
+    "packages/**/*.ts",
+    "apps/server/src/**/*.ts",
+    "apps/web/src/**/*.ts",
+    "apps/web/src/**/*.tsx",
+    "mock/**/*.ts",
+    "tests/**/*.ts"
+  ]
+}

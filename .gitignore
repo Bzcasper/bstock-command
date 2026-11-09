@@ -1,0 +1,12 @@
+node_modules/
+dist/
+apps/web/dist/
+*.db
+*.db-*
+.master.key
+.private/
+.env
+.DS_Store
+/tmp/
+coverage/
+EOF

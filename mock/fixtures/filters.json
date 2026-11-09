@@ -1,0 +1,1941 @@
+{
+ "categories": [
+  {
+   "count": 129,
+   "value": "Apparel Shoes & Accessories"
+  },
+  {
+   "count": 80,
+   "value": "Automotive Supplies"
+  },
+  {
+   "count": 9,
+   "value": "Books Movies & Music"
+  },
+  {
+   "count": 41,
+   "value": "Building & Industrial"
+  },
+  {
+   "count": 227,
+   "value": "Cell Phones"
+  },
+  {
+   "count": 109,
+   "value": "Electronics"
+  },
+  {
+   "count": 86,
+   "value": "Furniture"
+  },
+  {
+   "count": 9,
+   "value": "Groceries"
+  },
+  {
+   "count": 48,
+   "value": "Health & Beauty"
+  },
+  {
+   "count": 141,
+   "value": "Home & Garden"
+  },
+  {
+   "count": 15,
+   "value": "Jewelry & Watches"
+  },
+  {
+   "count": 48,
+   "value": "Major Appliances"
+  },
+  {
+   "count": 147,
+   "value": "Mixed Lots"
+  },
+  {
+   "count": 20,
+   "value": "Office Supplies & Equipment"
+  },
+  {
+   "count": 18,
+   "value": "Pets"
+  },
+  {
+   "count": 33,
+   "value": "Small Appliances"
+  },
+  {
+   "count": 41,
+   "value": "Sports & Outdoors"
+  },
+  {
+   "count": 42,
+   "value": "Toys Kids & Baby"
+  }
+ ],
+ "storefront": [
+  {
+   "count": 11,
+   "value": "69791476ebbacc4198b29e19-Ace Hardware"
+  },
+  {
+   "count": 1,
+   "value": "698659e59e55007bd3ec23c8-Almo Liquidation Auctions"
+  },
+  {
+   "count": 3,
+   "value": "6890f7d62ed3f874681ba620-Amazon"
+  },
+  {
+   "count": 63,
+   "value": "a2z-Amazon Europe"
+  },
+  {
+   "count": 5,
+   "value": "675b3641ad788bce51a1398c-Ashley"
+  },
+  {
+   "count": 7,
+   "value": "68f27c38cd13c8fc681ae642-B-Stock ITAD"
+  },
+  {
+   "count": 12,
+   "value": "69b9a1e818b4ea8869988968-Best Buy"
+  },
+  {
+   "count": 1,
+   "value": "69e6b98ab325cf690b9f0064-Big 5 Sporting Goods"
+  },
+  {
+   "count": 2,
+   "value": "659c39a3519fce91b863442a-BJ's"
+  },
+  {
+   "count": 5,
+   "value": "6ad10531900b04c080d9f68b-Bob's Discount Furniture"
+  },
+  {
+   "count": 12,
+   "value": "698390fd878901b66e6a2467-Brisco Brands"
+  },
+  {
+   "count": 7,
+   "value": "69795432a5750ddf3df36eb8-Contemporary Fashion"
+  },
+  {
+   "count": 14,
+   "value": "6a61232dfb01c8075ff34d2f-Cricket Wireless Auctions"
+  },
+  {
+   "count": 1,
+   "value": "69c2dd0077ab3e892a7a033f-DICK's Sporting Goods"
+  },
+  {
+   "count": 112,
+   "value": "6aa46be9265d0ee1f8aa5ae1-GameStop Wholesale"
+  },
+  {
+   "count": 4,
+   "value": "6a6cd61f7d7bda59316af116-GE Appliances Canada"
+  },
+  {
+   "count": 2,
+   "value": "69865cc409df25db4c871942-Grainger"
+  },
+  {
+   "count": 26,
+   "value": "699dfc2f99d6eaf11a29880a-JCPenney"
+  },
+  {
+   "count": 5,
+   "value": "69e6bb90a00b3e578b06c340-Kohler"
+  },
+  {
+   "count": 26,
+   "value": "69b84d72797f9010f415c5ba-Lowe's Liquidation"
+  },
+  {
+   "count": 4,
+   "value": "69fa75ba4aeb1cdc9ce72c11-NFM Liquidation Auctions"
+  },
+  {
+   "count": 2,
+   "value": "6a075ae2a5f23d31ee9b2c2b-ODP Business Solutions"
+  },
+  {
+   "count": 1,
+   "value": "65f0afe2378edd81370c96b5-Petco"
+  },
+  {
+   "count": 13,
+   "value": "699f4709c3b518b81c02231f-Prosrvc"
+  },
+  {
+   "count": 8,
+   "value": "69c2dfce892d14b037b2a9f1-QVC"
+  },
+  {
+   "count": 4,
+   "value": "6abbe158255913e5c8c91e59-RefrigiWear"
+  },
+  {
+   "count": 4,
+   "value": "673f722f7d4b1f332c97ae24-Rent the Runway"
+  },
+  {
+   "count": 32,
+   "value": "68fa6d8c3a04558c63d87da0-Royal Closeouts"
+  },
+  {
+   "count": 5,
+   "value": "655d38375b189ce743889b8e-S&S Activewear"
+  },
+  {
+   "count": 6,
+   "value": "6a075ff1e47e359727519455-Sam's Club B2B"
+  },
+  {
+   "count": 3,
+   "value": "6aa46da9ae94c10d2b0ee5e7-Samsung Mobile Auctions"
+  },
+  {
+   "count": 15,
+   "value": "6a8dfb274ecd6bcdfdf3e14c-SquareTrade Auctions"
+  },
+  {
+   "count": 27,
+   "value": "6995e28b38860ca197d9fee7-Stock Harbor"
+  },
+  {
+   "count": 69,
+   "value": "681ba6075fcfe8a77834e039-Target"
+  },
+  {
+   "count": 15,
+   "value": "6a3056c49656970cb962fb83-Target Wholesale"
+  },
+  {
+   "count": 66,
+   "value": "698ca8aac5ef10a641157798-Tesla"
+  },
+  {
+   "count": 27,
+   "value": "6881261faf84045af78617c9-The Home Depot"
+  },
+  {
+   "count": 12,
+   "value": "6a7f583e29339d9eca071fc8-Union Supply"
+  },
+  {
+   "count": 64,
+   "value": "66562833b29d4ed2184fb048-Walmart"
+  },
+  {
+   "count": 29,
+   "value": "69b09e3a59abd904a59f5459-Wayfair Liquidation Auctions"
+  }
+ ],
+ "shipmentType": [
+  {
+   "count": 326,
+   "value": "LTL"
+  },
+  {
+   "count": 285,
+   "value": "PARCEL"
+  },
+  {
+   "count": 237,
+   "value": "Truckload"
+  }
+ ],
+ "transportMode": [
+  {
+   "count": 326,
+   "value": "LTL"
+  },
+  {
+   "count": 285,
+   "value": "PARCEL"
+  },
+  {
+   "count": 237,
+   "value": "Truckload"
+  }
+ ],
+ "allowedShipmentTypes": [
+  {
+   "count": 553,
+   "value": "BINDING"
+  },
+  {
+   "count": 340,
+   "value": "BUYER_ARRANGED"
+  },
+  {
+   "count": 25,
+   "value": "FLAT_RATE"
+  }
+ ],
+ "listingType": [
+  {
+   "count": 42,
+   "value": "CONTRACT"
+  },
+  {
+   "count": 806,
+   "value": "SPOT"
+  }
+ ],
+ "inventoryType": [
+  {
+   "count": 1,
+   "value": "B-Stock Blue"
+  },
+  {
+   "count": 310,
+   "value": "Customer Returns"
+  },
+  {
+   "count": 277,
+   "value": "Mixed/Other"
+  },
+  {
+   "count": 206,
+   "value": "Overstock"
+  },
+  {
+   "count": 2,
+   "value": "Refurbished"
+  },
+  {
+   "count": 3,
+   "value": "Shelf Pulls"
+  },
+  {
+   "count": 4,
+   "value": "Unspecified"
+  },
+  {
+   "count": 8,
+   "value": "Warehouse Damaged"
+  }
+ ],
+ "manufacturer": [
+  {
+   "count": 2,
+   "value": "14 Karat Home Inc."
+  },
+  {
+   "count": 18,
+   "value": "17 Stories"
+  },
+  {
+   "count": 1,
+   "value": "510 Design"
+  },
+  {
+   "count": 1,
+   "value": "6ix Tailors Fine Linens"
+  },
+  {
+   "count": 1,
+   "value": "Abimars"
+  },
+  {
+   "count": 4,
+   "value": "Acacia"
+  },
+  {
+   "count": 2,
+   "value": "ACE TRADING - BLACKSTONE 7 TH"
+  },
+  {
+   "count": 1,
+   "value": "ACE TRADING - CANOPIES 4 KH"
+  },
+  {
+   "count": 1,
+   "value": "ACE TRADING - FANS YANTIAN"
+  },
+  {
+   "count": 1,
+   "value": "ACE TRADING - HC HONGBO SMART"
+  },
+  {
+   "count": 1,
+   "value": "ACE TRADING - HCD SHELVES"
+  },
+  {
+   "count": 1,
+   "value": "ACE TRADING - HW 6"
+  },
+  {
+   "count": 2,
+   "value": "ACE TRADING - PERFECT AIRE KONWIN V"
+  },
+  {
+   "count": 1,
+   "value": "ACE TRADING - SUMMIT 1"
+  },
+  {
+   "count": 1,
+   "value": "ACE TRADING-BLACKSTONE 2"
+  },
+  {
+   "count": 1,
+   "value": "ACE TRADING-GREAT STAR"
+  },
+  {
+   "count": 1,
+   "value": "ACE TRADING-WD SHANDONG"
+  },
+  {
+   "count": 2,
+   "value": "Ackland"
+  },
+  {
+   "count": 1,
+   "value": "Adesso"
+  },
+  {
+   "count": 1,
+   "value": "AECOJOY"
+  },
+  {
+   "count": 1,
+   "value": "Aeon Furniture"
+  },
+  {
+   "count": 1,
+   "value": "Agilestic"
+  },
+  {
+   "count": 2,
+   "value": "AHB"
+  },
+  {
+   "count": 4,
+   "value": "Aheaplus"
+  },
+  {
+   "count": 1,
+   "value": "AHLO"
+  },
+  {
+   "count": 1,
+   "value": "Aine Home"
+  },
+  {
+   "count": 1,
+   "value": "AIRMSEN"
+  },
+  {
+   "count": 1,
+   "value": "Alaterre"
+  },
+  {
+   "count": 4,
+   "value": "Albrillo"
+  },
+  {
+   "count": 8,
+   "value": "Alcott Hill\u00ae"
+  },
+  {
+   "count": 4,
+   "value": "Alcott Hill\u00c2\u00ae"
+  },
+  {
+   "count": 2,
+   "value": "Alexent"
+  },
+  {
+   "count": 1,
+   "value": "All-in furniture"
+  },
+  {
+   "count": 1,
+   "value": "Allen + Roth"
+  },
+  {
+   "count": 14,
+   "value": "AllModern"
+  },
+  {
+   "count": 1,
+   "value": "AllStar Rugs"
+  },
+  {
+   "count": 1,
+   "value": "Almay"
+  },
+  {
+   "count": 2,
+   "value": "Alphamarts"
+  },
+  {
+   "count": 2,
+   "value": "Alternative Apparel"
+  },
+  {
+   "count": 3,
+   "value": "ALTIBLOOM"
+  }
+ ],
+ "productType": [
+  {
+   "count": 2,
+   "value": "Mixed"
+  },
+  {
+   "count": 1,
+   "value": "Non-Sortable"
+  },
+  {
+   "count": 2,
+   "value": "Sortable"
+  },
+  {
+   "count": 58,
+   "value": "Stores Inventory"
+  }
+ ],
+ "model": [
+  {
+   "count": 2,
+   "value": "."
+  },
+  {
+   "count": 2,
+   "value": "0"
+  },
+  {
+   "count": 1,
+   "value": "00-W10712395"
+  },
+  {
+   "count": 1,
+   "value": "00-W11043013"
+  },
+  {
+   "count": 2,
+   "value": "0000"
+  },
+  {
+   "count": 1,
+   "value": "000000000000000"
+  },
+  {
+   "count": 1,
+   "value": "00003"
+  },
+  {
+   "count": 1,
+   "value": "000030772210529"
+  },
+  {
+   "count": 1,
+   "value": "000073"
+  },
+  {
+   "count": 1,
+   "value": "000077"
+  },
+  {
+   "count": 1,
+   "value": "00011"
+  },
+  {
+   "count": 1,
+   "value": "00017800179171"
+  },
+  {
+   "count": 1,
+   "value": "00020"
+  },
+  {
+   "count": 1,
+   "value": "00022415294560"
+  },
+  {
+   "count": 2,
+   "value": "00022598"
+  },
+  {
+   "count": 1,
+   "value": "00022599"
+  },
+  {
+   "count": 2,
+   "value": "000233"
+  },
+  {
+   "count": 1,
+   "value": "000250"
+  },
+  {
+   "count": 1,
+   "value": "00025831"
+  },
+  {
+   "count": 1,
+   "value": "00025832"
+  },
+  {
+   "count": 1,
+   "value": "00025980"
+  },
+  {
+   "count": 1,
+   "value": "00025981"
+  },
+  {
+   "count": 1,
+   "value": "00030772007433"
+  },
+  {
+   "count": 1,
+   "value": "00030772099704"
+  },
+  {
+   "count": 1,
+   "value": "00030772099780"
+  },
+  {
+   "count": 2,
+   "value": "00030772110959"
+  },
+  {
+   "count": 1,
+   "value": "00030772113981"
+  },
+  {
+   "count": 1,
+   "value": "00030772138441"
+  },
+  {
+   "count": 1,
+   "value": "00030772160145"
+  },
+  {
+   "count": 1,
+   "value": "00030772160190"
+  },
+  {
+   "count": 3,
+   "value": "00030772160718"
+  },
+  {
+   "count": 1,
+   "value": "00030772177129"
+  },
+  {
+   "count": 1,
+   "value": "00030772269008"
+  },
+  {
+   "count": 1,
+   "value": "00030772276907"
+  },
+  {
+   "count": 2,
+   "value": "00033200024064"
+  },
+  {
+   "count": 1,
+   "value": "00033200908043"
+  },
+  {
+   "count": 2,
+   "value": "00033200973607"
+  },
+  {
+   "count": 1,
+   "value": "00033200974284"
+  },
+  {
+   "count": 1,
+   "value": "00034"
+  },
+  {
+   "count": 1,
+   "value": "00037000214595"
+  }
+ ],
+ "capacity": [
+  {
+   "count": 6,
+   "value": "128"
+  },
+  {
+   "count": 154,
+   "value": "128GB"
+  },
+  {
+   "count": 1,
+   "value": "16"
+  },
+  {
+   "count": 5,
+   "value": "16GB"
+  },
+  {
+   "count": 1,
+   "value": "16GB, Apple M1"
+  },
+  {
+   "count": 1,
+   "value": "16GB, Apple M1 Pro"
+  },
+  {
+   "count": 1,
+   "value": "16GB, Apple M2"
+  },
+  {
+   "count": 1,
+   "value": "16GB, Apple M3"
+  },
+  {
+   "count": 1,
+   "value": "16GB, Apple M4"
+  },
+  {
+   "count": 1,
+   "value": "16GB, Intel Core i5"
+  },
+  {
+   "count": 1,
+   "value": "16GB, Intel Core i7"
+  },
+  {
+   "count": 1,
+   "value": "18GB, Apple M3 Pro"
+  },
+  {
+   "count": 31,
+   "value": "1TB"
+  },
+  {
+   "count": 1,
+   "value": "1TB SSD"
+  },
+  {
+   "count": 1,
+   "value": "24GB, Apple M2"
+  },
+  {
+   "count": 1,
+   "value": "24GB, Apple M4"
+  },
+  {
+   "count": 1,
+   "value": "256"
+  },
+  {
+   "count": 196,
+   "value": "256GB"
+  },
+  {
+   "count": 3,
+   "value": "2TB"
+  },
+  {
+   "count": 2,
+   "value": "32"
+  },
+  {
+   "count": 12,
+   "value": "32GB"
+  },
+  {
+   "count": 1,
+   "value": "32GB SSD"
+  },
+  {
+   "count": 1,
+   "value": "32GB, Apple M1 Pro"
+  },
+  {
+   "count": 1,
+   "value": "40MM"
+  },
+  {
+   "count": 1,
+   "value": "41MM"
+  },
+  {
+   "count": 1,
+   "value": "44MM"
+  },
+  {
+   "count": 1,
+   "value": "45MM"
+  },
+  {
+   "count": 1,
+   "value": "46MM"
+  },
+  {
+   "count": 1,
+   "value": "500GB"
+  },
+  {
+   "count": 91,
+   "value": "512GB"
+  },
+  {
+   "count": 3,
+   "value": "64"
+  },
+  {
+   "count": 36,
+   "value": "64GB"
+  },
+  {
+   "count": 2,
+   "value": "8GB"
+  },
+  {
+   "count": 1,
+   "value": "8GB, Apple A18 Pro"
+  },
+  {
+   "count": 1,
+   "value": "8GB, Apple M1"
+  },
+  {
+   "count": 2,
+   "value": "8GB, Apple M2"
+  },
+  {
+   "count": 1,
+   "value": "8GB, Intel Core i3"
+  },
+  {
+   "count": 1,
+   "value": "8GB, Intel Core i5"
+  },
+  {
+   "count": 1,
+   "value": "N/A"
+  },
+  {
+   "count": 1,
+   "value": "No Drive"
+  }
+ ],
+ "carrier": [
+  {
+   "count": 26,
+   "value": "AT&T"
+  },
+  {
+   "count": 26,
+   "value": "T-Mobile"
+  },
+  {
+   "count": 17,
+   "value": "Verizon"
+  },
+  {
+   "count": 19,
+   "value": "Wi-Fi"
+  },
+  {
+   "count": 17,
+   "value": "Wi-Fi - Cellular"
+  }
+ ],
+ "deals": [
+  {
+   "count": 8,
+   "value": "Fair Price"
+  },
+  {
+   "count": 18,
+   "value": "Good Price"
+  },
+  {
+   "count": 394,
+   "value": "Great Price"
+  }
+ ],
+ "bstockGrade": [
+  {
+   "count": 3,
+   "value": "B"
+  },
+  {
+   "count": 1,
+   "value": "B/C"
+  }
+ ],
+ "memory": [
+  {
+   "count": 6,
+   "value": "128"
+  },
+  {
+   "count": 154,
+   "value": "128GB"
+  },
+  {
+   "count": 1,
+   "value": "16"
+  },
+  {
+   "count": 7,
+   "value": "16GB"
+  },
+  {
+   "count": 1,
+   "value": "16GB, Apple M1"
+  },
+  {
+   "count": 1,
+   "value": "16GB, Apple M1 Pro"
+  },
+  {
+   "count": 1,
+   "value": "16GB, Apple M2"
+  },
+  {
+   "count": 1,
+   "value": "16GB, Apple M3"
+  },
+  {
+   "count": 1,
+   "value": "16GB, Apple M4"
+  },
+  {
+   "count": 1,
+   "value": "16GB, Intel Core i5"
+  },
+  {
+   "count": 1,
+   "value": "16GB, Intel Core i7"
+  },
+  {
+   "count": 1,
+   "value": "18GB, Apple M3 Pro"
+  },
+  {
+   "count": 29,
+   "value": "1TB"
+  },
+  {
+   "count": 1,
+   "value": "24GB, Apple M2"
+  },
+  {
+   "count": 1,
+   "value": "24GB, Apple M4"
+  },
+  {
+   "count": 1,
+   "value": "256"
+  },
+  {
+   "count": 195,
+   "value": "256GB"
+  },
+  {
+   "count": 1,
+   "value": "2GB"
+  },
+  {
+   "count": 3,
+   "value": "2TB"
+  },
+  {
+   "count": 2,
+   "value": "32"
+  },
+  {
+   "count": 15,
+   "value": "32GB"
+  },
+  {
+   "count": 1,
+   "value": "32GB, Apple M1 Pro"
+  },
+  {
+   "count": 1,
+   "value": "40MM"
+  },
+  {
+   "count": 1,
+   "value": "41MM"
+  },
+  {
+   "count": 1,
+   "value": "44MM"
+  },
+  {
+   "count": 1,
+   "value": "45MM"
+  },
+  {
+   "count": 1,
+   "value": "46MM"
+  },
+  {
+   "count": 90,
+   "value": "512GB"
+  },
+  {
+   "count": 3,
+   "value": "64"
+  },
+  {
+   "count": 35,
+   "value": "64GB"
+  },
+  {
+   "count": 2,
+   "value": "8GB"
+  },
+  {
+   "count": 1,
+   "value": "8GB, Apple A18 Pro"
+  },
+  {
+   "count": 1,
+   "value": "8GB, Apple M1"
+  },
+  {
+   "count": 2,
+   "value": "8GB, Apple M2"
+  },
+  {
+   "count": 1,
+   "value": "8GB, Intel Core i3"
+  },
+  {
+   "count": 1,
+   "value": "8GB, Intel Core i5"
+  },
+  {
+   "count": 1,
+   "value": "N/A"
+  },
+  {
+   "count": 6,
+   "value": "Unknown"
+  }
+ ],
+ "isCreditCardEnabled": [
+  {
+   "count": 90,
+   "value": true
+  },
+  {
+   "count": 758,
+   "value": false
+  }
+ ],
+ "buyingFormat": [
+  {
+   "count": 81,
+   "value": "BUY_NOW"
+  },
+  {
+   "count": 754,
+   "value": "AUCTION"
+  },
+  {
+   "count": 13,
+   "value": "MAKE_AN_OFFER"
+  }
+ ],
+ "category": [
+  {
+   "count": 21,
+   "value": "Accessories"
+  },
+  {
+   "count": 3,
+   "value": "Activewear"
+  },
+  {
+   "count": 5,
+   "value": "Arts & Crafts"
+  },
+  {
+   "count": 3,
+   "value": "Automotive Accessories"
+  },
+  {
+   "count": 19,
+   "value": "Baby Essentials"
+  },
+  {
+   "count": 28,
+   "value": "Bags & Luggage"
+  },
+  {
+   "count": 19,
+   "value": "Bathroom Accessories"
+  },
+  {
+   "count": 10,
+   "value": "Bathroom Fixtures"
+  },
+  {
+   "count": 10,
+   "value": "Bathroom Furniture"
+  },
+  {
+   "count": 22,
+   "value": "Bedding"
+  },
+  {
+   "count": 10,
+   "value": "Bedroom Furniture"
+  },
+  {
+   "count": 1,
+   "value": "Beverages"
+  },
+  {
+   "count": 2,
+   "value": "Books"
+  },
+  {
+   "count": 20,
+   "value": "Braking"
+  },
+  {
+   "count": 29,
+   "value": "Building & Hardware"
+  },
+  {
+   "count": 2,
+   "value": "Cameras"
+  },
+  {
+   "count": 4,
+   "value": "Cell Phone Accessories"
+  },
+  {
+   "count": 223,
+   "value": "Cell Phones"
+  },
+  {
+   "count": 1,
+   "value": "Computer Parts"
+  },
+  {
+   "count": 2,
+   "value": "Desktops"
+  },
+  {
+   "count": 9,
+   "value": "Doors & Windows"
+  },
+  {
+   "count": 1,
+   "value": "Engine"
+  },
+  {
+   "count": 21,
+   "value": "Equipment & Tools"
+  },
+  {
+   "count": 12,
+   "value": "Exercise & Fitness Equipment"
+  },
+  {
+   "count": 8,
+   "value": "Flooring & Floor Care"
+  },
+  {
+   "count": 2,
+   "value": "Fragrances"
+  },
+  {
+   "count": 9,
+   "value": "Gaming"
+  },
+  {
+   "count": 10,
+   "value": "Grills"
+  },
+  {
+   "count": 7,
+   "value": "Hair Care"
+  },
+  {
+   "count": 1,
+   "value": "Headphones"
+  },
+  {
+   "count": 24,
+   "value": "Heating, Cooling & Air Quality"
+  },
+  {
+   "count": 4,
+   "value": "Holiday Apparel"
+  },
+  {
+   "count": 2,
+   "value": "Home Audio"
+  },
+  {
+   "count": 40,
+   "value": "Home Decor"
+  },
+  {
+   "count": 6,
+   "value": "Home Entertainment"
+  },
+  {
+   "count": 37,
+   "value": "Household Essentials"
+  },
+  {
+   "count": 2,
+   "value": "Industrial Tools"
+  },
+  {
+   "count": 12,
+   "value": "Infant Apparel"
+  },
+  {
+   "count": 10,
+   "value": "Jewelry"
+  },
+  {
+   "count": 16,
+   "value": "Kids Apparel"
+  }
+ ],
+ "condition": [
+  {
+   "count": 139,
+   "value": "New"
+  },
+  {
+   "count": 102,
+   "value": "Like New"
+  },
+  {
+   "count": 38,
+   "value": "Mixed"
+  },
+  {
+   "count": 9,
+   "value": "Salvage"
+  },
+  {
+   "count": 19,
+   "value": "Scratch & Dent"
+  },
+  {
+   "count": 10,
+   "value": "Used"
+  },
+  {
+   "count": 158,
+   "value": "Used Fair"
+  },
+  {
+   "count": 97,
+   "value": "Used Good"
+  }
+ ],
+ "region": [
+  {
+   "value": "/AT",
+   "position": [
+    "Europe",
+    "Austria"
+   ],
+   "count": 0
+  },
+  {
+   "value": "/BE",
+   "position": [
+    "Europe",
+    "Belgium"
+   ],
+   "count": 0
+  },
+  {
+   "value": "/BG",
+   "position": [
+    "Europe",
+    "Bulgaria"
+   ],
+   "count": 0
+  },
+  {
+   "value": "/CY",
+   "position": [
+    "Europe",
+    "Cyprus"
+   ],
+   "count": 0
+  },
+  {
+   "value": "/CZ",
+   "position": [
+    "Europe",
+    "Czech Republic"
+   ],
+   "count": 0
+  },
+  {
+   "value": "/DE",
+   "position": [
+    "Europe",
+    "Germany"
+   ],
+   "count": 0
+  },
+  {
+   "value": "/DK",
+   "position": [
+    "Europe",
+    "Denmark"
+   ],
+   "count": 0
+  },
+  {
+   "value": "/EE",
+   "position": [
+    "Europe",
+    "Estonia"
+   ],
+   "count": 0
+  },
+  {
+   "value": "/ES",
+   "position": [
+    "Europe",
+    "Spain"
+   ],
+   "count": 15
+  },
+  {
+   "value": "/FI",
+   "position": [
+    "Europe",
+    "Finland"
+   ],
+   "count": 0
+  },
+  {
+   "value": "/FR",
+   "position": [
+    "Europe",
+    "France"
+   ],
+   "count": 0
+  },
+  {
+   "value": "/GB",
+   "position": [
+    "Europe",
+    "United Kingdom"
+   ],
+   "count": 6
+  },
+  {
+   "value": "/GR",
+   "position": [
+    "Europe",
+    "Greece"
+   ],
+   "count": 0
+  },
+  {
+   "value": "/HR",
+   "position": [
+    "Europe",
+    "Croatia"
+   ],
+   "count": 0
+  },
+  {
+   "value": "/HU",
+   "position": [
+    "Europe",
+    "Hungary"
+   ],
+   "count": 0
+  },
+  {
+   "value": "/IE",
+   "position": [
+    "Europe",
+    "Ireland"
+   ],
+   "count": 0
+  },
+  {
+   "value": "/IT",
+   "position": [
+    "Europe",
+    "Italy"
+   ],
+   "count": 5
+  },
+  {
+   "value": "/JP",
+   "position": [
+    "Asia",
+    "Japan"
+   ],
+   "count": 0
+  },
+  {
+   "value": "/LT",
+   "position": [
+    "Europe",
+    "Lithuania"
+   ],
+   "count": 0
+  },
+  {
+   "value": "/LU",
+   "position": [
+    "Europe",
+    "Luxembourg"
+   ],
+   "count": 0
+  },
+  {
+   "value": "/LV",
+   "position": [
+    "Europe",
+    "Latvia"
+   ],
+   "count": 0
+  },
+  {
+   "value": "/MT",
+   "position": [
+    "Europe",
+    "Malta"
+   ],
+   "count": 0
+  },
+  {
+   "value": "/NL",
+   "position": [
+    "Europe",
+    "Netherlands"
+   ],
+   "count": 0
+  },
+  {
+   "value": "/PL",
+   "position": [
+    "Europe",
+    "Poland"
+   ],
+   "count": 23
+  },
+  {
+   "value": "/PT",
+   "position": [
+    "Europe",
+    "Portugal"
+   ],
+   "count": 0
+  },
+  {
+   "value": "/RO",
+   "position": [
+    "Europe",
+    "Romania"
+   ],
+   "count": 0
+  },
+  {
+   "value": "/SE",
+   "position": [
+    "Europe",
+    "Sweden"
+   ],
+   "count": 0
+  },
+  {
+   "value": "/SI",
+   "position": [
+    "Europe",
+    "Slovenia"
+   ],
+   "count": 0
+  },
+  {
+   "value": "/SK",
+   "position": [
+    "Europe",
+    "Slovakia"
+   ],
+   "count": 14
+  },
+  {
+   "value": "AB/CA",
+   "position": [
+    "Canada",
+    "Alberta"
+   ],
+   "count": 2
+  },
+  {
+   "value": "AK/US",
+   "position": [
+    "United States",
+    "West",
+    "Alaska"
+   ],
+   "count": 0
+  },
+  {
+   "value": "AL/US",
+   "position": [
+    "United States",
+    "South",
+    "Alabama"
+   ],
+   "count": 3
+  },
+  {
+   "value": "AR/US",
+   "position": [
+    "United States",
+    "South",
+    "Arkansas"
+   ],
+   "count": 0
+  },
+  {
+   "value": "AS/US",
+   "position": [
+    "United States",
+    "US Territories",
+    "American Samoa"
+   ],
+   "count": 0
+  },
+  {
+   "value": "AZ/US",
+   "position": [
+    "United States",
+    "West",
+    "Arizona"
+   ],
+   "count": 10
+  },
+  {
+   "value": "BC/CA",
+   "position": [
+    "Canada",
+    "British Columbia"
+   ],
+   "count": 0
+  },
+  {
+   "value": "CA/US",
+   "position": [
+    "United States",
+    "West",
+    "California"
+   ],
+   "count": 71
+  },
+  {
+   "value": "CO/US",
+   "position": [
+    "United States",
+    "West",
+    "Colorado"
+   ],
+   "count": 0
+  },
+  {
+   "value": "CT/US",
+   "position": [
+    "United States",
+    "Northeast",
+    "Connecticut"
+   ],
+   "count": 6
+  },
+  {
+   "value": "DE/US",
+   "position": [
+    "United States",
+    "Northeast",
+    "Delaware"
+   ],
+   "count": 0
+  }
+ ],
+ "warehouseLocation": [
+  {
+   "value": "CA/AB/Calgary",
+   "position": [
+    "CA",
+    "AB",
+    "Calgary"
+   ],
+   "count": 2
+  },
+  {
+   "value": "CA/ON/Brantford",
+   "position": [
+    "CA",
+    "ON",
+    "Brantford"
+   ],
+   "count": 2
+  },
+  {
+   "value": "CA/ON/Mississauga",
+   "position": [
+    "CA",
+    "ON",
+    "Mississauga"
+   ],
+   "count": 124
+  },
+  {
+   "value": "ES//Cabanillas del Campo",
+   "position": [
+    "ES",
+    "",
+    "Cabanillas del Campo"
+   ],
+   "count": 15
+  },
+  {
+   "value": "GB//Bonnybridge",
+   "position": [
+    "GB",
+    "",
+    "Bonnybridge"
+   ],
+   "count": 6
+  },
+  {
+   "value": "IT//Novara",
+   "position": [
+    "IT",
+    "",
+    "Novara"
+   ],
+   "count": 5
+  },
+  {
+   "value": "PL//Sosnowiec",
+   "position": [
+    "PL",
+    "",
+    "Sosnowiec"
+   ],
+   "count": 23
+  },
+  {
+   "value": "SK//Senec",
+   "position": [
+    "SK",
+    "",
+    "Senec"
+   ],
+   "count": 14
+  },
+  {
+   "value": "US/AL/Bessemer",
+   "position": [
+    "US",
+    "AL",
+    "Bessemer"
+   ],
+   "count": 1
+  },
+  {
+   "value": "US/AL/Loxley",
+   "position": [
+    "US",
+    "AL",
+    "Loxley"
+   ],
+   "count": 2
+  },
+  {
+   "value": "US/AZ/Phoenix",
+   "position": [
+    "US",
+    "AZ",
+    "Phoenix"
+   ],
+   "count": 9
+  },
+  {
+   "value": "US/AZ/Prescott Valley",
+   "position": [
+    "US",
+    "AZ",
+    "Prescott Valley"
+   ],
+   "count": 1
+  },
+  {
+   "value": "US/CA/Aliso Viejo",
+   "position": [
+    "US",
+    "CA",
+    "Aliso Viejo"
+   ],
+   "count": 1
+  },
+  {
+   "value": "US/CA/Camarillo",
+   "position": [
+    "US",
+    "CA",
+    "Camarillo"
+   ],
+   "count": 1
+  },
+  {
+   "value": "US/CA/Cerritos",
+   "position": [
+    "US",
+    "CA",
+    "Cerritos"
+   ],
+   "count": 7
+  },
+  {
+   "value": "US/CA/Chino",
+   "position": [
+    "US",
+    "CA",
+    "Chino"
+   ],
+   "count": 1
+  },
+  {
+   "value": "US/CA/Compton",
+   "position": [
+    "US",
+    "CA",
+    "Compton"
+   ],
+   "count": 11
+  },
+  {
+   "value": "US/CA/Lathrop",
+   "position": [
+    "US",
+    "CA",
+    "Lathrop"
+   ],
+   "count": 20
+  },
+  {
+   "value": "US/CA/Los Angeles",
+   "position": [
+    "US",
+    "CA",
+    "Los Angeles"
+   ],
+   "count": 2
+  },
+  {
+   "value": "US/CA/Moreno Valley",
+   "position": [
+    "US",
+    "CA",
+    "Moreno Valley"
+   ],
+   "count": 1
+  },
+  {
+   "value": "US/CA/Ontario",
+   "position": [
+    "US",
+    "CA",
+    "Ontario"
+   ],
+   "count": 8
+  },
+  {
+   "value": "US/CA/Perris",
+   "position": [
+    "US",
+    "CA",
+    "Perris"
+   ],
+   "count": 6
+  },
+  {
+   "value": "US/CA/Riverside",
+   "position": [
+    "US",
+    "CA",
+    "Riverside"
+   ],
+   "count": 1
+  },
+  {
+   "value": "US/CA/San Bernardino",
+   "position": [
+    "US",
+    "CA",
+    "San Bernardino"
+   ],
+   "count": 7
+  },
+  {
+   "value": "US/CA/San Diego",
+   "position": [
+    "US",
+    "CA",
+    "San Diego"
+   ],
+   "count": 1
+  },
+  {
+   "value": "US/CA/Signal Hill",
+   "position": [
+    "US",
+    "CA",
+    "Signal Hill"
+   ],
+   "count": 2
+  },
+  {
+   "value": "US/CA/Union City",
+   "position": [
+    "US",
+    "CA",
+    "Union City"
+   ],
+   "count": 1
+  },
+  {
+   "value": "US/CA/West Covina",
+   "position": [
+    "US",
+    "CA",
+    "West Covina"
+   ],
+   "count": 1
+  },
+  {
+   "value": "US/CT/East Hartford",
+   "position": [
+    "US",
+    "CT",
+    "East Hartford"
+   ],
+   "count": 2
+  },
+  {
+   "value": "US/CT/Plainfield",
+   "position": [
+    "US",
+    "CT",
+    "Plainfield"
+   ],
+   "count": 4
+  },
+  {
+   "value": "US/FL/Doral",
+   "position": [
+    "US",
+    "FL",
+    "Doral"
+   ],
+   "count": 1
+  },
+  {
+   "value": "US/FL/Jacksonville",
+   "position": [
+    "US",
+    "FL",
+    "Jacksonville"
+   ],
+   "count": 3
+  },
+  {
+   "value": "US/FL/Miami",
+   "position": [
+    "US",
+    "FL",
+    "Miami"
+   ],
+   "count": 1
+  },
+  {
+   "value": "US/FL/Miami Lakes",
+   "position": [
+    "US",
+    "FL",
+    "Miami Lakes"
+   ],
+   "count": 1
+  },
+  {
+   "value": "US/FL/Plant City",
+   "position": [
+    "US",
+    "FL",
+    "Plant City"
+   ],
+   "count": 4
+  },
+  {
+   "value": "US/FL/Tampa",
+   "position": [
+    "US",
+    "FL",
+    "Tampa"
+   ],
+   "count": 2
+  },
+  {
+   "value": "US/GA/Adairsville",
+   "position": [
+    "US",
+    "GA",
+    "Adairsville"
+   ],
+   "count": 2
+  },
+  {
+   "value": "US/GA/Atlanta",
+   "position": [
+    "US",
+    "GA",
+    "Atlanta"
+   ],
+   "count": 10
+  },
+  {
+   "value": "US/GA/Braselton",
+   "position": [
+    "US",
+    "GA",
+    "Braselton"
+   ],
+   "count": 1
+  },
+  {
+   "value": "US/GA/Dahlonega",
+   "position": [
+    "US",
+    "GA",
+    "Dahlonega"
+   ],
+   "count": 4
+  }
+ ]
+}

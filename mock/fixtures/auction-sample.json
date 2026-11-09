@@ -1,0 +1,23 @@
+{
+ "auctions": [
+  {
+   "_id": "6aeb7698881cb5445c77b895",
+   "listingId": "6aeb76981adc9f0e3c4df0ee",
+   "actualEndTime": "2026-11-09T21:05:00.000Z",
+   "biddingEnabled": true,
+   "buyingFormatSequence": "AUCTION",
+   "startPrice": 500,
+   "buyNow": {
+    "enabled": false
+   },
+   "closed": false,
+   "canceled": false,
+   "nextMinBidAmount": 4300,
+   "bidPrecision": 1,
+   "attributes": {}
+  }
+ ],
+ "total": 1,
+ "offset": 0,
+ "limit": 20
+}
