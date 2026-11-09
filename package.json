@@ -27,6 +27,8 @@
     "lint": "tsc -p tsconfig.json --noEmit",
     "sync": "node apps/server/src/main.ts --sync",
     "sync:static": "node scripts/sync-static.mjs",
+    "ci:crawl": "node scripts/ci-backend.mjs",
+    "ci:bid": "node scripts/ci-bid-dispatch.mjs",
     "firebase:status": "node apps/server/src/main.ts --firebase-status",
     "firebase:sync": "node apps/server/src/main.ts --firebase-sync",
     "firebase:pull": "node apps/server/src/main.ts --firebase-pull"

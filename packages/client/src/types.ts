@@ -112,6 +112,8 @@ export interface LotCategoryShare {
 
 /** One row of POST /v1/all-listings/listings. */
 export interface Listing {
+  /** Marketplace source, e.g. "bstock", "liquidation-com", "bulq". */
+  source?: string;
   listingId: string;
   lotId: string;
   /** Null for enterprise (A2Z) storefronts, which use the numeric id in auctionUrl. */

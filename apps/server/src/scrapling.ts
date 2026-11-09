@@ -118,7 +118,7 @@ export class ScraplingService {
   }
 
   async solveClearance(targetUrl = "https://bstock.com"): Promise<ClearanceResult> {
-    const result = await this.runBridge<ClearanceResult>(["--action", "solve-clearance", "--url", targetUrl], 75_000);
+    const result = await this.runBridge<ClearanceResult>(["--action", "solve-clearance", "--url", targetUrl], 90_000);
     if (result.success && result.clearance) {
       this.lastSolvedAt = result.solvedAt;
       this.lastClearance = result.clearance;

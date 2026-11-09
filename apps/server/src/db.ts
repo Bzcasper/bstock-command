@@ -7,6 +7,7 @@ export interface ListingRow {
   auction_id: string | null;
   ent_auction_id: string | null;
   site_abb: string;
+  source: string;
   title: string | null;
   category: string | null;
   condition: string | null;
@@ -95,6 +96,7 @@ CREATE TABLE IF NOT EXISTS listings (
   auction_id TEXT,
   ent_auction_id TEXT,
   site_abb TEXT NOT NULL,
+  source TEXT NOT NULL DEFAULT 'bstock',
   title TEXT,
   category TEXT,
   condition TEXT,
@@ -223,6 +225,27 @@ CREATE TABLE IF NOT EXISTS snapshots (
   projected_cents INTEGER
 );
 CREATE INDEX IF NOT EXISTS idx_snapshots_listing ON snapshots(listing_id, at);
+
+CREATE TABLE IF NOT EXISTS manifest_items (
+  listing_id TEXT NOT NULL,
+  item_id TEXT NOT NULL,
+  asin TEXT,
+  upc TEXT,
+  sku TEXT,
+  brand TEXT,
+  title TEXT NOT NULL,
+  category TEXT,
+  condition TEXT,
+  quantity INTEGER NOT NULL,
+  unit_retail_cents INTEGER,
+  ext_retail_cents INTEGER,
+  estimated_unit_resale_cents INTEGER,
+  estimated_ext_resale_cents INTEGER,
+  brand_tier INTEGER,
+  condition_multiplier REAL,
+  PRIMARY KEY (listing_id, item_id)
+);
+CREATE INDEX IF NOT EXISTS idx_manifest_listing ON manifest_items(listing_id);
 `;
 
 const cents = (n: number | null | undefined): number | null =>
@@ -251,6 +274,28 @@ export class Db {
     safeAdd("metrics", "pattern_json", "TEXT");
     safeAdd("metrics", "recommended_bid_cents", "INTEGER");
     safeAdd("metrics", "kelly_fraction", "REAL");
+    try {
+      this.raw.exec(`CREATE TABLE IF NOT EXISTS manifest_items (
+        listing_id TEXT NOT NULL,
+        item_id TEXT NOT NULL,
+        asin TEXT,
+        upc TEXT,
+        sku TEXT,
+        brand TEXT,
+        title TEXT NOT NULL,
+        category TEXT,
+        condition TEXT,
+        quantity INTEGER NOT NULL,
+        unit_retail_cents INTEGER,
+        ext_retail_cents INTEGER,
+        estimated_unit_resale_cents INTEGER,
+        estimated_ext_resale_cents INTEGER,
+        brand_tier INTEGER,
+        condition_multiplier REAL,
+        PRIMARY KEY (listing_id, item_id)
+      );
+      CREATE INDEX IF NOT EXISTS idx_manifest_listing ON manifest_items(listing_id);`);
+    } catch {}
   }
 
   close(): void {
@@ -302,14 +347,14 @@ export class Db {
 
     this.run(
       `INSERT INTO listings (
-        listing_id, lot_id, auction_id, ent_auction_id, site_abb, title, category, condition, pallets, units,
+        listing_id, lot_id, auction_id, ent_auction_id, site_abb, source, title, category, condition, pallets, units,
         retail_cents, currency, ends_at, starts_at, bids, current_cents, next_min_cents, buy_now_cents,
         manifest, listing_type, bid_basis, region, seller_city, problem_free, image_url, gallery_images, raw_json,
         first_seen, last_seen
-      ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+      ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
       ON CONFLICT(listing_id) DO UPDATE SET
         auction_id=excluded.auction_id, ent_auction_id=excluded.ent_auction_id, site_abb=excluded.site_abb,
-        title=excluded.title, category=excluded.category, condition=excluded.condition,
+        source=excluded.source, title=excluded.title, category=excluded.category, condition=excluded.condition,
         pallets=excluded.pallets, units=excluded.units, retail_cents=excluded.retail_cents,
         currency=excluded.currency, ends_at=excluded.ends_at, starts_at=excluded.starts_at,
         bids=excluded.bids, current_cents=COALESCE(excluded.current_cents, listings.current_cents),
@@ -324,6 +369,7 @@ export class Db {
       listing.auctionId ?? null,
       entId,
       listing.siteAbb,
+      listing.source ?? "bstock",
       listing.title ?? null,
       listing.categories?.[0] ?? null,
       listing.displayedCondition ?? listing.condition?.[0] ?? null,
@@ -362,6 +408,114 @@ export class Db {
       galleryJson,
       listingId,
     );
+  }
+
+  saveManifestItems(listingId: string, items: Array<{
+    id: string;
+    asin?: string;
+    upc?: string;
+    sku?: string;
+    brand: string;
+    title: string;
+    category?: string;
+    condition: string;
+    quantity: number;
+    unitRetail: number;
+    extRetail: number;
+    estimatedUnitResale: number;
+    estimatedExtResale: number;
+    brandTier: 1 | 2 | 3 | 4;
+    conditionMultiplier: number;
+  }>): void {
+    const stmt = this.raw.prepare(`
+      INSERT INTO manifest_items (
+        listing_id, item_id, asin, upc, sku, brand, title, category, condition,
+        quantity, unit_retail_cents, ext_retail_cents, estimated_unit_resale_cents,
+        estimated_ext_resale_cents, brand_tier, condition_multiplier
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      ON CONFLICT(listing_id, item_id) DO UPDATE SET
+        asin = excluded.asin, upc = excluded.upc, sku = excluded.sku,
+        brand = excluded.brand, title = excluded.title, category = excluded.category,
+        condition = excluded.condition, quantity = excluded.quantity,
+        unit_retail_cents = excluded.unit_retail_cents, ext_retail_cents = excluded.ext_retail_cents,
+        estimated_unit_resale_cents = excluded.estimated_unit_resale_cents,
+        estimated_ext_resale_cents = excluded.estimated_ext_resale_cents,
+        brand_tier = excluded.brand_tier, condition_multiplier = excluded.condition_multiplier
+    `);
+    for (const it of items) {
+      stmt.run(
+        listingId,
+        it.id,
+        it.asin ?? null,
+        it.upc ?? null,
+        it.sku ?? null,
+        it.brand ?? null,
+        it.title,
+        it.category ?? null,
+        it.condition,
+        it.quantity,
+        cents(it.unitRetail),
+        cents(it.extRetail),
+        cents(it.estimatedUnitResale),
+        cents(it.estimatedExtResale),
+        it.brandTier,
+        it.conditionMultiplier,
+      );
+    }
+  }
+
+  getManifestItems(listingId: string): Array<{
+    id: string;
+    asin?: string;
+    upc?: string;
+    sku?: string;
+    brand: string;
+    title: string;
+    category?: string;
+    condition: string;
+    quantity: number;
+    unitRetail: number;
+    extRetail: number;
+    estimatedUnitResale: number;
+    estimatedExtResale: number;
+    brandTier: 1 | 2 | 3 | 4;
+    conditionMultiplier: number;
+  }> {
+    const rows = this.all<{
+      item_id: string;
+      asin: string | null;
+      upc: string | null;
+      sku: string | null;
+      brand: string | null;
+      title: string;
+      category: string | null;
+      condition: string;
+      quantity: number;
+      unit_retail_cents: number | null;
+      ext_retail_cents: number | null;
+      estimated_unit_resale_cents: number | null;
+      estimated_ext_resale_cents: number | null;
+      brand_tier: number | null;
+      condition_multiplier: number | null;
+    }>("SELECT * FROM manifest_items WHERE listing_id = ? ORDER BY ext_retail_cents DESC", listingId);
+
+    return rows.map((r) => ({
+      id: r.item_id,
+      asin: r.asin ?? undefined,
+      upc: r.upc ?? undefined,
+      sku: r.sku ?? undefined,
+      brand: r.brand ?? "Generic",
+      title: r.title,
+      category: r.category ?? undefined,
+      condition: r.condition,
+      quantity: r.quantity,
+      unitRetail: r.unit_retail_cents ? r.unit_retail_cents / 100 : 0,
+      extRetail: r.ext_retail_cents ? r.ext_retail_cents / 100 : 0,
+      estimatedUnitResale: r.estimated_unit_resale_cents ? r.estimated_unit_resale_cents / 100 : 0,
+      estimatedExtResale: r.estimated_ext_resale_cents ? r.estimated_ext_resale_cents / 100 : 0,
+      brandTier: (r.brand_tier ?? 4) as 1 | 2 | 3 | 4,
+      conditionMultiplier: r.condition_multiplier ?? 0.65,
+    }));
   }
 
   upsertAuction(state: AuctionState, now: Date): void {

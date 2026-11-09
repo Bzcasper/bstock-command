@@ -1,0 +1,97 @@
+name: Guarded Bid Dispatch
+
+on:
+  workflow_dispatch:
+    inputs:
+      listing_id:
+        description: "B-Stock Listing ID (or Lot ID)"
+        required: true
+        type: string
+      amount:
+        description: "Maximum hammer bid ceiling (USD)"
+        required: true
+        type: string
+      dry_run:
+        description: "Dry-run simulation (no live capital)"
+        required: true
+        default: true
+        type: boolean
+      armed:
+        description: "Arm execution safeguard (operator confirmation)"
+        required: true
+        default: false
+        type: boolean
+      note:
+        description: "Operator audit memo / justification"
+        required: false
+        default: "Dispatched via GitHub Actions terminal"
+        type: string
+  repository_dispatch:
+    types:
+      - bid-dispatch
+
+concurrency:
+  group: bid-dispatch-${{ github.event.inputs.listing_id || github.event.client_payload.listing_id }}
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  id-token: write
+
+jobs:
+  dispatch-bid:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install Node dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Execute Guarded Bid Dispatch
+        env:
+          BSTOCK_LOT_ID: ${{ github.event.inputs.listing_id || github.event.client_payload.listing_id }}
+          BSTOCK_BID_AMOUNT: ${{ github.event.inputs.amount || github.event.client_payload.amount }}
+          BSTOCK_DRY_RUN: ${{ (github.event.inputs.dry_run == 'false' || github.event.client_payload.dry_run == false) && '0' || '1' }}
+          BSTOCK_ARMED: ${{ (github.event.inputs.armed == 'true' || github.event.client_payload.armed == true) && '1' || '0' }}
+          BSTOCK_NOTE: ${{ github.event.inputs.note || github.event.client_payload.note || 'GitHub CI Dispatch' }}
+          BSTOCK_MASTER_KEY: ${{ secrets.BSTOCK_MASTER_KEY || 'ci-secret-master-key-32-chars-long' }}
+          BSTOCK_CLEARANCE: ${{ secrets.BSTOCK_CLEARANCE }}
+          BSTOCK_UA: ${{ secrets.BSTOCK_UA }}
+          BSTOCK_TOKEN: ${{ secrets.BSTOCK_TOKEN }}
+          FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          FIREBASE_DATABASE_ID: ${{ secrets.FIREBASE_DATABASE_ID || '(default)' }}
+        run: |
+          node scripts/ci-bid-dispatch.mjs \
+            --lot-id "$BSTOCK_LOT_ID" \
+            --amount "$BSTOCK_BID_AMOUNT" \
+            $([ "$BSTOCK_DRY_RUN" = "0" ] && echo "--live") \
+            $([ "$BSTOCK_ARMED" = "1" ] && echo "--armed") \
+            --note "$BSTOCK_NOTE"
+
+      - name: Commit Bid Audit Log (Git-as-a-database)
+        if: always()
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore(audit): guarded bid dispatch audit entry [skip ci]"
+          file_pattern: "audit/**"
+          skip_dirty_check: false
+          commit_user_name: "bstock-bid-bot[bot]"
+          commit_user_email: "bstock-bid-bot@users.noreply.github.com"
+
+      - name: Upload Audit Ledger Artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bid-audit-ledger
+          path: audit/bid-ledger.jsonl
+          retention-days: 30

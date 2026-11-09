@@ -12,7 +12,7 @@ import type { SecretVault } from "./security.ts";
 import type { AppConfig } from "./config.ts";
 import { FirebaseStorageService, pushDbToFirebase, pullFirebaseToLocalDb } from "@bstock/storage-firebase";
 import { ScraplingService } from "./scrapling.ts";
-import { runAuctionFunnel } from "@bstock/analytics";
+import { runAuctionFunnel, analyzeManifestComps, type ManifestCompAnalysis } from "@bstock/analytics";
 
 export interface StoredCredentials {
   clearance?: string;
@@ -90,6 +90,41 @@ export function buildApp(deps: AppDeps): FastifyInstance {
   collector.events.on("sync:start", (p) => broadcast("sync:start", p));
   collector.events.on("sync:done", (p) => broadcast("sync:done", p));
   collector.events.on("sync:error", (p) => broadcast("sync:error", p));
+
+  // Automated Clearance Refresh Loop:
+  // Proactively refreshes cf_clearance every 60 minutes via Scrapling to avoid session expiration.
+  let clearanceRefreshTimer: NodeJS.Timeout | null = null;
+  const autoRefreshClearance = async () => {
+    if (!scraplingService.getStatus().ready) return;
+    try {
+      app.log.info("[clearance-refresher] Auto-refreshing Cloudflare clearance...");
+      const res = await scraplingService.solveClearance();
+      if (res.success && res.clearance) {
+        client.transport.setClearance(res.clearance);
+        if (res.userAgent) client.transport.setUserAgent(res.userAgent);
+        const blob = db.getSetting<string | null>("credentials.blob", null);
+        let current: StoredCredentials = {};
+        if (blob) {
+          try {
+            current = vault.open<StoredCredentials>(CREDENTIAL_KEY, blob);
+          } catch {}
+        }
+        db.setSetting("credentials.blob", vault.seal(CREDENTIAL_KEY, { ...current, clearance: res.clearance, userAgent: res.userAgent }));
+        app.log.info({ clearance: res.clearance.slice(0, 15) }, "[clearance-refresher] Clearance successfully auto-refreshed");
+      }
+    } catch (err) {
+      app.log.warn({ err: (err as Error).message }, "[clearance-refresher] Auto-refresh encountered error");
+    }
+  };
+
+  // Auto-refresh every 60 minutes
+  clearanceRefreshTimer = setInterval(() => {
+    void autoRefreshClearance();
+  }, 60 * 60 * 1000);
+
+  app.addHook("onClose", async () => {
+    if (clearanceRefreshTimer) clearInterval(clearanceRefreshTimer);
+  });
 
   // ------------------------------------------------------------------ health
   app.get("/api/health", async () => ({
@@ -303,6 +338,74 @@ export function buildApp(deps: AppDeps): FastifyInstance {
     return detail;
   });
 
+  app.get("/api/listings/:id/manifest", async (req, reply) => {
+    const { id } = req.params as { id: string };
+    const listing = db.getListing(id);
+    if (!listing) {
+      reply.code(404).send({ error: "listing not found", listingId: id });
+      return;
+    }
+
+    const cached = db.getManifestItems(id);
+    const settings = loadSettings();
+    const baselineRecovery = settings.recoveryPctDefault ?? 0.30;
+
+    if (cached.length > 0) {
+      const analysis = analyzeManifestComps(cached, baselineRecovery);
+      return { listingId: id, cached: true, ...analysis };
+    }
+
+    // Fetch from B-Stock lot items API
+    let items: any[] = [];
+    const lotId = listing.lot_id && listing.lot_id !== "unknown" ? listing.lot_id : null;
+
+    if (lotId) {
+      try {
+        const res = await client.getLotItems(lotId, { limit: 500 });
+        if (res.items && res.items.length > 0) {
+          items = res.items;
+        }
+      } catch (err) {
+        app.log.warn({ lotId, error: (err as Error).message }, "failed to fetch lot items via client");
+      }
+    }
+
+    // Fallback: Scrape lot manifest table via Scrapling
+    if (items.length === 0 && scraplingService) {
+      let targetUrl = "";
+      if (listing.raw_json) {
+        try {
+          const raw = JSON.parse(listing.raw_json);
+          targetUrl = raw.auctionUrl || "";
+        } catch {}
+      }
+      if (targetUrl) {
+        try {
+          const scraped = await scraplingService.scrapeLot(targetUrl);
+          if (scraped.success && scraped.manifestItemsSample && scraped.manifestItemsSample.length > 0) {
+            items = scraped.manifestItemsSample.map((cols, idx) => ({
+              _id: `scraped-${idx}`,
+              attributes: {
+                title: cols[0] || `Item ${idx + 1}`,
+                brandName: cols[1] || "Generic",
+                unitRetail: Number(cols[2]?.replace(/[^0-9.]/g, "") || 0),
+              },
+              quantity: Number(cols[3] || 1),
+              itemCondition: cols[4] || "USED_GOOD",
+            }));
+          }
+        } catch {}
+      }
+    }
+
+    const analysis = analyzeManifestComps(items, baselineRecovery);
+    if (analysis.sampleItems.length > 0) {
+      db.saveManifestItems(id, analysis.sampleItems);
+    }
+
+    return { listingId: id, cached: false, ...analysis };
+  });
+
   app.put("/api/listings/:id/decision", async (req) => {
     const { id } = req.params as { id: string };
     const body = (req.body ?? {}) as Record<string, unknown>;
@@ -474,9 +577,18 @@ export function buildApp(deps: AppDeps): FastifyInstance {
 
   app.post("/api/scraper/scrape-lot", async (req, reply) => {
     const body = (req.body as { urlOrId?: string; listingId?: string }) || {};
-    const target = body.urlOrId || body.listingId;
+    let target = body.urlOrId || body.listingId;
     if (!target) return reply.code(400).send({ error: "urlOrId or listingId required" });
-    const res = await scraplingService.scrapeLot(target);
+    if (body.listingId) {
+      const listing = db.getListing(body.listingId);
+      if (listing?.raw_json) {
+        try {
+          const raw = JSON.parse(listing.raw_json);
+          if (raw.auctionUrl) target = raw.auctionUrl;
+        } catch {}
+      }
+    }
+    const res = await scraplingService.scrapeLot(target!);
     if (res.success && body.listingId && res.images && res.images.length > 0) {
       db.updateListingImages(body.listingId, res.primaryImageUrl, res.images);
     }

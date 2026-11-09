@@ -32,9 +32,6 @@ def solve_clearance(target_url: str = "https://bstock.com") -> Dict[str, Any]:
             target_url,
             headless=True,
             solve_cloudflare=True,
-            block_webrtc=True,
-            hide_canvas=True,
-            allow_webgl=True,
         )
         clearance_cookie = None
         cookies_dict = {}
@@ -81,8 +78,6 @@ def scrape_lot(url_or_id: str, clearance: Optional[str] = None) -> Dict[str, Any
             url,
             headless=True,
             solve_cloudflare=True,
-            block_webrtc=True,
-            hide_canvas=True,
         )
 
         title = page.css("h1::text").get() or page.css(".auction-title::text").get() or page.css("title::text").get()
@@ -149,8 +144,6 @@ def scrape_listings(url: str = "https://bstock.com/all-auctions/") -> Dict[str, 
             url,
             headless=True,
             solve_cloudflare=True,
-            block_webrtc=True,
-            hide_canvas=True,
         )
 
         cards = []

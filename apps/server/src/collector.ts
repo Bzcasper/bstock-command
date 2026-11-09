@@ -89,10 +89,13 @@ export interface SyncReport {
 
 const pageSignature = (l: Listing) => l.listingId;
 
+import type { MarketplaceAdapter } from "./adapters/types.ts";
+
 export class Collector {
   readonly events = new EventEmitter();
   private syncing = false;
   private readonly client: BStockClient;
+  private readonly adapters: MarketplaceAdapter[];
   private readonly db: Db;
   private readonly settings: () => TradingSettings;
   private readonly now: () => Date;
@@ -102,11 +105,13 @@ export class Collector {
     db: Db,
     settings: () => TradingSettings,
     now: () => Date = () => new Date(),
+    adapters?: MarketplaceAdapter[],
   ) {
     this.client = client;
     this.db = db;
     this.settings = settings;
     this.now = now;
+    this.adapters = adapters ?? [];
   }
 
   get busy(): boolean {
@@ -138,21 +143,51 @@ export class Collector {
       const pageSize = Math.max(20, Math.min(80, options.pageSize ?? 80));
       const seen = new Map<string, Listing>();
 
-      for (let page = 0; page < pages; page += 1) {
-        const body: SearchRequest = {
-          limit: pageSize,
-          offset: page * pageSize,
-          sortBy: options.sortBy ?? "endTime",
-          sortOrder: options.sortOrder ?? "asc",
-          ...options.request,
-        };
-        const res = await this.client.searchListings(body);
-        report.pagesFetched += 1;
-        const listings = res.listings ?? [];
-        for (const l of listings) {
-          if (!seen.has(pageSignature(l))) seen.set(pageSignature(l), l);
+      // If adapters are registered, use them; otherwise fall back to the single B-Stock client.
+      const sources = this.adapters.length > 0 ? this.adapters : null;
+
+      if (sources) {
+        for (const adapter of sources) {
+          for (let page = 0; page < pages; page += 1) {
+            try {
+              const body: SearchRequest = {
+                limit: pageSize,
+                offset: page * pageSize,
+                sortBy: options.sortBy ?? "endTime",
+                sortOrder: options.sortOrder ?? "asc",
+                ...options.request,
+              };
+              const res = await adapter.searchListings(body);
+              report.pagesFetched += 1;
+              const listings = res.listings ?? [];
+              for (const l of listings) {
+                const key = `${adapter.id}:${pageSignature(l)}`;
+                if (!seen.has(key)) seen.set(key, l);
+              }
+              if (listings.length < pageSize) break;
+            } catch (err) {
+              report.errors.push(`${adapter.id}: ${(err as Error).message}`);
+              break;
+            }
+          }
         }
-        if (listings.length < pageSize) break;
+      } else {
+        for (let page = 0; page < pages; page += 1) {
+          const body: SearchRequest = {
+            limit: pageSize,
+            offset: page * pageSize,
+            sortBy: options.sortBy ?? "endTime",
+            sortOrder: options.sortOrder ?? "asc",
+            ...options.request,
+          };
+          const res = await this.client.searchListings(body);
+          report.pagesFetched += 1;
+          const listings = res.listings ?? [];
+          for (const l of listings) {
+            if (!seen.has(pageSignature(l))) seen.set(pageSignature(l), l);
+          }
+          if (listings.length < pageSize) break;
+        }
       }
 
       report.listingsSeen = seen.size;

@@ -1,0 +1,119 @@
+name: Market Backend Engine
+
+on:
+  schedule:
+    # Run every 2 hours to conserve free GitHub Actions minutes (2,000 free mins/mo)
+    - cron: "0 */2 * * *"
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "Ingestion mode"
+        required: true
+        default: "mock"
+        type: choice
+        options:
+          - "mock"
+          - "live"
+      pages:
+        description: "Number of search pages to crawl"
+        required: true
+        default: "5"
+        type: string
+      solve_clearance:
+        description: "Solve Cloudflare Turnstile with Scrapling"
+        required: false
+        default: true
+        type: boolean
+      sync_firebase:
+        description: "Sync snapshot to Firebase Storage & Firestore"
+        required: false
+        default: true
+        type: boolean
+      commit_data:
+        description: "Commit snapshot data back to repository (Git-as-a-database)"
+        required: false
+        default: true
+        type: boolean
+  repository_dispatch:
+    types:
+      - market-crawl
+      - trigger-sync
+
+# Cancel superseded runs to eliminate billing waste
+concurrency:
+  group: market-backend-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  market-worker:
+    runs-on: ubuntu-latest # 1x multiplier (free on public repos, cheapest on private)
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Setup Python 3.12 (Scrapling stealth challenge solver)
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install Node dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Install Scrapling stealth browser if live solver requested
+        if: ${{ github.event.inputs.mode == 'live' || github.event.inputs.solve_clearance == 'true' || secrets.BSTOCK_LOGIN_ID != '' }}
+        run: |
+          python3 -m pip install --upgrade pip
+          pip install scrapling curl_cffi || true
+
+      - name: Execute Autonomous Market Crawl & Funnel Engine
+        env:
+          MOCK: ${{ (github.event.inputs.mode == 'mock' || (github.event_name == 'schedule' && secrets.BSTOCK_CLEARANCE == '' && secrets.BSTOCK_LOGIN_ID == '')) && '1' || '0' }}
+          BSTOCK_PAGES: ${{ github.event.inputs.pages || '5' }}
+          BSTOCK_SOLVE_CLEARANCE: ${{ github.event.inputs.solve_clearance || '1' }}
+          FIREBASE_SYNC: ${{ github.event.inputs.sync_firebase != 'false' && '1' || '0' }}
+          BSTOCK_CLEARANCE: ${{ secrets.BSTOCK_CLEARANCE }}
+          BSTOCK_UA: ${{ secrets.BSTOCK_UA }}
+          BSTOCK_TOKEN: ${{ secrets.BSTOCK_TOKEN }}
+          BSTOCK_LOGIN_ID: ${{ secrets.BSTOCK_LOGIN_ID }}
+          BSTOCK_PASSWORD: ${{ secrets.BSTOCK_PASSWORD }}
+          FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+          FIREBASE_STORAGE_BUCKET: ${{ secrets.FIREBASE_STORAGE_BUCKET }}
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          FIREBASE_DATABASE_ID: ${{ secrets.FIREBASE_DATABASE_ID || '(default)' }}
+        run: |
+          node scripts/ci-backend.mjs
+
+      - name: Commit Updated Market Snapshot (Git-as-a-database)
+        if: ${{ github.event.inputs.commit_data != 'false' }}
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore(market): automated market snapshot [skip ci]"
+          file_pattern: "public/data/** backups/**"
+          skip_dirty_check: false
+          commit_user_name: "bstock-market-bot[bot]"
+          commit_user_email: "bstock-market-bot@users.noreply.github.com"
+
+      - name: Upload Snapshot Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: market-data-snapshot
+          path: |
+            public/data/
+            backups/bstock.db
+          retention-days: 7

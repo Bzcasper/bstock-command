@@ -1,7 +1,8 @@
 node_modules/
 dist/
 apps/web/dist/
-public/data/
+# Allow public/data snapshot for Git-as-a-database pattern
+!public/data/
 *.db
 *.db-*
 *.db-wal
@@ -19,6 +20,7 @@ pnpm-lock.yaml
 pnpm-workspace.yaml
 __pycache__/
 .data/
+audit/
 .agent/
 .agents/
 .claude/

@@ -230,6 +230,7 @@ export const api = {
   solveClearance: (targetUrl?: string) => request<any>("/api/scraper/solve-clearance", { method: "POST", body: JSON.stringify({ targetUrl }) }),
   scrapeLot: (urlOrId: string, listingId?: string) => request<any>("/api/scraper/scrape-lot", { method: "POST", body: JSON.stringify({ urlOrId, listingId }) }),
   cacheListingImage: (listingId: string) => request<any>("/api/images/cache-listing", { method: "POST", body: JSON.stringify({ listingId }) }),
+  manifest: (listingId: string) => request<any>(`/api/listings/${encodeURIComponent(listingId)}/manifest`),
   funnelListings: (params: Record<string, string | number | undefined> = {}) => {
     const qs = new URLSearchParams();
     for (const [k, v] of Object.entries(params)) {
@@ -238,4 +239,83 @@ export const api = {
     const q = qs.toString();
     return request<any>(`/api/funnel/listings${q ? `?${q}` : ""}`);
   },
+  ciSettings: getCiSettings,
+  saveCiSettings,
+  triggerGithubCrawl,
+  triggerGitlabCrawl,
 };
+
+export interface CiSettings {
+  githubToken?: string;
+  githubRepo?: string; // "owner/repo"
+  gitlabToken?: string;
+  gitlabProjectId?: string;
+  gitlabRef?: string;
+}
+
+export function getCiSettings(): CiSettings {
+  try {
+    const raw = localStorage.getItem("bstock_ci_settings");
+    return raw ? JSON.parse(raw) : { githubRepo: "tinydigitalproductlab/bstock-command", gitlabProjectId: "tinydigitalproductlab/bstock-command", gitlabRef: "main" };
+  } catch {
+    return { githubRepo: "tinydigitalproductlab/bstock-command", gitlabProjectId: "tinydigitalproductlab/bstock-command", gitlabRef: "main" };
+  }
+}
+
+export function saveCiSettings(s: CiSettings) {
+  try {
+    localStorage.setItem("bstock_ci_settings", JSON.stringify(s));
+  } catch {}
+}
+
+export async function triggerGithubCrawl(options: { mode?: "mock" | "live"; pages?: string } = {}) {
+  const s = getCiSettings();
+  if (!s.githubToken) throw new Error("GitHub Personal Access Token not configured in CI Settings.");
+  const repo = s.githubRepo || "tinydigitalproductlab/bstock-command";
+  const res = await fetch(`https://api.github.com/repos/${repo}/actions/workflows/market-backend.yml/dispatches`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${s.githubToken}`,
+      Accept: "application/vnd.github.v3+json",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      ref: "main",
+      inputs: {
+        mode: options.mode || "mock",
+        pages: options.pages || "5",
+        solve_clearance: true,
+        sync_firebase: true,
+        commit_data: true,
+      },
+    }),
+  });
+  if (!res.ok) {
+    const errText = await res.text();
+    throw new Error(`GitHub Actions dispatch failed (HTTP ${res.status}): ${errText}`);
+  }
+  return { ok: true, status: "dispatched", message: "Market crawl workflow dispatched to GitHub Actions runner." };
+}
+
+export async function triggerGitlabCrawl() {
+  const s = getCiSettings();
+  if (!s.gitlabToken) throw new Error("GitLab Trigger Token not configured in CI Settings.");
+  const projectId = encodeURIComponent(s.gitlabProjectId || "tinydigitalproductlab/bstock-command");
+  const ref = s.gitlabRef || "main";
+  const res = await fetch(`https://gitlab.com/api/v4/projects/${projectId}/trigger/pipeline`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      token: s.gitlabToken,
+      ref,
+    }),
+  });
+  if (!res.ok) {
+    const errText = await res.text();
+    throw new Error(`GitLab pipeline trigger failed (HTTP ${res.status}): ${errText}`);
+  }
+  const data = await res.json();
+  return { ok: true, status: "triggered", pipeline: data };
+}

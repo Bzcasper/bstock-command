@@ -15,6 +15,7 @@ import { BidExecutor } from "./bids.ts";
 import { buildApp, CREDENTIAL_KEY, type StoredCredentials } from "./app.ts";
 import { FirebaseStorageService, pushDbToFirebase, pullFirebaseToLocalDb } from "@bstock/storage-firebase";
 import { ScraplingService } from "./scrapling.ts";
+import { createAdapterRegistry } from "./adapters/index.ts";
 
 const args = new Set(process.argv.slice(2));
 const config = loadConfig();
@@ -60,7 +61,7 @@ function credentialsBootstrap() {
   }
 }
 
-const collector = new Collector(client, db, settings);
+const collector = new Collector(client, db, settings, undefined, createAdapterRegistry(client).adapters);
 const executor = new BidExecutor({ client, db, settings, signer, liveEnabled: config.liveEnabled });
 
 async function main() {

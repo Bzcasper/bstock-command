@@ -294,21 +294,21 @@ export function App() {
         </div>
 
         {/* Desktop Status Cluster */}
-        <div className="status-cluster">
+        <div className="status-cluster" onClick={() => setStatusModalOpen(true)} style={{ cursor: "pointer" }} title="Click to open Autonomous CI & Backend status">
           <span className={`pill pill-${status?.mode ?? "off"}`}>{status?.mode ?? "ready"}</span>
+          <span className="pill pill-ok" title="Autonomous CI Serverless Backend (GitHub Actions & GitLab CI)">
+            CI: Free Backend ⚡
+          </span>
           <span className={`pill ${status?.credentials?.hasClearance ? "pill-ok" : "pill-warn"}`}>
             {status?.credentials?.hasClearance ? "clearance OK" : "no clearance"}
           </span>
           <span className={`pill ${status?.credentials?.hasToken ? "pill-ok" : "pill-warn"}`}>
             {status?.credentials?.hasToken ? "token OK" : "no token"}
           </span>
-          <span className={`pill ${status?.scraper?.ready ? "pill-ok" : "pill-muted"}`} title={status?.scraper?.pythonPath ?? "Scrapling stealth engine"}>
-            {status?.scraper?.ready ? "scrapling OK" : "scrapling off"}
-          </span>
           <span className={`pill ${status?.storage?.initialized ? "pill-ok" : "pill-muted"}`} title={status?.storage?.storageBucket ?? "Storage"}>
             {status?.storage?.initialized ? "cloud OK" : "local cache"}
           </span>
-          <span className="pill pill-muted">{status?.stats?.listings ?? listings.length} lots stored</span>
+          <span className="pill pill-muted">{status?.stats?.listings ?? listings.length} lots</span>
         </div>
 
         <div className="topbar-actions">
@@ -913,6 +913,17 @@ export function App() {
         />
       ) : null}
 
+      {/* CI Automation & Serverless Backend Modal */}
+      {statusModalOpen ? (
+        <CiStatusModal
+          status={status}
+          onClose={() => setStatusModalOpen(false)}
+          onTriggerSuccess={() => {
+            setTimeout(refresh, 2500);
+          }}
+        />
+      ) : null}
+
       {/* Image Lightbox Modal */}
       {lightboxImg ? (
         <div className="image-modal-overlay" onClick={() => setLightboxImg(null)}>
@@ -935,6 +946,22 @@ function DetailPanel({ listing, detail, onRefresh, settings, onOpenImage }: { li
   const [busy, setBusy] = useState(false);
   const [scrapingPhotos, setScrapingPhotos] = useState(false);
   const [cachingImage, setCachingImage] = useState(false);
+  const [manifestData, setManifestData] = useState<any>(null);
+  const [loadingManifest, setLoadingManifest] = useState(false);
+  const [manifestError, setManifestError] = useState<string | null>(null);
+
+  const loadManifest = async () => {
+    setLoadingManifest(true);
+    setManifestError(null);
+    try {
+      const res = await api.manifest(listing.listingId);
+      setManifestData(res);
+    } catch (err) {
+      setManifestError((err as Error).message);
+    } finally {
+      setLoadingManifest(false);
+    }
+  };
   const [scrapeNotice, setScrapeNotice] = useState<string | null>(null);
 
   useEffect(() => {
@@ -1113,6 +1140,133 @@ function DetailPanel({ listing, detail, onRefresh, settings, onOpenImage }: { li
             <TierBadge tier={funnel?.tier ?? listing.opportunityTier ?? "SOLID_VALUE"} />
           </div>
         </div>
+      </div>
+
+      {/* Manifest & Comps Secondary Market Valuation */}
+      <div className="block">
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
+          <div className="block-title" style={{ margin: 0 }}>📦 Manifest & Line-Item Comps</div>
+          <button className="btn-scraper" onClick={loadManifest} disabled={loadingManifest} style={{ fontSize: "11px", padding: "3px 8px" }}>
+            {loadingManifest ? "Analyzing Comps..." : manifestData ? "↻ Refresh Comps" : "Load Manifest & Comps"}
+          </button>
+        </div>
+
+        {manifestError ? <div style={{ fontSize: "11px", color: "var(--risk-red)", marginBottom: "6px" }}>{manifestError}</div> : null}
+
+        {manifestData ? (
+          <div>
+            <div style={{ display: "flex", gap: "6px", alignItems: "center", marginBottom: "8px", flexWrap: "wrap" }}>
+              <span className={`tier-badge tier-${manifestData.verdict}`}>
+                {manifestData.verdict === "HIGH_CONFIDENCE_ALPHA" ? "💎 HIGH CONFIDENCE ALPHA" :
+                 manifestData.verdict === "SOLID_VALUE" ? "📈 SOLID VALUE" :
+                 manifestData.verdict === "INFLATED_RETAIL_RISK" ? "⚠️ INFLATED RETAIL RISK" : "FAIR VALUE"}
+              </span>
+              <span style={{ fontSize: "11px", color: "var(--muted)" }}>
+                {manifestData.totalUnits} units across {manifestData.itemCount} line items
+              </span>
+            </div>
+
+            <div style={{ fontSize: "12px", color: "var(--fg)", marginBottom: "10px", lineHeight: 1.4 }}>
+              {manifestData.verdictReason}
+            </div>
+
+            <div className="detail-grid" style={{ marginBottom: "10px" }}>
+              <div className="metric"><span>Stated Retail</span><b>{fmtMoney(manifestData.totalStatedRetail)}</b></div>
+              <div className="metric"><span>Estimated Resale</span><b className="accent">{fmtMoney(manifestData.totalEstimatedResale)}</b></div>
+              <div className="metric"><span>Real Recovery</span><b className="accent">{(manifestData.effectiveRecoveryPct * 100).toFixed(1)}%</b></div>
+              <div className="metric">
+                <span>Recovery Alpha</span>
+                <b style={{ color: manifestData.recoveryAlphaPct >= 0 ? "var(--accent)" : "var(--risk-red)" }}>
+                  {manifestData.recoveryAlphaPct >= 0 ? `+${(manifestData.recoveryAlphaPct * 100).toFixed(1)}%` : `${(manifestData.recoveryAlphaPct * 100).toFixed(1)}%`}
+                </b>
+              </div>
+            </div>
+
+            {/* Brand Equity Tiers */}
+            <div style={{ fontSize: "11px", fontWeight: 600, color: "var(--muted)", marginBottom: "4px" }}>BRAND EQUITY DISTRIBUTION</div>
+            <div style={{ display: "flex", gap: "6px", marginBottom: "10px", flexWrap: "wrap" }}>
+              <span style={{ fontSize: "11px", padding: "2px 6px", background: "rgba(0, 255, 157, 0.1)", borderRadius: "4px", border: "1px solid rgba(0, 255, 157, 0.3)" }}>
+                Tier 1 Premium: {manifestData.brandTiers?.[1]?.unitSharePct ?? 0}%
+              </span>
+              <span style={{ fontSize: "11px", padding: "2px 6px", background: "rgba(0, 180, 255, 0.1)", borderRadius: "4px", border: "1px solid rgba(0, 180, 255, 0.3)" }}>
+                Tier 2 Established: {manifestData.brandTiers?.[2]?.unitSharePct ?? 0}%
+              </span>
+              <span style={{ fontSize: "11px", padding: "2px 6px", background: "rgba(255, 200, 0, 0.1)", borderRadius: "4px", border: "1px solid rgba(255, 200, 0, 0.3)" }}>
+                Tier 3 Mass: {manifestData.brandTiers?.[3]?.unitSharePct ?? 0}%
+              </span>
+              <span style={{ fontSize: "11px", padding: "2px 6px", background: "rgba(255, 100, 100, 0.1)", borderRadius: "4px", border: "1px solid rgba(255, 100, 100, 0.3)" }}>
+                Tier 4 Unbranded: {manifestData.brandTiers?.[4]?.unitSharePct ?? 0}%
+              </span>
+            </div>
+
+            {/* Top Brands Table */}
+            {manifestData.topBrands?.length > 0 ? (
+              <div style={{ marginBottom: "10px" }}>
+                <div style={{ fontSize: "11px", fontWeight: 600, color: "var(--muted)", marginBottom: "4px" }}>TOP BRANDS BY VALUE</div>
+                <table style={{ width: "100%", fontSize: "11px", borderCollapse: "collapse" }}>
+                  <thead>
+                    <tr style={{ color: "var(--muted)", borderBottom: "1px solid var(--border)", textAlign: "left" }}>
+                      <th style={{ padding: "3px 4px" }}>Brand</th>
+                      <th style={{ padding: "3px 4px" }}>Tier</th>
+                      <th style={{ padding: "3px 4px" }}>Units</th>
+                      <th style={{ padding: "3px 4px" }}>Retail</th>
+                      <th style={{ padding: "3px 4px" }}>Est. Resale</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {manifestData.topBrands.map((b: any, idx: number) => (
+                      <tr key={idx} style={{ borderBottom: "1px solid rgba(255, 255, 255, 0.05)" }}>
+                        <td style={{ padding: "3px 4px", fontWeight: 600 }}>{b.brand}</td>
+                        <td style={{ padding: "3px 4px" }}>T{b.tier}</td>
+                        <td style={{ padding: "3px 4px" }}>{b.units}</td>
+                        <td style={{ padding: "3px 4px" }}>{fmtMoney(b.extRetail)}</td>
+                        <td style={{ padding: "3px 4px", color: "var(--accent)" }}>{fmtMoney(b.estimatedResale)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            ) : null}
+
+            {/* Sample Line Items Table */}
+            {manifestData.sampleItems?.length > 0 ? (
+              <div>
+                <div style={{ fontSize: "11px", fontWeight: 600, color: "var(--muted)", marginBottom: "4px" }}>ITEMIZED MANIFEST SAMPLE ({manifestData.sampleItems.length})</div>
+                <div style={{ maxHeight: "200px", overflowY: "auto", border: "1px solid var(--border)", borderRadius: "4px" }}>
+                  <table style={{ width: "100%", fontSize: "10px", borderCollapse: "collapse" }}>
+                    <thead>
+                      <tr style={{ background: "rgba(255, 255, 255, 0.03)", color: "var(--muted)", textAlign: "left", position: "sticky", top: 0 }}>
+                        <th style={{ padding: "3px 4px" }}>Item / ASIN</th>
+                        <th style={{ padding: "3px 4px" }}>Cond</th>
+                        <th style={{ padding: "3px 4px" }}>Qty</th>
+                        <th style={{ padding: "3px 4px" }}>Unit Retail</th>
+                        <th style={{ padding: "3px 4px" }}>Est. Comp</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {manifestData.sampleItems.map((it: any, idx: number) => (
+                        <tr key={idx} style={{ borderBottom: "1px solid rgba(255, 255, 255, 0.04)" }}>
+                          <td style={{ padding: "3px 4px", maxWidth: "160px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                            {it.asin ? <span style={{ color: "var(--accent-2)", marginRight: "4px" }}>[{it.asin}]</span> : null}
+                            {it.title}
+                          </td>
+                          <td style={{ padding: "3px 4px" }}>{it.condition}</td>
+                          <td style={{ padding: "3px 4px" }}>{it.quantity}</td>
+                          <td style={{ padding: "3px 4px" }}>{fmtMoney(it.unitRetail)}</td>
+                          <td style={{ padding: "3px 4px", color: "var(--accent)" }}>{fmtMoney(it.estimatedUnitResale)}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            ) : null}
+          </div>
+        ) : (
+          <div style={{ fontSize: "11px", color: "var(--muted)", padding: "8px 0" }}>
+            Click "Load Manifest & Comps" to fetch item-level brand classifications, secondary market valuations, and line-item ASIN details.
+          </div>
+        )}
       </div>
 
       {detail?.bids?.length ? (
@@ -1322,6 +1476,188 @@ function SettingsModal({ settings, onClose, onSaved }: { settings: any; onClose:
             <button className="btn btn-primary" onClick={save} disabled={saving}>
               {saving ? "Saving..." : "Save Configuration"}
             </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function CiStatusModal({ status, onClose, onTriggerSuccess }: { status: any; onClose: () => void; onTriggerSuccess: () => void }) {
+  const [ciSettings, setCiSettings] = useState<any>(() => api.ciSettings());
+  const [triggeringGh, setTriggeringGh] = useState(false);
+  const [triggeringGl, setTriggeringGl] = useState(false);
+  const [feedback, setFeedback] = useState<string | null>(null);
+  const [savedNotice, setSavedNotice] = useState(false);
+
+  const saveSettings = () => {
+    api.saveCiSettings(ciSettings);
+    setSavedNotice(true);
+    setTimeout(() => setSavedNotice(false), 2500);
+  };
+
+  const onTriggerGithub = async (mode: "mock" | "live") => {
+    setTriggeringGh(true);
+    setFeedback(null);
+    try {
+      const res = await api.triggerGithubCrawl({ mode, pages: "5" });
+      setFeedback(`✅ ${res.message}`);
+      onTriggerSuccess();
+    } catch (err) {
+      setFeedback(`❌ ${(err as Error).message}`);
+    } finally {
+      setTriggeringGh(false);
+    }
+  };
+
+  const onTriggerGitlab = async () => {
+    setTriggeringGl(true);
+    setFeedback(null);
+    try {
+      const res = await api.triggerGitlabCrawl();
+      setFeedback(`✅ GitLab pipeline #${res.pipeline?.id ?? "active"} initiated!`);
+      onTriggerSuccess();
+    } catch (err) {
+      setFeedback(`❌ ${(err as Error).message}`);
+    } finally {
+      setTriggeringGl(false);
+    }
+  };
+
+  return (
+    <div className="modal-backdrop" onClick={onClose}>
+      <div className="modal" style={{ maxWidth: "680px" }} onClick={(e) => e.stopPropagation()}>
+        <div className="modal-head">
+          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            <span className="block-title">⚡ Autonomous CI Backend (ThePopeBot Pattern)</span>
+          </div>
+          <button className="btn btn-ghost btn-icon" onClick={onClose} aria-label="Close modal">
+            <CloseIcon />
+          </button>
+        </div>
+        <div className="modal-body">
+          <div style={{ background: "rgba(0, 229, 255, 0.05)", border: "1px solid rgba(0, 229, 255, 0.2)", borderRadius: "6px", padding: "12px", marginBottom: "16px", fontSize: "12px", lineHeight: "1.5" }}>
+            <strong>💡 Zero-Cost Serverless Execution Architecture:</strong>
+            <p style={{ margin: "4px 0 0" }}>
+              The backend runs 100% free using <strong>GitHub Actions</strong> and <strong>GitLab CI</strong> scheduled cron workers, committing state snapshots directly into Git (Git-as-a-database) and replicating to Firebase Cloud Firestore. No paid VMs, no 24/7 host servers.
+            </p>
+          </div>
+
+          <div className="ticket" style={{ marginBottom: "14px" }}>
+            <div className="block-title">Current Snapshot State</div>
+            <div className="ticket-row">
+              <label>Engine Mode</label>
+              <span className="pill pill-ok">{status?.mode || "static"}</span>
+            </div>
+            <div className="ticket-row">
+              <label>Snapshot Generated</label>
+              <span>{status?.generatedAt ? new Date(status.generatedAt).toLocaleString() : "Live Memory"}</span>
+            </div>
+            {status?.tierCounts ? (
+              <div className="ticket-row">
+                <label>Opportunity Tiers</label>
+                <div style={{ display: "flex", gap: "6px", flexWrap: "wrap" }}>
+                  <span className="pill pill-ok">💎 {status.tierCounts.ALPHA_GEM} Gems</span>
+                  <span className="pill pill-info">🟢 {status.tierCounts.SOLID_VALUE} Solid</span>
+                  <span className="pill pill-warn">⏱️ {status.tierCounts.SLEEPER_SNIPE} Sleepers</span>
+                </div>
+              </div>
+            ) : null}
+          </div>
+
+          <div className="ticket" style={{ marginBottom: "14px" }}>
+            <div className="block-title">Trigger Autonomous Run</div>
+            <p style={{ fontSize: "11px", color: "var(--muted)", margin: "0 0 10px" }}>
+              Dispatch an immediate serverless crawl job to GitHub Actions or GitLab CI runners.
+            </p>
+            <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+              <button
+                className="btn btn-primary"
+                onClick={() => onTriggerGithub("mock")}
+                disabled={triggeringGh || !ciSettings?.githubToken}
+                title={!ciSettings?.githubToken ? "Configure GitHub PAT below" : "Trigger GitHub Actions run"}
+              >
+                {triggeringGh ? "Dispatching..." : "🚀 Run GitHub Actions (Mock)"}
+              </button>
+              <button
+                className="btn btn-ghost"
+                onClick={() => onTriggerGithub("live")}
+                disabled={triggeringGh || !ciSettings?.githubToken}
+                title={!ciSettings?.githubToken ? "Configure GitHub PAT below" : "Trigger Live GitHub Actions crawl"}
+              >
+                🌐 Run GitHub (Live)
+              </button>
+              <button
+                className="btn btn-ghost"
+                onClick={onTriggerGitlab}
+                disabled={triggeringGl || !ciSettings?.gitlabToken}
+                title={!ciSettings?.gitlabToken ? "Configure GitLab Trigger Token below" : "Trigger GitLab CI pipeline"}
+              >
+                🦊 Run GitLab Pipeline
+              </button>
+            </div>
+            {feedback ? (
+              <div style={{ marginTop: "10px", padding: "8px", borderRadius: "4px", background: "rgba(255,255,255,0.05)", fontSize: "12px" }}>
+                {feedback}
+              </div>
+            ) : null}
+          </div>
+
+          <div className="ticket">
+            <div className="block-title">Operator Tokens (Stored in Browser LocalStorage)</div>
+            <div className="ticket-row">
+              <label>GitHub Personal Access Token (PAT)</label>
+              <input
+                type="password"
+                className="input"
+                placeholder="ghp_... (needs repo workflow permissions)"
+                value={ciSettings?.githubToken || ""}
+                onChange={(e) => setCiSettings({ ...ciSettings, githubToken: e.target.value })}
+              />
+            </div>
+            <div className="ticket-row">
+              <label>GitHub Repository</label>
+              <input
+                type="text"
+                className="input"
+                placeholder="owner/repo"
+                value={ciSettings?.githubRepo || "tinydigitalproductlab/bstock-command"}
+                onChange={(e) => setCiSettings({ ...ciSettings, githubRepo: e.target.value })}
+              />
+            </div>
+            <div className="ticket-row">
+              <label>GitLab Trigger Token</label>
+              <input
+                type="password"
+                className="input"
+                placeholder="glptt-... (Settings > CI/CD > Pipeline triggers)"
+                value={ciSettings?.gitlabToken || ""}
+                onChange={(e) => setCiSettings({ ...ciSettings, gitlabToken: e.target.value })}
+              />
+            </div>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "12px" }}>
+              <button className="btn btn-primary" onClick={saveSettings}>
+                {savedNotice ? "Saved to Browser!" : "Save Tokens"}
+              </button>
+              <div style={{ display: "flex", gap: "10px", fontSize: "11px" }}>
+                <a
+                  href={`https://github.com/${ciSettings?.githubRepo || "tinydigitalproductlab/bstock-command"}/actions`}
+                  target="_blank"
+                  rel="noreferrer"
+                  style={{ color: "var(--accent)" }}
+                >
+                  View GitHub Actions ↗
+                </a>
+                <a
+                  href="https://gitlab.com/tinydigitalproductlab/bstock-command/-/pipelines"
+                  target="_blank"
+                  rel="noreferrer"
+                  style={{ color: "var(--accent)" }}
+                >
+                  View GitLab Pipelines ↗
+                </a>
+              </div>
+            </div>
           </div>
         </div>
       </div>

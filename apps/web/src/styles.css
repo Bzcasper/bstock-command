@@ -1337,6 +1337,30 @@ button {
   border: 1px solid rgba(248, 113, 113, 0.3);
 }
 
+.tier-HIGH_CONFIDENCE_ALPHA {
+  background: rgba(16, 185, 129, 0.2);
+  color: #10b981;
+  border: 1px solid rgba(16, 185, 129, 0.4);
+}
+
+.tier-SOLID_VALUE {
+  background: rgba(99, 102, 241, 0.2);
+  color: #818cf8;
+  border: 1px solid rgba(99, 102, 241, 0.4);
+}
+
+.tier-FAIR_VALUE {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--fg);
+  border: 1px solid var(--border);
+}
+
+.tier-INFLATED_RETAIL_RISK {
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.4);
+}
+
 /* Funnel Stepper */
 .funnel-pipeline-bar {
   display: flex;

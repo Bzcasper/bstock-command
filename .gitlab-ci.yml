@@ -2,6 +2,7 @@ image: node:24
 
 stages:
   - test
+  - market
   - build
   - deploy
 
@@ -10,28 +11,63 @@ cache:
   paths:
     - node_modules/
 
+# 1. Standard Validation Suite
 test:
   stage: test
+  rules:
+    - if: $CI_PIPELINE_SOURCE != "schedule" && $CI_PIPELINE_SOURCE != "trigger"
   script:
     - npm ci --no-audit --no-fund
     - npm run typecheck
     - npm test
 
+# 2. Autonomous CI Backend Engine (ThePopeBot serverless pattern)
+market_crawl:
+  stage: market
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule" || $CI_PIPELINE_SOURCE == "trigger" || $CI_PIPELINE_SOURCE == "web"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "push"
+  script:
+    - npm ci --no-audit --no-fund
+    - mkdir -p public/data backups
+    - node scripts/ci-backend.mjs
+    # Git-as-a-database: commit snapshot back if access token is available
+    - |
+      if [ -n "$GITLAB_ACCESS_TOKEN" ]; then
+        git config user.name "GitLab Market Bot"
+        git config user.email "bot@gitlab.com"
+        git add public/data/ backups/
+        git commit -m "chore(market): automated market crawl snapshot [skip ci]" || true
+        git push https://oauth2:${GITLAB_ACCESS_TOKEN}@gitlab.com/${CI_PROJECT_PATH}.git HEAD:${CI_COMMIT_REF_NAME} || true
+      fi
+  artifacts:
+    paths:
+      - public/data/
+      - backups/
+    expire_in: 1 week
+
+# 3. Static Web Application Build
 build_web:
   stage: build
+  needs:
+    - job: market_crawl
+      optional: true
+    - job: test
+      optional: true
   script:
     - npm ci --no-audit --no-fund
     - VITE_BASE=/ npm run build:web
     - mkdir -p apps/web/dist/data
-    - MOCK=1 OUT_DIR=apps/web/dist/data node scripts/sync-static.mjs
+    - cp -r public/data/* apps/web/dist/data/ || true
   artifacts:
     paths:
       - apps/web/dist/
     expire_in: 1 week
 
+# 4. Deploy to GitLab Pages (100% Free Hosting)
 pages:
   stage: deploy
-  needs: [build_web, test]
+  needs: [build_web]
   script:
     - rm -rf public
     - mkdir public
@@ -42,6 +78,7 @@ pages:
       - public
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: $CI_PIPELINE_SOURCE == "schedule" || $CI_PIPELINE_SOURCE == "trigger"
   environment:
     name: production
     url: https://bstock-command-d1fcc3.gitlab.io

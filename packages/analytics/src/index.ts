@@ -359,4 +359,5 @@ export function formatMoney(n: number | null | undefined, currency = "USD"): str
 }
 
 export * from "./funnel.ts";
+export * from "./manifest.ts";
 

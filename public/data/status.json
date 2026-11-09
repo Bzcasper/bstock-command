@@ -1,0 +1,24 @@
+{
+  "mode": "static",
+  "stats": {
+    "listings": 48,
+    "metrics": 48,
+    "bids": 955,
+    "attempts": 0,
+    "watched": 0
+  },
+  "generatedAt": "2026-11-09T02:33:30.959Z",
+  "report": {
+    "startedAt": "2026-11-09T02:33:30.726Z",
+    "finishedAt": "2026-11-09T02:33:30.956Z",
+    "pagesFetched": 1,
+    "listingsSeen": 48,
+    "listingsUpserted": 48,
+    "auctionsFetched": 48,
+    "entAuctionsFetched": 0,
+    "bidHistoriesFetched": 40,
+    "bidEventsAdded": 955,
+    "metricsComputed": 48,
+    "errors": []
+  }
+}
