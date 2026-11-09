@@ -15,3 +15,5 @@ public/
 coverage/
 *-debug.log
 .firebase/
+pnpm-lock.yaml
+pnpm-workspace.yaml

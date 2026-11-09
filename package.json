@@ -24,6 +24,7 @@
     "test:watch": "vitest",
     "mock": "node mock/bstock-mock.ts",
     "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "tsc -p tsconfig.json --noEmit",
     "sync": "node apps/server/src/main.ts --sync",
     "sync:static": "node scripts/sync-static.mjs",
     "firebase:status": "node apps/server/src/main.ts --firebase-status",
