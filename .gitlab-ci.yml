@@ -60,4 +60,3 @@ pages:
   environment:
     name: production
     url: https://tinydigitalproductlab.gitlab.io/bstock-command/
-EOF
