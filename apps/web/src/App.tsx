@@ -471,60 +471,172 @@ export function App() {
         </button>
       </section>
 
+      {/* Mathematical Funnel Pipeline Stepper */}
+      <div className="funnel-pipeline-bar">
+        <div className={`funnel-step ${selectedTier === "ALL" ? "active" : ""}`} onClick={() => setSelectedTier("ALL")}>
+          <div className="funnel-step-icon">∑</div>
+          <div className="funnel-step-meta">
+            <span className="funnel-step-name">Ingested Lots</span>
+            <span className="funnel-step-count">{funnelData?.totalIngested ?? listings.length}</span>
+          </div>
+        </div>
+        <span className="funnel-arrow">→</span>
+        <div className={`funnel-step ${selectedTier === "SOLID_VALUE" ? "active" : ""}`} onClick={() => setSelectedTier("SOLID_VALUE")}>
+          <div className="funnel-step-icon">1</div>
+          <div className="funnel-step-meta">
+            <span className="funnel-step-name">Stage 1: Viable</span>
+            <span className="funnel-step-count">{funnelData?.stage1Viable ?? listings.length}</span>
+          </div>
+        </div>
+        <span className="funnel-arrow">→</span>
+        <div className={`funnel-step ${selectedTier === "SLEEPER_SNIPE" ? "active" : ""}`} onClick={() => setSelectedTier("SLEEPER_SNIPE")}>
+          <div className="funnel-step-icon">2</div>
+          <div className="funnel-step-meta">
+            <span className="funnel-step-name">Stage 2: Pattern Filter</span>
+            <span className="funnel-step-count">{funnelData?.stage2PatternApproved ?? listings.length}</span>
+          </div>
+        </div>
+        <span className="funnel-arrow">→</span>
+        <div className={`funnel-step ${selectedTier === "ALPHA_GEM" ? "active" : ""}`} onClick={() => setSelectedTier("ALPHA_GEM")}>
+          <div className="funnel-step-icon" style={{ background: "rgba(16, 185, 129, 0.3)", color: "#34d399" }}>💎</div>
+          <div className="funnel-step-meta">
+            <span className="funnel-step-name">Stage 3: Alpha Gems</span>
+            <span className="funnel-step-count" style={{ color: "#34d399" }}>{funnelData?.tierCounts?.ALPHA_GEM ?? 0}</span>
+          </div>
+        </div>
+      </div>
+
       {/* Main Layout */}
       <main className="layout">
-        {/* Desktop Table View */}
+        {/* Desktop View (Table or Card Grid) */}
         <section className="table-wrap">
-          <table className="lots">
-            <thead>
-              <tr>
-                <th>score</th>
-                <th>lot description</th>
-                <th>site</th>
-                <th className="num">pallets</th>
-                <th className="num">retail</th>
-                <th className="num">current bid</th>
-                <th className="num">max hammer</th>
-                <th className="num">ROI</th>
-                <th className="num">cost/retail</th>
-                <th className="num">bids</th>
-                <th className="num">ends</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {displayedListings.map((l) => (
-                <tr key={l.listingId} className={selected?.listingId === l.listingId ? "row-selected" : ""} onClick={() => loadDetail(l)}>
-                  <td><ScoreBadge score={l.score} /></td>
-                  <td className="lot-cell">
-                    <div className="lot-title">{l.title ?? l.listingId}</div>
-                    <div className="lot-sub">{l.category} · {l.condition}</div>
-                  </td>
-                  <td><span className="site-chip">{l.site}</span></td>
-                  <td className="num">{l.pallets ?? "-"}</td>
-                  <td className="num">{fmtMoney(l.retail)}</td>
-                  <td className="num">{fmtMoney(l.currentBid)}</td>
-                  <td className="num accent">{fmtMoney(l.maxHammer)}</td>
-                  <td className="num">{fmtPct(l.roi)}</td>
-                  <td className="num">{fmtPct(l.costToRetail)}</td>
-                  <td className="num">{l.bids}{l.uniqueBidders ? ` (${l.uniqueBidders})` : ""}</td>
-                  <td className="num">{hoursUntil(l.endsAt).toFixed(1)}h</td>
-                  <td>
-                    <button
-                      className={`watch-btn ${l.watched ? "watched" : ""}`}
-                      aria-label={l.watched ? "Unwatch auction" : "Watch auction"}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        (l.watched ? api.unwatch(l.listingId) : api.watch(l.listingId)).then(refresh);
-                      }}
-                    >
-                      <StarIcon filled={l.watched} />
-                    </button>
-                  </td>
+          {viewMode === "table" ? (
+            <table className="lots">
+              <thead>
+                <tr>
+                  <th>score</th>
+                  <th>lot description</th>
+                  <th>site</th>
+                  <th className="num">pallets</th>
+                  <th className="num">retail</th>
+                  <th className="num">current bid</th>
+                  <th className="num">max hammer</th>
+                  <th className="num">ROI</th>
+                  <th className="num">cost/retail</th>
+                  <th className="num">bids</th>
+                  <th className="num">ends</th>
+                  <th></th>
                 </tr>
+              </thead>
+              <tbody>
+                {displayedListings.map((l) => (
+                  <tr key={l.listingId} className={selected?.listingId === l.listingId ? "row-selected" : ""} onClick={() => loadDetail(l)}>
+                    <td><ScoreBadge score={l.score} /></td>
+                    <td className="lot-cell">
+                      <div className="lot-cell-content">
+                        <div
+                          className="lot-thumb-wrap"
+                          onClick={(e) => {
+                            if (l.imageUrl) {
+                              e.stopPropagation();
+                              setLightboxImg(l.imageUrl);
+                            }
+                          }}
+                        >
+                          {l.imageUrl ? (
+                            <img src={l.imageUrl} alt="" className="lot-thumb" onError={(ev) => { (ev.target as HTMLElement).style.display = "none"; }} />
+                          ) : (
+                            <span className="lot-thumb-placeholder">📦</span>
+                          )}
+                        </div>
+                        <div>
+                          <div className="lot-title" style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                            <span>{l.title ?? l.listingId}</span>
+                            <TierBadge tier={l.opportunityTier} />
+                          </div>
+                          <div className="lot-sub">{l.category} · {l.condition}</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td><span className="site-chip">{l.site}</span></td>
+                    <td className="num">{l.pallets ?? "-"}</td>
+                    <td className="num">{fmtMoney(l.retail)}</td>
+                    <td className="num">{fmtMoney(l.currentBid)}</td>
+                    <td className="num accent">{fmtMoney(l.maxHammer)}</td>
+                    <td className="num">{fmtPct(l.roi)}</td>
+                    <td className="num">{fmtPct(l.costToRetail)}</td>
+                    <td className="num">{l.bids}{l.uniqueBidders ? ` (${l.uniqueBidders})` : ""}</td>
+                    <td className="num">{hoursUntil(l.endsAt).toFixed(1)}h</td>
+                    <td>
+                      <button
+                        className={`watch-btn ${l.watched ? "watched" : ""}`}
+                        aria-label={l.watched ? "Unwatch auction" : "Watch auction"}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          (l.watched ? api.unwatch(l.listingId) : api.watch(l.listingId)).then(refresh);
+                        }}
+                      >
+                        <StarIcon filled={l.watched} />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            <div className="card-grid">
+              {displayedListings.map((l) => (
+                <div
+                  key={l.listingId}
+                  className={`pallet-card ${selected?.listingId === l.listingId ? "selected" : ""}`}
+                  onClick={() => loadDetail(l)}
+                >
+                  <div className="pallet-card-media">
+                    {l.imageUrl ? (
+                      <img
+                        src={l.imageUrl}
+                        alt={l.title ?? ""}
+                        className="pallet-card-img"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setLightboxImg(l.imageUrl);
+                        }}
+                        onError={(ev) => { (ev.target as HTMLElement).style.display = "none"; }}
+                      />
+                    ) : (
+                      <span style={{ fontSize: "42px", opacity: 0.4 }}>📦</span>
+                    )}
+                    <div className="pallet-card-badge-row">
+                      <ScoreBadge score={l.score} />
+                      <TierBadge tier={l.opportunityTier} />
+                    </div>
+                  </div>
+                  <div className="pallet-card-body">
+                    <div className="pallet-card-title">{l.title ?? l.listingId}</div>
+                    <div className="pallet-card-sub">{l.site} · {l.category} · {l.pallets ?? 1} pallet(s)</div>
+                    <div className="pallet-card-grid">
+                      <div className="pallet-card-stat">
+                        <span>Current Bid</span>
+                        <b>{fmtMoney(l.currentBid)}</b>
+                      </div>
+                      <div className="pallet-card-stat">
+                        <span>Max Hammer</span>
+                        <b className="accent">{fmtMoney(l.maxHammer)}</b>
+                      </div>
+                      <div className="pallet-card-stat">
+                        <span>Retail</span>
+                        <b>{fmtMoney(l.retail)}</b>
+                      </div>
+                      <div className="pallet-card-stat">
+                        <span>Est. ROI</span>
+                        <b className="accent">{fmtPct(l.roi)}</b>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               ))}
-            </tbody>
-          </table>
+            </div>
+          )}
           {displayedListings.length === 0 ? (
             <div className="empty">No lots found in this view. Adjust your filters or run a market sync.</div>
           ) : null}
@@ -633,7 +745,7 @@ export function App() {
               <span>Select any lot from the list to inspect unit economics, bid acceleration, and place guarded orders.</span>
             </div>
           ) : (
-            <DetailPanel listing={selected} detail={detail} onRefresh={refresh} settings={settings} />
+            <DetailPanel listing={selected} detail={detail} onRefresh={refresh} settings={settings} onOpenImage={(img) => setLightboxImg(img)} />
           )}
         </aside>
       </main>
@@ -799,6 +911,16 @@ export function App() {
             refresh();
           }}
         />
+      ) : null}
+
+      {/* Image Lightbox Modal */}
+      {lightboxImg ? (
+        <div className="image-modal-overlay" onClick={() => setLightboxImg(null)}>
+          <div className="image-modal-content" onClick={(e) => e.stopPropagation()}>
+            <button className="image-modal-close" onClick={() => setLightboxImg(null)} aria-label="Close image">✕</button>
+            <img src={lightboxImg} alt="Pallet preview" className="image-modal-img" />
+          </div>
+        </div>
       ) : null}
     </div>
   );
