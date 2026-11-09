@@ -1,4 +1,50 @@
+image: node:24
+
+stages:
+  - test
+  - build
+  - deploy
+
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - node_modules/
+
+variables:
+  NODE_ENV: production
+
 test:
+  stage: test
   script:
-    - echo "hello"
-EOF
+    - npm ci --no-audit --no-fund
+    - npm run typecheck
+    - npm test
+
+build_web:
+  stage: build
+  script:
+    - npm ci --no-audit --no-fund
+    - npm run build:web -- --base=/bstock-command/
+  artifacts:
+    paths:
+      - apps/web/dist/
+    expire_in: 1 week
+
+pages:
+  stage: deploy
+  needs: [build_web, test]
+  script:
+    - rm -rf public
+    - mkdir public
+    - cp -r apps/web/dist/* public/
+    - mkdir -p public/data
+    - MOCK=1 node scripts/sync-static.mjs
+    - cp public/index.html public/404.html
+  artifacts:
+    paths:
+      - public
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  environment:
+    name: production
+    url: https://tinydigitalproductlab.gitlab.io/bstock-command/
