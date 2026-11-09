@@ -21,7 +21,8 @@ build_web:
   stage: build
   script:
     - npm ci --no-audit --no-fund
-    - npm run build:web -- --base=/    - mkdir -p apps/web/dist/data
+    - VITE_BASE=/ npm run build:web
+    - mkdir -p apps/web/dist/data
     - MOCK=1 OUT_DIR=apps/web/dist/data node scripts/sync-static.mjs
   artifacts:
     paths:
@@ -36,14 +37,6 @@ pages:
     - mkdir public
     - cp -r apps/web/dist/* public/
     - cp public/index.html public/404.html
-  artifacts:
-    paths:
-      - public
-  rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-  environment:
-    name: production
-    url: https://bstock-command-d1fcc3.gitlab.io
   artifacts:
     paths:
       - public

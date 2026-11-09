@@ -4,6 +4,7 @@ import path from "node:path";
 
 export default defineConfig({
   root: path.resolve(import.meta.dirname),
+  base: process.env.VITE_BASE ?? "/",
   plugins: [react()],
   resolve: {
     alias: {
