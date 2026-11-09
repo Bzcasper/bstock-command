@@ -14,6 +14,7 @@ import { Collector, DEFAULT_SETTINGS, type TradingSettings } from "./collector.t
 import { BidExecutor } from "./bids.ts";
 import { buildApp, CREDENTIAL_KEY, type StoredCredentials } from "./app.ts";
 import { FirebaseStorageService, pushDbToFirebase, pullFirebaseToLocalDb } from "@bstock/storage-firebase";
+import { ScraplingService } from "./scrapling.ts";
 
 const args = new Set(process.argv.slice(2));
 const config = loadConfig();
@@ -21,6 +22,7 @@ const db = new Db(config.dbPath);
 const vault = new SecretVault(config.masterKey);
 const signer = new PlanSigner(config.masterKey);
 const firebase = new FirebaseStorageService();
+const scrapling = new ScraplingService();
 
 const settings = (): TradingSettings => ({ ...DEFAULT_SETTINGS, ...db.getSetting<Partial<TradingSettings>>("trading", {}) });
 
@@ -69,12 +71,42 @@ Usage:
   bstock-command                     Start the Fastify API server + web dashboard
   bstock-command --sync              Crawl B-Stock once and update database
   bstock-command --sync --firebase   Crawl B-Stock and sync database + snapshot to Firebase
+  bstock-command --solve-clearance   Solve Cloudflare challenge via Scrapling stealth browser
+  bstock-command --scraper-status    Print Scrapling stealth scraper installation status
   bstock-command --firebase-sync     Sync local SQLite database to Firebase Storage & Firestore
   bstock-command --firebase-pull     Pull remote watchlist & decisions from Firestore
   bstock-command --firebase-status   Print Firebase connection and bucket status
   bstock-command --probe             Test B-Stock credentials and clearance reachability
   bstock-command --recompute         Recompute analytics scoring models for all lots
 `);
+    db.close();
+    return;
+  }
+
+  if (args.has("--scraper-status")) {
+    console.log(JSON.stringify(scrapling.getStatus(), null, 2));
+    db.close();
+    return;
+  }
+
+  if (args.has("--solve-clearance")) {
+    console.log("[bstock-command] Solving Cloudflare challenge with Scrapling...");
+    const res = await scrapling.solveClearance();
+    if (res.success && res.clearance) {
+      console.log(`[bstock-command] Clearance solved successfully! Token: ${res.clearance.slice(0, 15)}...`);
+      client.transport.setClearance(res.clearance);
+      if (res.userAgent) client.transport.setUserAgent(res.userAgent);
+      const blob = db.getSetting<string | null>("credentials.blob", null);
+      let current: StoredCredentials = {};
+      if (blob) {
+        try {
+          current = vault.open<StoredCredentials>(CREDENTIAL_KEY, blob);
+        } catch {}
+      }
+      db.setSetting("credentials.blob", vault.seal(CREDENTIAL_KEY, { ...current, clearance: res.clearance, userAgent: res.userAgent }));
+    } else {
+      console.error("[bstock-command] Failed to solve clearance:", res.error);
+    }
     db.close();
     return;
   }
@@ -135,7 +167,7 @@ Usage:
     }
   }
 
-  const app = buildApp({ config, db, client, collector, executor, vault, firebase });
+  const app = buildApp({ config, db, client, collector, executor, vault, firebase, scrapling });
   await app.listen({ port: config.port, host: config.host });
   app.log.info(
     { port: config.port, mode: settings().mode, live: config.liveEnabled, db: config.dbPath },

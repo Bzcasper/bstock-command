@@ -3,14 +3,16 @@ import fastifyStatic from "@fastify/static";
 import fastifyCors from "@fastify/cors";
 import { existsSync } from "node:fs";
 import path from "node:path";
-import type { BStockClient } from "@bstock/client";
+import type { BStockClient, Listing } from "@bstock/client";
 import type { Db } from "./db.ts";
 import type { BidExecutor } from "./bids.ts";
 import type { Collector, TradingSettings } from "./collector.ts";
-import { DEFAULT_SETTINGS } from "./collector.ts";
+import { DEFAULT_SETTINGS, costModelFrom } from "./collector.ts";
 import type { SecretVault } from "./security.ts";
 import type { AppConfig } from "./config.ts";
 import { FirebaseStorageService, pushDbToFirebase, pullFirebaseToLocalDb } from "@bstock/storage-firebase";
+import { ScraplingService } from "./scrapling.ts";
+import { runAuctionFunnel } from "@bstock/analytics";
 
 export interface StoredCredentials {
   clearance?: string;
@@ -29,6 +31,7 @@ export interface AppDeps {
   executor: BidExecutor;
   vault: SecretVault;
   firebase?: FirebaseStorageService;
+  scrapling?: ScraplingService;
   now?: () => Date;
   version?: string;
 }
@@ -44,8 +47,9 @@ const asString = (v: unknown): string | undefined => (typeof v === "string" && v
 const asBool = (v: unknown): boolean | undefined => (typeof v === "boolean" ? v : undefined);
 
 export function buildApp(deps: AppDeps): FastifyInstance {
-  const { db, client, collector, executor, vault, config, firebase } = deps;
+  const { db, client, collector, executor, vault, config, firebase, scrapling } = deps;
   const firebaseService = firebase ?? new FirebaseStorageService();
+  const scraplingService = scrapling ?? new ScraplingService();
   const now = deps.now ?? (() => new Date());
   const version = deps.version ?? "0.1.0";
   const startedAt = now();
@@ -107,6 +111,7 @@ export function buildApp(deps: AppDeps): FastifyInstance {
       },
       stats: db.stats(),
       storage: firebaseService.getStatus(),
+      scraper: scraplingService.getStatus(),
       settings,
       serverTime: now().toISOString(),
     };
@@ -442,6 +447,116 @@ export function buildApp(deps: AppDeps): FastifyInstance {
 
   app.post("/api/storage/restore", async () => {
     return pullFirebaseToLocalDb(db, firebaseService, config.dbPath);
+  });
+
+  // ---------------------------------------------------------------- scrapling
+  app.get("/api/scraper/status", async () => {
+    return scraplingService.getStatus();
+  });
+
+  app.post("/api/scraper/solve-clearance", async (req) => {
+    const body = (req.body as { targetUrl?: string }) || {};
+    const res = await scraplingService.solveClearance(body.targetUrl);
+    if (res.success && res.clearance) {
+      client.transport.setClearance(res.clearance);
+      if (res.userAgent) client.transport.setUserAgent(res.userAgent);
+      const blob = db.getSetting<string | null>("credentials.blob", null);
+      let current: StoredCredentials = {};
+      if (blob) {
+        try {
+          current = vault.open<StoredCredentials>(CREDENTIAL_KEY, blob);
+        } catch {}
+      }
+      db.setSetting("credentials.blob", vault.seal(CREDENTIAL_KEY, { ...current, clearance: res.clearance, userAgent: res.userAgent }));
+    }
+    return res;
+  });
+
+  app.post("/api/scraper/scrape-lot", async (req, reply) => {
+    const body = (req.body as { urlOrId?: string; listingId?: string }) || {};
+    const target = body.urlOrId || body.listingId;
+    if (!target) return reply.code(400).send({ error: "urlOrId or listingId required" });
+    const res = await scraplingService.scrapeLot(target);
+    if (res.success && body.listingId && res.images && res.images.length > 0) {
+      db.updateListingImages(body.listingId, res.primaryImageUrl, res.images);
+    }
+    return res;
+  });
+
+  app.post("/api/scraper/scrape-listings", async (req) => {
+    const body = (req.body as { url?: string }) || {};
+    return scraplingService.scrapeListings(body.url);
+  });
+
+  // ------------------------------------------------ mathematical auction funnel
+  app.get("/api/funnel/listings", async (req) => {
+    const q = (req.query as Record<string, string>) || {};
+    const rows = db.queryListings({
+      q: q.q,
+      category: q.category,
+      site: q.site,
+      tier: q.tier,
+      stage: q.stage,
+      limit: asNumber(q.limit, 200),
+      offset: asNumber(q.offset, 0),
+    });
+    const settings = loadSettings();
+    const cost = costModelFrom(settings);
+    const listings = rows.map((r) => {
+      const base = JSON.parse(r.raw_json) as Listing;
+      const bids = db.listBidEvents(r.listing_id, 100);
+      return {
+        ...base,
+        winningBidAmount: r.current_cents ? r.current_cents / 100 : base.winningBidAmount,
+        currentBid: r.current_cents ? r.current_cents / 100 : base.currentBid,
+        retailPrice: r.retail_cents ? r.retail_cents / 100 : base.retailPrice,
+        palletCount: r.pallets ?? base.palletCount,
+        units: r.units ?? base.units,
+        numberOfBids: r.bids ?? base.numberOfBids,
+        problemFreeOrderRate: r.problem_free ?? base.problemFreeOrderRate,
+        manifest: Boolean(r.manifest),
+        bidsHistory: bids,
+      };
+    });
+    return runAuctionFunnel(
+      listings,
+      {
+        minRoi: settings.minRoi,
+        targetRoiDefault: settings.targetRoiDefault,
+        recoveryPctDefault: settings.recoveryPctDefault,
+        requireManifest: settings.requireManifest,
+        cost,
+      },
+      now(),
+    );
+  });
+
+  // ------------------------------------------------------------- image routes
+  app.get("/api/images/:filename", async (req, reply) => {
+    const { filename } = req.params as { filename: string };
+    const safeName = path.basename(filename);
+    const localDir = firebaseService.getLocalImagesDir();
+    const localPath = path.join(localDir, safeName);
+    if (!existsSync(localPath)) {
+      return reply.code(404).send({ error: "Image not found" });
+    }
+    const ext = path.extname(safeName).toLowerCase();
+    const mime = ext === ".png" ? "image/png" : ext === ".webp" ? "image/webp" : "image/jpeg";
+    reply.header("Content-Type", mime);
+    reply.header("Cache-Control", "public, max-age=86400");
+    return reply.sendFile(safeName, localDir);
+  });
+
+  app.post("/api/images/cache-listing", async (req, reply) => {
+    const { listingId } = (req.body as { listingId?: string }) || {};
+    if (!listingId) return reply.code(400).send({ error: "listingId required" });
+    const listing = db.getListing(listingId);
+    if (!listing || !listing.image_url) return reply.code(404).send({ error: "Listing or image not found" });
+    const cached = await firebaseService.cacheImage(listing.image_url, listing.lot_id);
+    if (cached.success) {
+      db.updateListingImages(listingId, cached.url);
+    }
+    return cached;
   });
 
   // ------------------------------------------------------------- static web ui

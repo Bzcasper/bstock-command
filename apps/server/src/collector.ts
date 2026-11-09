@@ -296,23 +296,49 @@ export class Collector {
         costModel: cost,
       });
 
+      const funnel = evaluateListingFunnel(
+        {
+          ...listing,
+          bidsHistory: bids,
+        },
+        {
+          minRoi: settings.minRoi,
+          targetRoiDefault: targetRoi,
+          recoveryPctDefault: recoveryPct,
+          requireManifest: settings.requireManifest,
+          cost,
+        },
+        now,
+      );
+
       const maxHammer = maxHammerForRoi(
         { retail: row.retail_cents ? row.retail_cents / 100 : null, recoveryPct, targetRoi, cost },
         current,
       );
 
+      // Merge standard reasons with advanced mathematical reasons
+      const mergedReasons = Array.from(new Set([...scored.reasons, ...funnel.reasons]));
+      const mergedRisks = Array.from(new Set([...scored.risks, ...funnel.risks]));
+
       this.db.upsertMetrics({
         listing_id: row.listing_id,
-        score: scored.score,
+        score: funnel.score,
         projected_cents: Math.round(projected.projected * 100),
-        roi: economics.roi,
-        max_hammer_cents: Math.round(maxHammer * 100),
-        cost_to_retail: economics.costToRetail,
-        cost_per_pallet_cents: economics.costPerPallet === null ? null : Math.round(economics.costPerPallet * 100),
+        roi: funnel.algebraic.expectedRoi,
+        max_hammer_cents: Math.round(funnel.algebraic.maxHammer * 100),
+        cost_to_retail: funnel.algebraic.costToRetail,
+        cost_per_pallet_cents: funnel.density.costPerPallet ? Math.round(funnel.density.costPerPallet * 100) : null,
         bids_per_hour: velocity.bidsPerHour,
         unique_bidders: velocity.uniqueBidders,
-        reasons: JSON.stringify(scored.reasons),
-        risks: JSON.stringify(scored.risks),
+        funnel_stage: funnel.stage,
+        opportunity_tier: funnel.tier,
+        algebraic_json: JSON.stringify(funnel.algebraic),
+        density_json: JSON.stringify(funnel.density),
+        pattern_json: JSON.stringify(funnel.pattern),
+        recommended_bid_cents: Math.round(funnel.recommendedBid * 100),
+        kelly_fraction: funnel.kellyFraction,
+        reasons: JSON.stringify(mergedReasons),
+        risks: JSON.stringify(mergedRisks),
         computed_at: now.toISOString(),
       });
       this.db.addSnapshot({
@@ -363,6 +389,20 @@ export class Collector {
       { retail: row.retail_cents ? row.retail_cents / 100 : null, recoveryPct, targetRoi, cost },
       current,
     );
+    const funnel = evaluateListingFunnel(
+      {
+        ...listing,
+        bidsHistory: bids,
+      },
+      {
+        minRoi: settings.minRoi,
+        targetRoiDefault: targetRoi,
+        recoveryPctDefault: recoveryPct,
+        requireManifest: settings.requireManifest,
+        cost,
+      },
+      now,
+    );
     return {
       listing,
       row,
@@ -374,6 +414,7 @@ export class Collector {
       maxHammer,
       targetRoi,
       recoveryPct,
+      funnel,
       decision: decision ?? null,
       snapshots: this.db.raw
         .prepare("SELECT at, current_cents, bids, unique_bidders, projected_cents FROM snapshots WHERE listing_id = ? ORDER BY at ASC LIMIT 500")
@@ -393,6 +434,7 @@ export interface ListingDetail {
   maxHammer: number;
   targetRoi: number;
   recoveryPct: number;
+  funnel?: FunnelEvaluation;
   decision: NonNullable<ReturnType<Db["getDecision"]>> | null;
   snapshots: Array<{
     at: string;

@@ -114,6 +114,10 @@ export class Transport {
     this.opts.clearance = clearance;
   }
 
+  setUserAgent(ua: string): void {
+    this.opts.userAgent = ua;
+  }
+
   hasClearance(): boolean {
     return Boolean(this.opts.clearance);
   }
