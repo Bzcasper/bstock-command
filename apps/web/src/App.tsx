@@ -78,6 +78,81 @@ function BoxIcon() {
   );
 }
 
+function GemIcon({ size = 18, color }: { size?: number; color?: string }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color ?? "currentColor"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M7 4l3-3 3 3 3 3v6l-3 3-3 3-3-3-3-3V4z" />
+      <path d="M12 1l1 3 3 3 3 3v6l-3 3-3 3-3-3-3-3-3-3z" />
+    </svg>
+  );
+}
+
+function PalletBoxIcon({ size = 18, color, style, className }: { size?: number; color?: string; style?: React.CSSProperties; className?: string }) {
+  return (
+    <svg width={size} height={size} style={style} className={className} viewBox="0 0 24 24" fill="none" stroke={color ?? "currentColor"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+      <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
+      <line x1="12" y1="22.08" x2="12" y2="12" />
+    </svg>
+  );
+}
+
+function LightningIcon({ size = 18, color }: { size?: number; color?: string }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color ?? "currentColor"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+    </svg>
+  );
+}
+
+function ChartUpIcon({ size = 18, color }: { size?: number; color?: string }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color ?? "currentColor"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M18 13v10a4 4 0 0 0 1.167 2.823L20 19l1.5-3.5L16 2l2.5 6.5L22 8z" />
+    </svg>
+  );
+}
+
+function DiceIcon({ size = 18, color }: { size?: number; color?: string }) {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+      <line x1="9" y1="6" x2="9" y2="7" />
+      <line x1="15" y1="13" x2="15" y2="14" />
+    </svg>
+  );
+}
+
+function AlertIcon({ size = 18, color }: { size?: number; color?: string }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color ?? "currentColor"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M10 29v-1c0-1.1-.9-2-2-2h-1c-1.1 0-2-.9-2-2v-1c0-1.1.9-2 2-2h1c1.1 0 2 .9 2 2v1c0 1.1.9 2 2 2h1c1.1 0 2 .9 2 2v1c0 1.1-.9 2-2 2h-1c-1.1 0-2-.9-2-2v-1z" />
+      <circle cx="12" cy="18" r="3" />
+      <path d="M12 14v2M12 22v-2" />
+    </svg>
+  );
+}
+
+function SaveIcon({ size = 18, color }: { size?: number; color?: string }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color ?? "currentColor"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
+      <polyline points="17 21 17 13 7 13 7 21" />
+      <polyline points="7 3 7 8 15 8" />
+    </svg>
+  );
+}
+
+function BulbIcon({ size = 18, color }: { size?: number; color?: string }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color ?? "currentColor"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3 12h18M3 12l1 10M13 11l1 10M3 12l1 10M13 11l1 10" />
+      <path d="M9 21v-2a2 2 0 0 1 2-2h0a2 2 0 0 1 2 2v2" />
+      <path d="M12 17a5 5 0 0 0 5-5h0a5 5 0 0 0-5-5H7a5 5 0 0 0-5 5h0a5 5 0 0 0 5 5z" />
+    </svg>
+  );
+}
+
 function ChevronLeftIcon() {
   return (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -111,14 +186,14 @@ function ScoreBadge({ score }: { score: number | null }) {
 
 function TierBadge({ tier }: { tier?: string | null }) {
   if (!tier) return null;
-  const map: Record<string, { cls: string; label: string; icon: string }> = {
-    ALPHA_GEM: { cls: "tier-alpha", label: "Alpha Gem", icon: "💎" },
-    SLEEPER_SNIPE: { cls: "tier-sleeper", label: "Sleeper Snipe", icon: "⚡" },
-    SOLID_VALUE: { cls: "tier-solid", label: "Solid Value", icon: "📈" },
-    SPECULATIVE: { cls: "tier-speculative", label: "Speculative", icon: "🎲" },
-    AVOID: { cls: "tier-avoid", label: "Avoid", icon: "⚠️" },
+  const map: Record<string, { cls: string; label: string; icon: React.ReactNode }> = {
+    ALPHA_GEM: { cls: "tier-alpha", label: "Alpha Gem", icon: <GemIcon size={12} /> },
+    SLEEPER_SNIPE: { cls: "tier-sleeper", label: "Sleeper Snipe", icon: <LightningIcon size={12} /> },
+    SOLID_VALUE: { cls: "tier-solid", label: "Solid Value", icon: <ChartUpIcon size={12} /> },
+    SPECULATIVE: { cls: "tier-speculative", label: "Speculative", icon: <DiceIcon size={12} /> },
+    AVOID: { cls: "tier-avoid", label: "Avoid", icon: <AlertIcon size={12} /> },
   };
-  const t = map[tier] ?? { cls: "tier-speculative", label: tier, icon: "•" };
+  const t = map[tier] ?? { cls: "tier-speculative", label: tier, icon: <span>•</span> };
   return (
     <span className={`tier-badge ${t.cls}`}>
       <span>{t.icon}</span> {t.label}
@@ -498,7 +573,9 @@ export function App() {
         </div>
         <span className="funnel-arrow">→</span>
         <div className={`funnel-step ${selectedTier === "ALPHA_GEM" ? "active" : ""}`} onClick={() => setSelectedTier("ALPHA_GEM")}>
-          <div className="funnel-step-icon" style={{ background: "rgba(16, 185, 129, 0.3)", color: "#34d399" }}>💎</div>
+          <div className={`funnel-step-icon ${selectedTier === "ALPHA_GEM" ? "active" : ""}`}>
+            <GemIcon />
+          </div>
           <div className="funnel-step-meta">
             <span className="funnel-step-name">Stage 3: Alpha Gems</span>
             <span className="funnel-step-count" style={{ color: "#34d399" }}>{funnelData?.tierCounts?.ALPHA_GEM ?? 0}</span>
@@ -546,7 +623,7 @@ export function App() {
                           {l.imageUrl ? (
                             <img src={l.imageUrl} alt="" className="lot-thumb" onError={(ev) => { (ev.target as HTMLElement).style.display = "none"; }} />
                           ) : (
-                            <span className="lot-thumb-placeholder">📦</span>
+                            <span className="lot-thumb-placeholder"><PalletBoxIcon /></span>
                           )}
                         </div>
                         <div>
@@ -604,7 +681,7 @@ export function App() {
                         onError={(ev) => { (ev.target as HTMLElement).style.display = "none"; }}
                       />
                     ) : (
-                      <span style={{ fontSize: "42px", opacity: 0.4 }}>📦</span>
+                      <PalletBoxIcon size={44} style={{ opacity: 0.4 }} />
                     )}
                     <div className="pallet-card-badge-row">
                       <ScoreBadge score={l.score} />
