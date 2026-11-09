@@ -9,40 +9,26 @@ cache:
   key: ${CI_COMMIT_REF_SLUG}
   paths:
     - node_modules/
-    - apps/web/node_modules/
 
 variables:
   NODE_ENV: production
 
-install:
+test:
   stage: test
   script:
     - npm ci --no-audit --no-fund
-  artifacts:
-    paths:
-      - node_modules/
-    expire_in: 1 hour
-
-test:
-  stage: test
-  needs: [install]
-  script:
     - npm run typecheck
     - npm test
-  dependencies:
-    - install
 
 build_web:
   stage: build
-  needs: [install]
   script:
+    - npm ci --no-audit --no-fund
     - npm run build:web -- --base=/bstock-command/
   artifacts:
     paths:
       - apps/web/dist/
     expire_in: 1 week
-  dependencies:
-    - install
 
 pages:
   stage: deploy
@@ -60,3 +46,4 @@ pages:
   environment:
     name: production
     url: https://tinydigitalproductlab.gitlab.io/bstock-command/
+EOF
