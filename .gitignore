@@ -20,7 +20,6 @@ pnpm-lock.yaml
 pnpm-workspace.yaml
 __pycache__/
 .data/
-audit/
 .agent/
 .agents/
 .claude/
