@@ -7,6 +7,8 @@ import {
   maxHammerForRoi,
   projectFinalPrice,
   scoreAuction,
+  evaluateListingFunnel,
+  type FunnelEvaluation,
   type CostModel,
 } from "@bstock/analytics";
 import type { Db, ListingRow, MetricsRow } from "./db.ts";

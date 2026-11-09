@@ -5,6 +5,7 @@ export interface FirebaseConfig {
   serviceAccountJson?: string;
   databaseId?: string;
   enabled?: boolean;
+  localCacheDir?: string;
 }
 
 export interface StorageSyncReport {
@@ -16,6 +17,7 @@ export interface StorageSyncReport {
   snapshotUploaded: boolean;
   listingsUrl?: string;
   statusUrl?: string;
+  mode?: "cloud" | "local-fallback";
   errors: string[];
 }
 
@@ -27,4 +29,7 @@ export interface FirebaseStatus {
   firestoreAvailable: boolean;
   storageAvailable: boolean;
   authMethod: string;
+  mode?: "cloud" | "local-fallback";
+  localCacheDir?: string;
+  cachedImagesCount?: number;
 }

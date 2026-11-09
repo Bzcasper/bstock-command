@@ -27,6 +27,7 @@ export interface ListingRow {
   seller_city: string | null;
   problem_free: number | null;
   image_url: string | null;
+  gallery_images?: string | null;
   raw_json: string;
   first_seen: string;
   last_seen: string;
@@ -42,6 +43,13 @@ export interface MetricsRow {
   cost_per_pallet_cents: number | null;
   bids_per_hour: number | null;
   unique_bidders: number | null;
+  funnel_stage?: string | null;
+  opportunity_tier?: string | null;
+  algebraic_json?: string | null;
+  density_json?: string | null;
+  pattern_json?: string | null;
+  recommended_bid_cents?: number | null;
+  kelly_fraction?: number | null;
   reasons: string | null;
   risks: string | null;
   computed_at: string;
@@ -56,6 +64,8 @@ export interface QueryFilters {
   endingWithinHours?: number;
   minPallets?: number;
   watchlistOnly?: boolean;
+  tier?: string;
+  stage?: string;
   sort?: "score" | "roi" | "ending" | "price" | "discount" | "bids";
   limit?: number;
   offset?: number;
@@ -105,6 +115,7 @@ CREATE TABLE IF NOT EXISTS listings (
   seller_city TEXT,
   problem_free REAL,
   image_url TEXT,
+  gallery_images TEXT,
   raw_json TEXT NOT NULL,
   first_seen TEXT NOT NULL,
   last_seen TEXT NOT NULL
@@ -151,6 +162,13 @@ CREATE TABLE IF NOT EXISTS metrics (
   cost_per_pallet_cents INTEGER,
   bids_per_hour REAL,
   unique_bidders INTEGER,
+  funnel_stage TEXT,
+  opportunity_tier TEXT,
+  algebraic_json TEXT,
+  density_json TEXT,
+  pattern_json TEXT,
+  recommended_bid_cents INTEGER,
+  kelly_fraction REAL,
   reasons TEXT,
   risks TEXT,
   computed_at TEXT NOT NULL
@@ -216,6 +234,23 @@ export class Db {
   constructor(path: string) {
     this.raw = new DatabaseSync(path);
     this.raw.exec(SCHEMA);
+    this.migrateSchema();
+  }
+
+  private migrateSchema(): void {
+    const safeAdd = (table: string, col: string, type: string) => {
+      try {
+        this.raw.exec(`ALTER TABLE ${table} ADD COLUMN ${col} ${type}`);
+      } catch {}
+    };
+    safeAdd("listings", "gallery_images", "TEXT");
+    safeAdd("metrics", "funnel_stage", "TEXT");
+    safeAdd("metrics", "opportunity_tier", "TEXT");
+    safeAdd("metrics", "algebraic_json", "TEXT");
+    safeAdd("metrics", "density_json", "TEXT");
+    safeAdd("metrics", "pattern_json", "TEXT");
+    safeAdd("metrics", "recommended_bid_cents", "INTEGER");
+    safeAdd("metrics", "kelly_fraction", "REAL");
   }
 
   close(): void {
@@ -260,13 +295,18 @@ export class Db {
   // ---------------------------------------------------------------- listings
   upsertListing(listing: Listing, now: Date, entAuctionId?: string | null): void {
     const entId = entAuctionId ?? extractEntAuctionId(listing.auctionUrl);
+    const primaryImg = listing.primaryImageUrl ?? (listing.images && listing.images[0]) ?? (listing.imageUrl as string | undefined) ?? null;
+    const gallery = listing.images && listing.images.length > 0
+      ? JSON.stringify(listing.images)
+      : (listing.gallery_images as string | undefined) ?? null;
+
     this.run(
       `INSERT INTO listings (
         listing_id, lot_id, auction_id, ent_auction_id, site_abb, title, category, condition, pallets, units,
         retail_cents, currency, ends_at, starts_at, bids, current_cents, next_min_cents, buy_now_cents,
-        manifest, listing_type, bid_basis, region, seller_city, problem_free, image_url, raw_json,
+        manifest, listing_type, bid_basis, region, seller_city, problem_free, image_url, gallery_images, raw_json,
         first_seen, last_seen
-      ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+      ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
       ON CONFLICT(listing_id) DO UPDATE SET
         auction_id=excluded.auction_id, ent_auction_id=excluded.ent_auction_id, site_abb=excluded.site_abb,
         title=excluded.title, category=excluded.category, condition=excluded.condition,
@@ -276,7 +316,9 @@ export class Db {
         next_min_cents=excluded.next_min_cents, buy_now_cents=excluded.buy_now_cents,
         manifest=excluded.manifest, listing_type=excluded.listing_type, bid_basis=excluded.bid_basis,
         region=excluded.region, seller_city=excluded.seller_city, problem_free=excluded.problem_free,
-        image_url=excluded.image_url, raw_json=excluded.raw_json, last_seen=excluded.last_seen`,
+        image_url=COALESCE(excluded.image_url, listings.image_url),
+        gallery_images=COALESCE(excluded.gallery_images, listings.gallery_images),
+        raw_json=excluded.raw_json, last_seen=excluded.last_seen`,
       listing.listingId,
       listing.lotId,
       listing.auctionId ?? null,
@@ -301,10 +343,24 @@ export class Db {
       listing.region ?? null,
       listing.sellerCity ?? null,
       listing.problemFreeOrderRate ?? null,
-      listing.primaryImageUrl ?? null,
+      primaryImg,
+      gallery,
       JSON.stringify(listing),
       now.toISOString(),
       now.toISOString(),
+    );
+  }
+
+  updateListingImages(listingId: string, primaryUrl?: string, galleryUrls?: string[]): void {
+    const galleryJson = galleryUrls && galleryUrls.length > 0 ? JSON.stringify(galleryUrls) : null;
+    this.run(
+      `UPDATE listings SET
+        image_url = COALESCE(?, image_url),
+        gallery_images = COALESCE(?, gallery_images)
+       WHERE listing_id = ?`,
+      primaryUrl ?? null,
+      galleryJson,
+      listingId,
     );
   }
 
@@ -399,15 +455,21 @@ export class Db {
   // ----------------------------------------------------------------- metrics
   upsertMetrics(m: MetricsRow): void {
     this.run(
-      `INSERT INTO metrics (listing_id, score, projected_cents, roi, max_hammer_cents, cost_to_retail,
-        cost_per_pallet_cents, bids_per_hour, unique_bidders, reasons, risks, computed_at)
-       VALUES (?,?,?,?,?,?,?,?,?,?,?,?)
-       ON CONFLICT(listing_id) DO UPDATE SET
-         score=excluded.score, projected_cents=excluded.projected_cents, roi=excluded.roi,
-         max_hammer_cents=excluded.max_hammer_cents, cost_to_retail=excluded.cost_to_retail,
-         cost_per_pallet_cents=excluded.cost_per_pallet_cents, bids_per_hour=excluded.bids_per_hour,
-         unique_bidders=excluded.unique_bidders, reasons=excluded.reasons, risks=excluded.risks,
-         computed_at=excluded.computed_at`,
+      `INSERT INTO metrics (
+        listing_id, score, projected_cents, roi, max_hammer_cents, cost_to_retail,
+        cost_per_pallet_cents, bids_per_hour, unique_bidders, funnel_stage, opportunity_tier,
+        algebraic_json, density_json, pattern_json, recommended_bid_cents, kelly_fraction,
+        reasons, risks, computed_at
+      ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+      ON CONFLICT(listing_id) DO UPDATE SET
+        score=excluded.score, projected_cents=excluded.projected_cents, roi=excluded.roi,
+        max_hammer_cents=excluded.max_hammer_cents, cost_to_retail=excluded.cost_to_retail,
+        cost_per_pallet_cents=excluded.cost_per_pallet_cents, bids_per_hour=excluded.bids_per_hour,
+        unique_bidders=excluded.unique_bidders, funnel_stage=excluded.funnel_stage,
+        opportunity_tier=excluded.opportunity_tier, algebraic_json=excluded.algebraic_json,
+        density_json=excluded.density_json, pattern_json=excluded.pattern_json,
+        recommended_bid_cents=excluded.recommended_bid_cents, kelly_fraction=excluded.kelly_fraction,
+        reasons=excluded.reasons, risks=excluded.risks, computed_at=excluded.computed_at`,
       m.listing_id,
       m.score,
       m.projected_cents,
@@ -417,6 +479,13 @@ export class Db {
       m.cost_per_pallet_cents,
       m.bids_per_hour,
       m.unique_bidders,
+      m.funnel_stage ?? null,
+      m.opportunity_tier ?? null,
+      m.algebraic_json ?? null,
+      m.density_json ?? null,
+      m.pattern_json ?? null,
+      m.recommended_bid_cents ?? null,
+      m.kelly_fraction ?? null,
       m.reasons,
       m.risks,
       m.computed_at,
@@ -469,6 +538,14 @@ export class Db {
       params.push(f.minPallets);
     }
     if (f.watchlistOnly) where.push("w.listing_id IS NOT NULL");
+    if (f.tier) {
+      where.push("m.opportunity_tier = ?");
+      params.push(f.tier);
+    }
+    if (f.stage) {
+      where.push("m.funnel_stage = ?");
+      params.push(f.stage);
+    }
 
     const order: Record<string, string> = {
       score: "COALESCE(m.score,0) DESC",
@@ -480,7 +557,10 @@ export class Db {
     };
     const sql = `
       SELECT l.*, m.score, m.projected_cents, m.roi, m.max_hammer_cents, m.cost_to_retail,
-             m.cost_per_pallet_cents, m.bids_per_hour, m.unique_bidders, m.reasons, m.risks, m.computed_at,
+             m.cost_per_pallet_cents, m.bids_per_hour, m.unique_bidders,
+             m.funnel_stage, m.opportunity_tier, m.algebraic_json, m.density_json, m.pattern_json,
+             m.recommended_bid_cents, m.kelly_fraction,
+             m.reasons, m.risks, m.computed_at,
              CASE WHEN w.listing_id IS NULL THEN 0 ELSE 1 END AS watched, w.note
       FROM listings l
       LEFT JOIN metrics m ON m.listing_id = l.listing_id
@@ -495,7 +575,10 @@ export class Db {
   getListing(listingId: string): (ListingRow & Partial<MetricsRow>) | undefined {
     return this.get(
       `SELECT l.*, m.score, m.projected_cents, m.roi, m.max_hammer_cents, m.cost_to_retail,
-              m.cost_per_pallet_cents, m.bids_per_hour, m.unique_bidders, m.reasons, m.risks, m.computed_at
+              m.cost_per_pallet_cents, m.bids_per_hour, m.unique_bidders,
+              m.funnel_stage, m.opportunity_tier, m.algebraic_json, m.density_json, m.pattern_json,
+              m.recommended_bid_cents, m.kelly_fraction,
+              m.reasons, m.risks, m.computed_at
        FROM listings l LEFT JOIN metrics m ON m.listing_id = l.listing_id WHERE l.listing_id = ?`,
       listingId,
     );

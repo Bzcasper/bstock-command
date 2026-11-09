@@ -12,6 +12,8 @@ export class FirebaseStorageService {
   private storage: Storage | null = null;
   private config: FirebaseConfig;
   private authMethod = "none";
+  private readonly localCacheDir: string;
+  private readonly localImagesDir: string;
 
   constructor(config: FirebaseConfig = {}) {
     this.config = {
@@ -21,7 +23,14 @@ export class FirebaseStorageService {
       serviceAccountJson: config.serviceAccountJson ?? process.env.FIREBASE_SERVICE_ACCOUNT,
       databaseId: config.databaseId ?? process.env.FIREBASE_DATABASE_ID ?? "(default)",
       enabled: config.enabled ?? process.env.FIREBASE_ENABLED !== "0",
+      localCacheDir: config.localCacheDir ?? path.resolve(process.cwd(), ".data/storage-cache"),
     };
+
+    this.localCacheDir = this.config.localCacheDir!;
+    this.localImagesDir = path.join(this.localCacheDir, "images");
+    try {
+      fs.mkdirSync(this.localImagesDir, { recursive: true });
+    } catch {}
   }
 
   init(): boolean {
@@ -85,11 +94,11 @@ export class FirebaseStorageService {
       this.storage = getStorage(this.app);
       return true;
     } catch (err) {
-      console.warn("[bstock-command] Firebase initialization warning:", (err as Error).message);
+      console.warn("[bstock-command] Firebase initialization notice:", (err as Error).message);
       this.app = null;
       this.firestore = null;
       this.storage = null;
-      this.authMethod = "error: " + (err as Error).message;
+      this.authMethod = "local-fallback: " + (err as Error).message;
       return false;
     }
   }
@@ -98,10 +107,22 @@ export class FirebaseStorageService {
     return this.app !== null;
   }
 
+  getLocalImagesDir(): string {
+    return this.localImagesDir;
+  }
+
   getStatus(): FirebaseStatus {
     if (!this.app && this.config.enabled) {
       this.init();
     }
+
+    let cachedCount = 0;
+    try {
+      if (fs.existsSync(this.localImagesDir)) {
+        cachedCount = fs.readdirSync(this.localImagesDir).length;
+      }
+    } catch {}
+
     return {
       enabled: Boolean(this.config.enabled),
       initialized: this.isInitialized(),
@@ -110,6 +131,9 @@ export class FirebaseStorageService {
       firestoreAvailable: Boolean(this.firestore),
       storageAvailable: Boolean(this.storage),
       authMethod: this.authMethod,
+      mode: this.isInitialized() ? "cloud" : "local-fallback",
+      localCacheDir: this.localCacheDir,
+      cachedImagesCount: cachedCount,
     };
   }
 
@@ -133,16 +157,31 @@ export class FirebaseStorageService {
   // ------------------------------------------------ Cloud Storage File Ops
   async uploadFile(localPath: string, destination: string, contentType?: string): Promise<{ success: boolean; path: string; publicUrl?: string; error?: string }> {
     const bucket = this.getBucket();
-    if (!bucket) return { success: false, path: destination, error: "Firebase storage bucket not available" };
+    if (bucket) {
+      try {
+        await bucket.upload(localPath, {
+          destination,
+          metadata: contentType ? { contentType } : undefined,
+        });
+        return {
+          success: true,
+          path: destination,
+          publicUrl: `https://storage.googleapis.com/${bucket.name}/${destination}`,
+        };
+      } catch (err) {
+        // Fall back to local storage cache below
+      }
+    }
+
+    // Local file cache fallback
     try {
-      await bucket.upload(localPath, {
-        destination,
-        metadata: contentType ? { contentType } : undefined,
-      });
+      const localDest = path.join(this.localCacheDir, destination);
+      fs.mkdirSync(path.dirname(localDest), { recursive: true });
+      fs.copyFileSync(localPath, localDest);
       return {
         success: true,
         path: destination,
-        publicUrl: `https://storage.googleapis.com/${bucket.name}/${destination}`,
+        publicUrl: `/api/storage/files/${destination}`,
       };
     } catch (err) {
       return { success: false, path: destination, error: (err as Error).message };
@@ -151,33 +190,64 @@ export class FirebaseStorageService {
 
   async downloadFile(remotePath: string, localDestination: string): Promise<{ success: boolean; error?: string }> {
     const bucket = this.getBucket();
-    if (!bucket) return { success: false, error: "Firebase storage bucket not available" };
-    try {
-      const file = bucket.file(remotePath);
-      const [exists] = await file.exists();
-      if (!exists) return { success: false, error: "Remote file does not exist: " + remotePath };
-      fs.mkdirSync(path.dirname(localDestination), { recursive: true });
-      await file.download({ destination: localDestination });
-      return { success: true };
-    } catch (err) {
-      return { success: false, error: (err as Error).message };
+    if (bucket) {
+      try {
+        const file = bucket.file(remotePath);
+        const [exists] = await file.exists();
+        if (exists) {
+          fs.mkdirSync(path.dirname(localDestination), { recursive: true });
+          await file.download({ destination: localDestination });
+          return { success: true };
+        }
+      } catch {
+        // Check local fallback
+      }
     }
+
+    // Local file cache fallback
+    const localCached = path.join(this.localCacheDir, remotePath);
+    if (fs.existsSync(localCached)) {
+      try {
+        fs.mkdirSync(path.dirname(localDestination), { recursive: true });
+        fs.copyFileSync(localCached, localDestination);
+        return { success: true };
+      } catch (err) {
+        return { success: false, error: (err as Error).message };
+      }
+    }
+
+    return { success: false, error: "Remote and local file not found: " + remotePath };
   }
 
   async uploadJson(data: unknown, destination: string): Promise<{ success: boolean; path: string; publicUrl?: string; error?: string }> {
+    const json = JSON.stringify(data, null, 2);
     const bucket = this.getBucket();
-    if (!bucket) return { success: false, path: destination, error: "Firebase storage bucket not available" };
+    if (bucket) {
+      try {
+        const file = bucket.file(destination);
+        await file.save(json, {
+          contentType: "application/json",
+          resumable: false,
+        });
+        return {
+          success: true,
+          path: destination,
+          publicUrl: `https://storage.googleapis.com/${bucket.name}/${destination}`,
+        };
+      } catch {
+        // Fall through to local fallback
+      }
+    }
+
+    // Local fallback
     try {
-      const file = bucket.file(destination);
-      const json = JSON.stringify(data, null, 2);
-      await file.save(json, {
-        contentType: "application/json",
-        resumable: false,
-      });
+      const localDest = path.join(this.localCacheDir, destination);
+      fs.mkdirSync(path.dirname(localDest), { recursive: true });
+      fs.writeFileSync(localDest, json, "utf8");
       return {
         success: true,
         path: destination,
-        publicUrl: `https://storage.googleapis.com/${bucket.name}/${destination}`,
+        publicUrl: `/api/storage/files/${destination}`,
       };
     } catch (err) {
       return { success: false, path: destination, error: (err as Error).message };
@@ -186,158 +256,207 @@ export class FirebaseStorageService {
 
   async downloadJson<T = unknown>(remotePath: string): Promise<T | null> {
     const bucket = this.getBucket();
-    if (!bucket) return null;
+    if (bucket) {
+      try {
+        const file = bucket.file(remotePath);
+        const [exists] = await file.exists();
+        if (exists) {
+          const [buffer] = await file.download();
+          return JSON.parse(buffer.toString("utf8")) as T;
+        }
+      } catch {}
+    }
+
+    const localCached = path.join(this.localCacheDir, remotePath);
+    if (fs.existsSync(localCached)) {
+      try {
+        return JSON.parse(fs.readFileSync(localCached, "utf8")) as T;
+      } catch {
+        return null;
+      }
+    }
+    return null;
+  }
+
+  // ------------------------------------------------ Image Caching
+  async cacheImage(remoteUrl: string, lotId: string): Promise<{ success: boolean; localFilename: string; url: string }> {
+    if (!remoteUrl || !remoteUrl.startsWith("http")) {
+      return { success: false, localFilename: "", url: remoteUrl };
+    }
+
+    const ext = path.extname(new URL(remoteUrl).pathname) || ".jpg";
+    const filename = `${lotId}-${Buffer.from(remoteUrl).toString("base64url").slice(-12)}${ext}`;
+    const localTarget = path.join(this.localImagesDir, filename);
+
+    if (fs.existsSync(localTarget)) {
+      return { success: true, localFilename: filename, url: `/api/images/${filename}` };
+    }
+
     try {
-      const file = bucket.file(remotePath);
-      const [exists] = await file.exists();
-      if (!exists) return null;
-      const [buffer] = await file.download();
-      return JSON.parse(buffer.toString("utf8")) as T;
+      const res = await fetch(remoteUrl, { signal: AbortSignal.timeout(10_000) });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const arrayBuffer = await res.arrayBuffer();
+      const buffer = Buffer.from(arrayBuffer);
+      fs.writeFileSync(localTarget, buffer);
+
+      // Attempt background upload to bucket if bucket is ready
+      const bucket = this.getBucket();
+      if (bucket) {
+        bucket.file(`images/${filename}`).save(buffer, { resumable: false }).catch(() => {});
+      }
+
+      return { success: true, localFilename: filename, url: `/api/images/${filename}` };
     } catch {
-      return null;
+      // Return remote URL if download fails
+      return { success: false, localFilename: "", url: remoteUrl };
     }
   }
 
   // ------------------------------------------------ Database Backups
-  async backupDatabase(dbPath: string): Promise<{ success: boolean; remotePath: string; error?: string }> {
+  async backupDatabase(dbPath: string): Promise<{ success: boolean; remotePath: string; mode: string; error?: string }> {
     if (!fs.existsSync(dbPath)) {
-      return { success: false, remotePath: "", error: "Local DB does not exist: " + dbPath };
+      return { success: false, remotePath: "", mode: "none", error: "Local DB does not exist: " + dbPath };
     }
     const destination = "backups/bstock.db";
     const res = await this.uploadFile(dbPath, destination, "application/x-sqlite3");
-    if (!res.success) return { success: false, remotePath: destination, error: res.error };
-
-    // Also write a timestamped backup for auditability
     const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
     await this.uploadFile(dbPath, `backups/bstock-${timestamp}.db`, "application/x-sqlite3").catch(() => {});
-    return { success: true, remotePath: destination };
+
+    return {
+      success: res.success,
+      remotePath: destination,
+      mode: res.publicUrl?.startsWith("http") ? "cloud" : "local-cache",
+      error: res.error,
+    };
   }
 
   async restoreDatabase(dbPath: string): Promise<{ success: boolean; restored: boolean; error?: string }> {
-    const bucket = this.getBucket();
-    if (!bucket) return { success: false, restored: false, error: "Storage bucket not available" };
     const destination = "backups/bstock.db";
-    const file = bucket.file(destination);
-    try {
-      const [exists] = await file.exists();
-      if (!exists) {
-        return { success: true, restored: false }; // Normal if no remote backup has been uploaded yet
-      }
-      const res = await this.downloadFile(destination, dbPath);
-      return { success: res.success, restored: res.success, error: res.error };
-    } catch (err) {
-      return { success: false, restored: false, error: (err as Error).message };
-    }
+    const res = await this.downloadFile(destination, dbPath);
+    return { success: res.success, restored: res.success, error: res.error };
   }
 
   // ------------------------------------------------ Firestore Document Sync
-  async syncListingsToFirestore(listings: Array<Record<string, unknown>>): Promise<{ count: number; error?: string }> {
+  async syncListingsToFirestore(listings: Array<Record<string, unknown>>): Promise<{ count: number; mode: string; error?: string }> {
     const db = this.getFirestore();
-    if (!db) return { count: 0, error: "Firestore not initialized" };
+    if (db) {
+      try {
+        const batchSize = 400;
+        let count = 0;
+        for (let i = 0; i < listings.length; i += batchSize) {
+          const slice = listings.slice(i, i + batchSize);
+          const batch = db.batch();
+          for (const item of slice) {
+            const id = String(item.listing_id || item.listingId || `lot-${count}`);
+            const ref = db.collection("listings").doc(id);
+            batch.set(ref, {
+              ...item,
+              _syncedAt: new Date().toISOString(),
+            }, { merge: true });
+          }
+          await batch.commit();
+          count += slice.length;
+        }
+        return { count, mode: "cloud" };
+      } catch (err) {
+        // Fall back to local file snapshot below
+      }
+    }
 
-    let count = 0;
-    try {
-      // Write in batches of 400 (Firestore max is 500)
-      const batchSize = 400;
-      for (let i = 0; i < listings.length; i += batchSize) {
-        const slice = listings.slice(i, i + batchSize);
+    // Local file snapshot fallback
+    const res = await this.uploadJson(listings, "snapshots/listings.json");
+    return { count: listings.length, mode: "local-cache", error: res.error };
+  }
+
+  async syncWatchlistToFirestore(items: Array<{ listing_id: string; note?: string | null; added_at?: string }>): Promise<{ count: number; mode: string; error?: string }> {
+    const db = this.getFirestore();
+    if (db) {
+      try {
         const batch = db.batch();
-        for (const item of slice) {
-          const id = String(item.listing_id || item.listingId || `lot-${count}`);
-          const ref = db.collection("listings").doc(id);
+        for (const item of items) {
+          const ref = db.collection("watchlist").doc(item.listing_id);
           batch.set(ref, {
-            ...item,
-            _syncedAt: new Date().toISOString(),
+            listing_id: item.listing_id,
+            note: item.note ?? null,
+            added_at: item.added_at ?? new Date().toISOString(),
           }, { merge: true });
         }
         await batch.commit();
-        count += slice.length;
+        return { count: items.length, mode: "cloud" };
+      } catch {
+        // Fall through to local fallback
       }
-      return { count };
-    } catch (err) {
-      return { count, error: (err as Error).message };
     }
-  }
 
-  async syncWatchlistToFirestore(items: Array<{ listing_id: string; note?: string | null; added_at?: string }>): Promise<{ count: number; error?: string }> {
-    const db = this.getFirestore();
-    if (!db) return { count: 0, error: "Firestore not initialized" };
-    try {
-      const batch = db.batch();
-      for (const item of items) {
-        const ref = db.collection("watchlist").doc(item.listing_id);
-        batch.set(ref, {
-          listing_id: item.listing_id,
-          note: item.note ?? null,
-          added_at: item.added_at ?? new Date().toISOString(),
-        }, { merge: true });
-      }
-      await batch.commit();
-      return { count: items.length };
-    } catch (err) {
-      return { count: 0, error: (err as Error).message };
-    }
+    await this.uploadJson(items, "snapshots/watchlist.json");
+    return { count: items.length, mode: "local-cache" };
   }
 
   async pullWatchlistFromFirestore(): Promise<Array<{ listing_id: string; note: string | null; added_at: string }>> {
     const db = this.getFirestore();
-    if (!db) return [];
-    try {
-      const snap = await db.collection("watchlist").get();
-      return snap.docs.map((d) => {
-        const data = d.data();
-        return {
-          listing_id: d.id,
-          note: (data.note as string) ?? null,
-          added_at: (data.added_at as string) ?? new Date().toISOString(),
-        };
-      });
-    } catch {
-      return [];
+    if (db) {
+      try {
+        const snap = await db.collection("watchlist").get();
+        return snap.docs.map((d) => {
+          const data = d.data();
+          return {
+            listing_id: d.id,
+            note: (data.note as string) ?? null,
+            added_at: (data.added_at as string) ?? new Date().toISOString(),
+          };
+        });
+      } catch {}
     }
+
+    const local = await this.downloadJson<Array<{ listing_id: string; note: string | null; added_at: string }>>("snapshots/watchlist.json");
+    return local ?? [];
   }
 
-  async syncDecisionsToFirestore(decisions: Array<{ listing_id: string; recovery_pct?: number | null; target_roi?: number | null; target_max_cents?: number | null; notes?: string | null; updated_at?: string }>): Promise<{ count: number; error?: string }> {
+  async syncDecisionsToFirestore(decisions: Array<{ listing_id: string; recovery_pct?: number | null; target_roi?: number | null; target_max_cents?: number | null; notes?: string | null; updated_at?: string }>): Promise<{ count: number; mode: string; error?: string }> {
     const db = this.getFirestore();
-    if (!db) return { count: 0, error: "Firestore not initialized" };
-    try {
-      const batch = db.batch();
-      for (const d of decisions) {
-        const ref = db.collection("decisions").doc(d.listing_id);
-        batch.set(ref, {
-          listing_id: d.listing_id,
-          recovery_pct: d.recovery_pct ?? null,
-          target_roi: d.target_roi ?? null,
-          target_max_cents: d.target_max_cents ?? null,
-          notes: d.notes ?? null,
-          updated_at: d.updated_at ?? new Date().toISOString(),
-        }, { merge: true });
-      }
-      await batch.commit();
-      return { count: decisions.length };
-    } catch (err) {
-      return { count: 0, error: (err as Error).message };
+    if (db) {
+      try {
+        const batch = db.batch();
+        for (const d of decisions) {
+          const ref = db.collection("decisions").doc(d.listing_id);
+          batch.set(ref, {
+            listing_id: d.listing_id,
+            recovery_pct: d.recovery_pct ?? null,
+            target_roi: d.target_roi ?? null,
+            target_max_cents: d.target_max_cents ?? null,
+            notes: d.notes ?? null,
+            updated_at: d.updated_at ?? new Date().toISOString(),
+          }, { merge: true });
+        }
+        await batch.commit();
+        return { count: decisions.length, mode: "cloud" };
+      } catch {}
     }
+
+    await this.uploadJson(decisions, "snapshots/decisions.json");
+    return { count: decisions.length, mode: "local-cache" };
   }
 
   async pullDecisionsFromFirestore(): Promise<Array<{ listing_id: string; recovery_pct: number | null; target_roi: number | null; target_max_cents: number | null; notes: string | null; updated_at: string }>> {
     const db = this.getFirestore();
-    if (!db) return [];
-    try {
-      const snap = await db.collection("decisions").get();
-      return snap.docs.map((d) => {
-        const data = d.data();
-        return {
-          listing_id: d.id,
-          recovery_pct: (data.recovery_pct as number) ?? null,
-          target_roi: (data.target_roi as number) ?? null,
-          target_max_cents: (data.target_max_cents as number) ?? null,
-          notes: (data.notes as string) ?? null,
-          updated_at: (data.updated_at as string) ?? new Date().toISOString(),
-        };
-      });
-    } catch {
-      return [];
+    if (db) {
+      try {
+        const snap = await db.collection("decisions").get();
+        return snap.docs.map((d) => {
+          const data = d.data();
+          return {
+            listing_id: d.id,
+            recovery_pct: (data.recovery_pct as number) ?? null,
+            target_roi: (data.target_roi as number) ?? null,
+            target_max_cents: (data.target_max_cents as number) ?? null,
+            notes: (data.notes as string) ?? null,
+            updated_at: (data.updated_at as string) ?? new Date().toISOString(),
+          };
+        });
+      } catch {}
     }
+
+    const local = await this.downloadJson<Array<{ listing_id: string; recovery_pct: number | null; target_roi: number | null; target_max_cents: number | null; notes: string | null; updated_at: string }>>("snapshots/decisions.json");
+    return local ?? [];
   }
 }

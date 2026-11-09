@@ -17,3 +17,17 @@ coverage/
 .firebase/
 pnpm-lock.yaml
 pnpm-workspace.yaml
+__pycache__/
+.data/
+.agent/
+.agents/
+.claude/
+.codex/
+.dsh/
+.gemini/
+.grok/
+.hermes/
+.kiro/
+.opencode/
+.pi/
+.qoder/

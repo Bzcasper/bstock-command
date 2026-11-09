@@ -357,3 +357,6 @@ export function formatMoney(n: number | null | undefined, currency = "USD"): str
   if (n === null || n === undefined || !Number.isFinite(n)) return "—";
   return new Intl.NumberFormat("en-US", { style: "currency", currency, maximumFractionDigits: 0 }).format(n);
 }
+
+export * from "./funnel.ts";
+
