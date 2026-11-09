@@ -5,6 +5,7 @@ import { BStockClient } from "@bstock/client";
 import { Collector, DEFAULT_SETTINGS, type TradingSettings } from "../../apps/server/src/collector.ts";
 import { BidExecutor } from "../../apps/server/src/bids.ts";
 import { buildApp } from "../../apps/server/src/app.ts";
+import { FirebaseStorageService, pullFirebaseToLocalDb } from "@bstock/storage-firebase";
 import awsLambdaFastify from "@fastify/aws-lambda";
 
 const config = loadConfig({
@@ -29,8 +30,16 @@ const settings = (): TradingSettings => ({ ...DEFAULT_SETTINGS, ...db.getSetting
 const client = new BStockClient({ maxRetries: 1, ratePerSecond: 8 });
 const collector = new Collector(client, db, settings);
 const executor = new BidExecutor({ client, db, settings, signer, liveEnabled: config.liveEnabled });
+const firebase = new FirebaseStorageService();
 
-const app = buildApp({ config, db, client, collector, executor, vault });
+// Hydrate DB from Firebase Storage on cold start if available
+if (firebase.init()) {
+  try {
+    await pullFirebaseToLocalDb(db, firebase, config.dbPath);
+  } catch {}
+}
+
+const app = buildApp({ config, db, client, collector, executor, vault, firebase });
 await app.ready();
 
 export const handler = awsLambdaFastify(app);

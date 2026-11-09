@@ -116,10 +116,39 @@ Then `POST /api/session/login` to obtain a bearer token.
 | `npm run dev:web` | Vite dev server (proxies /api) |
 | `npm run build` | build web bundle + typecheck |
 | `npm run mock` | offline B-Stock simulator |
-| `npm test` | vitest (25 tests) |
+| `npm test` | vitest test suite |
 | `npm run typecheck` | tsc --noEmit |
+| `npm run sync:static` | generate static JSON snapshot for CI/Pages |
+| `npm run firebase:status`| check Firebase Storage connection status |
+| `npm run firebase:sync`  | push local database & snapshot to Firebase |
+| `npm run firebase:pull`  | pull remote watchlist & decisions from Firestore |
 
-## CLI flags
+## System CLI & Flags
 
-`node apps/server/src/main.ts --sync` runs one crawl and exits (cron-friendly).
-`--probe` checks clearance/token reachability. `--recompute` recomputes scores.
+`bstock-command` is installed as a system executable in `~/.local/bin/bstock-command`:
+
+```bash
+bstock-command                     # start Fastify API server + web dashboard on 127.0.0.1:8788
+bstock-command --sync              # crawl market once and exit (cron-friendly)
+bstock-command --sync --firebase   # crawl market once and upload snapshot to Firebase Storage
+bstock-command --firebase-status   # print Firebase Storage & Firestore connection status
+bstock-command --firebase-sync     # sync local SQLite database to Firebase Storage & Firestore
+bstock-command --firebase-pull     # pull remote watchlist & decisions from Firestore
+bstock-command --probe             # credential/clearance reachability check
+bstock-command --recompute         # recompute scoring models for all lots
+```
+
+## Firebase Storage & Cloud Persistence
+
+`bstock-command` supports Firebase Storage (Cloud Storage for Firebase) and Cloud Firestore for multi-machine synchronization, serverless hosting (Netlify, Cloud Functions), and static dashboards:
+
+- **Automatic Credential Discovery:** Auto-detects Google Cloud Application Default Credentials (`~/.config/gcloud/application_default_credentials.json`), `GOOGLE_APPLICATION_CREDENTIALS`, or `FIREBASE_SERVICE_ACCOUNT`.
+- **Database Backup & Hydration:** Stores SQLite database snapshots in Firebase Storage (`backups/bstock.db`) and automatically hydrates on cold start when running serverless or on a new machine.
+- **Snapshot Export:** Generates and uploads `data/listings.json` and `data/status.json` snapshots to Firebase Storage bucket.
+- **Firestore Collections:** Replicates `listings`, `watchlist`, `decisions`, and `settings` collections in Cloud Firestore with bidirectional sync.
+
+### Environment variables:
+- `FIREBASE_PROJECT_ID`: GCP / Firebase project ID (default: auto-detected or `colab-plugin`).
+- `FIREBASE_STORAGE_BUCKET`: Storage bucket name (default: `<project-id>.appspot.com`).
+- `GOOGLE_APPLICATION_CREDENTIALS`: Path to service account or ADC JSON.
+- `FIREBASE_ENABLED`: Set to `0` to run purely local without Firebase.

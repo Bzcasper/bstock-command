@@ -6,6 +6,7 @@ export default defineConfig({
     alias: {
       "@bstock/client": path.resolve(import.meta.dirname, "packages/client/src/client.ts"),
       "@bstock/analytics": path.resolve(import.meta.dirname, "packages/analytics/src/index.ts"),
+      "@bstock/storage-firebase": path.resolve(import.meta.dirname, "packages/storage-firebase/src/index.ts"),
     },
   },
   test: {

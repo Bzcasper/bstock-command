@@ -16,7 +16,8 @@
     "types": ["node"],
     "paths": {
       "@bstock/client": ["./packages/client/src/client.ts"],
-      "@bstock/analytics": ["./packages/analytics/src/index.ts"]
+      "@bstock/analytics": ["./packages/analytics/src/index.ts"],
+      "@bstock/storage-firebase": ["./packages/storage-firebase/src/index.ts"]
     }
   },
   "include": [

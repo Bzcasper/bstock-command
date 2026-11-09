@@ -126,6 +126,9 @@ export function App() {
           <span className={`pill ${status?.credentials?.hasToken ? "pill-ok" : "pill-warn"}`}>
             {status?.credentials?.hasToken ? "token ✓" : "no token"}
           </span>
+          <span className={`pill ${status?.storage?.initialized ? "pill-ok" : "pill-muted"}`} title={status?.storage?.storageBucket ?? "Firebase Storage"}>
+            {status?.storage?.initialized ? "firebase ✓" : "firebase off"}
+          </span>
           <span className="pill pill-muted">{status?.stats?.listings ?? 0} lots</span>
         </div>
         <div className="topbar-actions">

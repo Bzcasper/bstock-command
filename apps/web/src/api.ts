@@ -1,7 +1,21 @@
-const BASE = (import.meta as { env?: { VITE_API_BASE?: string } }).env?.VITE_API_BASE ?? "/api";
+const BASE = (import.meta as { env?: { VITE_API_BASE?: string } }).env?.VITE_API_BASE ?? "";
+
+export const isStaticMode = BASE === "";
+
+function toUrl(path: string): string {
+  const base = (import.meta.env.BASE_URL ?? "/").replace(/\/$/, "");
+  if (BASE) return BASE + path;
+  // Static (CI-generated) data mode: map /api/* to <base>/data/*.json
+  const mapped = path
+    .replace(/^\/api/, "/data")
+    .replace(/\/listings(\?.*)?$/, (m) => m.replace("/listings", "/listings.json"))
+    .replace(/\/status(\?.*)?$/, (m) => m.replace("/status", "/status.json"))
+    .replace(/\/bids(\?.*)?$/, (m) => m.replace("/bids", "/bids.json"));
+  return base + mapped;
+}
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
-  const res = await fetch(BASE + path, {
+  const res = await fetch(toUrl(path), {
     ...init,
     headers: { "Content-Type": "application/json", ...(init?.headers ?? {}) },
   });
@@ -64,29 +78,52 @@ export interface ListingRow {
 }
 
 export const api = {
-  status: () => request<any>("/status"),
-  settings: () => request<any>("/settings"),
-  saveSettings: (patch: unknown) => request<any>("/settings", { method: "PUT", body: JSON.stringify(patch) }),
+  status: () => isStaticMode ? request<any>("/api/status") : request<any>("/api/status"),
+  settings: () =>
+    isStaticMode
+      ? Promise.resolve({
+          mode: "static",
+          perBidCap: 10000,
+          dailyCap: 40000,
+          minScore: 0,
+          minRoi: 0.15,
+          recoveryPctDefault: 0.4,
+          targetRoiDefault: 0.3,
+          buyerPremiumPct: 0.125,
+          taxPct: 0,
+          shippingDefault: 0,
+          otherFeesDefault: 0,
+          allowedSites: [],
+          blockedCategories: [],
+          requireManifest: false,
+        })
+      : request<any>("/api/settings"),
+  saveSettings: (patch: unknown) => request<any>("/api/settings", { method: "PUT", body: JSON.stringify(patch) }),
   listings: (params: Record<string, string | number | undefined>) => {
     const qs = new URLSearchParams();
     for (const [k, v] of Object.entries(params)) {
       if (v !== undefined && v !== null && v !== "") qs.set(k, String(v));
     }
+    const q = qs.toString();
     return request<{ count: number; listings: ListingRow[]; facets: { categories: { category: string; count: number }[]; sites: { site_abb: string; count: number }[] } }>(
-      `/listings?${qs}`,
+      `/api/listings${q ? `?${q}` : ""}`,
     );
   },
-  listing: (id: string) => request<any>(`/listings/${id}`),
-  setDecision: (id: string, body: unknown) => request<any>(`/listings/${id}/decision`, { method: "PUT", body: JSON.stringify(body) }),
-  watch: (id: string, note?: string) => request<any>(`/listings/${id}/watch`, { method: "POST", body: JSON.stringify({ note }) }),
-  unwatch: (id: string) => request<any>(`/listings/${id}/watch`, { method: "DELETE" }),
-  sync: (body: unknown) => request<any>("/sync", { method: "POST", body: JSON.stringify(body) }),
+  listing: (id: string) => request<any>(`/api/listings/${id}`),
+  setDecision: (id: string, body: unknown) => request<any>(`/api/listings/${id}/decision`, { method: "PUT", body: JSON.stringify(body) }),
+  watch: (id: string, note?: string) => request<any>(`/api/listings/${id}/watch`, { method: "POST", body: JSON.stringify({ note }) }),
+  unwatch: (id: string) => request<any>(`/api/listings/${id}/watch`, { method: "DELETE" }),
+  sync: (body: unknown) => request<any>("/api/sync", { method: "POST", body: JSON.stringify(body) }),
   plan: (listingId: string, maxAmount?: number) =>
-    request<any>("/bid/plan", { method: "POST", body: JSON.stringify({ listingId, maxAmount }) }),
-  execute: (body: unknown) => request<any>("/bid/execute", { method: "POST", body: JSON.stringify(body) }),
-  bids: () => request<any>("/bids"),
-  probe: () => request<any>("/session/probe", { method: "POST" }),
-  credentials: (body: unknown) => request<any>("/credentials", { method: "POST", body: JSON.stringify(body) }),
-  login: (body: unknown) => request<any>("/session/login", { method: "POST", body: JSON.stringify(body) }),
-  exportCsv: () => `${BASE}/export.csv`,
+    request<any>("/api/bid/plan", { method: "POST", body: JSON.stringify({ listingId, maxAmount }) }),
+  execute: (body: unknown) => request<any>("/api/bid/execute", { method: "POST", body: JSON.stringify(body) }),
+  bids: () => request<any>("/api/bids"),
+  probe: () => request<any>("/api/session/probe", { method: "POST" }),
+  credentials: (body: unknown) => request<any>("/api/credentials", { method: "POST", body: JSON.stringify(body) }),
+  login: (body: unknown) => request<any>("/api/session/login", { method: "POST", body: JSON.stringify(body) }),
+  exportCsv: () => (BASE ? BASE : "") + "/api/export.csv",
+  storageStatus: () => request<any>("/api/storage/status"),
+  storageSync: () => request<any>("/api/storage/sync", { method: "POST" }),
+  storageBackup: () => request<any>("/api/storage/backup", { method: "POST" }),
+  storageRestore: () => request<any>("/api/storage/restore", { method: "POST" }),
 };

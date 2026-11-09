@@ -10,6 +10,7 @@ import type { Collector, TradingSettings } from "./collector.ts";
 import { DEFAULT_SETTINGS } from "./collector.ts";
 import type { SecretVault } from "./security.ts";
 import type { AppConfig } from "./config.ts";
+import { FirebaseStorageService, pushDbToFirebase, pullFirebaseToLocalDb } from "@bstock/storage-firebase";
 
 export interface StoredCredentials {
   clearance?: string;
@@ -27,6 +28,7 @@ export interface AppDeps {
   collector: Collector;
   executor: BidExecutor;
   vault: SecretVault;
+  firebase?: FirebaseStorageService;
   now?: () => Date;
   version?: string;
 }
@@ -42,7 +44,8 @@ const asString = (v: unknown): string | undefined => (typeof v === "string" && v
 const asBool = (v: unknown): boolean | undefined => (typeof v === "boolean" ? v : undefined);
 
 export function buildApp(deps: AppDeps): FastifyInstance {
-  const { db, client, collector, executor, vault, config } = deps;
+  const { db, client, collector, executor, vault, config, firebase } = deps;
+  const firebaseService = firebase ?? new FirebaseStorageService();
   const now = deps.now ?? (() => new Date());
   const version = deps.version ?? "0.1.0";
   const startedAt = now();
@@ -103,6 +106,7 @@ export function buildApp(deps: AppDeps): FastifyInstance {
         hasToken: Boolean(client.accessToken),
       },
       stats: db.stats(),
+      storage: firebaseService.getStatus(),
       settings,
       serverTime: now().toISOString(),
     };
@@ -421,6 +425,23 @@ export function buildApp(deps: AppDeps): FastifyInstance {
     reply.header("Content-Type", "text/csv; charset=utf-8");
     reply.header("Content-Disposition", 'attachment; filename="bstock-listings.csv"');
     return csv.join("\n");
+  });
+
+  // --------------------------------------------------------- firebase storage
+  app.get("/api/storage/status", async () => {
+    return firebaseService.getStatus();
+  });
+
+  app.post("/api/storage/sync", async () => {
+    return pushDbToFirebase(db, firebaseService, config.dbPath);
+  });
+
+  app.post("/api/storage/backup", async () => {
+    return firebaseService.backupDatabase(config.dbPath);
+  });
+
+  app.post("/api/storage/restore", async () => {
+    return pullFirebaseToLocalDb(db, firebaseService, config.dbPath);
   });
 
   // ------------------------------------------------------------- static web ui

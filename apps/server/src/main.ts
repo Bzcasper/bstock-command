@@ -13,12 +13,14 @@ import { BStockClient } from "@bstock/client";
 import { Collector, DEFAULT_SETTINGS, type TradingSettings } from "./collector.ts";
 import { BidExecutor } from "./bids.ts";
 import { buildApp, CREDENTIAL_KEY, type StoredCredentials } from "./app.ts";
+import { FirebaseStorageService, pushDbToFirebase, pullFirebaseToLocalDb } from "@bstock/storage-firebase";
 
 const args = new Set(process.argv.slice(2));
 const config = loadConfig();
 const db = new Db(config.dbPath);
 const vault = new SecretVault(config.masterKey);
 const signer = new PlanSigner(config.masterKey);
+const firebase = new FirebaseStorageService();
 
 const settings = (): TradingSettings => ({ ...DEFAULT_SETTINGS, ...db.getSetting<Partial<TradingSettings>>("trading", {}) });
 
@@ -60,9 +62,50 @@ const collector = new Collector(client, db, settings);
 const executor = new BidExecutor({ client, db, settings, signer, liveEnabled: config.liveEnabled });
 
 async function main() {
+  if (args.has("--help") || args.has("-h")) {
+    console.log(`bstock-command - Pallet-reseller buying terminal
+
+Usage:
+  bstock-command                     Start the Fastify API server + web dashboard
+  bstock-command --sync              Crawl B-Stock once and update database
+  bstock-command --sync --firebase   Crawl B-Stock and sync database + snapshot to Firebase
+  bstock-command --firebase-sync     Sync local SQLite database to Firebase Storage & Firestore
+  bstock-command --firebase-pull     Pull remote watchlist & decisions from Firestore
+  bstock-command --firebase-status   Print Firebase connection and bucket status
+  bstock-command --probe             Test B-Stock credentials and clearance reachability
+  bstock-command --recompute         Recompute analytics scoring models for all lots
+`);
+    db.close();
+    return;
+  }
+
+  if (args.has("--firebase-status")) {
+    console.log(JSON.stringify(firebase.getStatus(), null, 2));
+    db.close();
+    return;
+  }
+
+  if (args.has("--firebase-sync")) {
+    const report = await pushDbToFirebase(db, firebase, config.dbPath);
+    console.log(JSON.stringify(report, null, 2));
+    db.close();
+    return;
+  }
+
+  if (args.has("--firebase-pull")) {
+    const report = await pullFirebaseToLocalDb(db, firebase, config.dbPath);
+    console.log(JSON.stringify(report, null, 2));
+    db.close();
+    return;
+  }
+
   if (args.has("--sync")) {
     const report = await collector.sync({ pages: 5, pageSize: 80, withBidsFor: 40 });
     console.log(JSON.stringify(report, null, 2));
+    if (args.has("--firebase") || process.env.BSTOCK_FIREBASE_SYNC === "1") {
+      const fbReport = await pushDbToFirebase(db, firebase, config.dbPath);
+      console.log(JSON.stringify({ firebase: fbReport }, null, 2));
+    }
     db.close();
     return;
   }
@@ -80,7 +123,19 @@ async function main() {
     return;
   }
 
-  const app = buildApp({ config, db, client, collector, executor, vault });
+  // Auto-restore data on startup if local DB is empty and Firebase is configured
+  if (db.stats().listings === 0 && firebase.isInitialized()) {
+    try {
+      const restored = await pullFirebaseToLocalDb(db, firebase, config.dbPath);
+      if (restored.dbRestored || restored.watchlistPulled > 0) {
+        console.log(`[bstock-command] Restored data from Firebase (watchlist: ${restored.watchlistPulled}, decisions: ${restored.decisionsPulled})`);
+      }
+    } catch (e) {
+      console.warn("[bstock-command] Firebase restore notice:", (e as Error).message);
+    }
+  }
+
+  const app = buildApp({ config, db, client, collector, executor, vault, firebase });
   await app.listen({ port: config.port, host: config.host });
   app.log.info(
     { port: config.port, mode: settings().mode, live: config.liveEnabled, db: config.dbPath },
