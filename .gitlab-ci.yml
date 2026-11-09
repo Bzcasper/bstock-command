@@ -22,6 +22,8 @@ build_web:
   script:
     - npm ci --no-audit --no-fund
     - npm run build:web -- --base=/bstock-command/
+    - mkdir -p apps/web/dist/data
+    - MOCK=1 OUT_DIR=apps/web/dist/data node scripts/sync-static.mjs
   artifacts:
     paths:
       - apps/web/dist/
@@ -34,9 +36,15 @@ pages:
     - rm -rf public
     - mkdir public
     - cp -r apps/web/dist/* public/
-    - mkdir -p public/data
-    - MOCK=1 node scripts/sync-static.mjs
     - cp public/index.html public/404.html
+  artifacts:
+    paths:
+      - public
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  environment:
+    name: production
+    url: https://tinydigitalproductlab.gitlab.io/bstock-command/
   artifacts:
     paths:
       - public
