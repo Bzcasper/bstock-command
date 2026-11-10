@@ -1845,8 +1845,8 @@ function DetailPanel({ listing, detail, onRefresh, settings, onOpenImage }: { li
             {manifestData.sampleItems?.length > 0 ? (
               <div>
                 <div style={{ fontSize: "12px", fontWeight: 600, color: "var(--text-mute)", marginBottom: "6px" }}>ITEMIZED MANIFEST SAMPLE ({manifestData.sampleItems.length})</div>
-                <div style={{ maxHeight: "200px", overflowY: "auto", border: "1px solid var(--border)", borderRadius: "var(--radius-sm)" }}>
-                  <table style={{ width: "100%", fontSize: "12px", borderCollapse: "collapse" }}>
+                <div style={{ maxHeight: "200px", overflowY: "auto", overflowX: "auto", WebkitOverflowScrolling: "touch", border: "1px solid var(--border)", borderRadius: "var(--radius-sm)" }}>
+                  <table style={{ width: "100%", minWidth: "360px", fontSize: "12px", borderCollapse: "collapse" }}>
                     <thead>
                       <tr style={{ background: "rgba(255, 255, 255, 0.03)", color: "var(--text-mute)", textAlign: "left", position: "sticky", top: 0 }}>
                         <th style={{ padding: "4px 6px" }}>Item / ASIN</th>
