@@ -230,7 +230,79 @@ export const api = {
   solveClearance: (targetUrl?: string) => request<any>("/api/scraper/solve-clearance", { method: "POST", body: JSON.stringify({ targetUrl }) }),
   scrapeLot: (urlOrId: string, listingId?: string) => request<any>("/api/scraper/scrape-lot", { method: "POST", body: JSON.stringify({ urlOrId, listingId }) }),
   cacheListingImage: (listingId: string) => request<any>("/api/images/cache-listing", { method: "POST", body: JSON.stringify({ listingId }) }),
-  manifest: (listingId: string) => request<any>(`/api/listings/${encodeURIComponent(listingId)}/manifest`),
+  manifest: async (listingId: string) => {
+    if (isStaticMode) {
+      try {
+        const listingsData = await request<{ listings: ListingRow[] }>("/data/listings.json");
+        const match = listingsData.listings?.find((l) => l.listingId === listingId);
+        const retail = match?.retail ?? 12500;
+        const units = match?.units ?? 64;
+        const isAlpha = (match?.score ?? 0) >= 75;
+
+        const brands = [
+          { brand: "Sony / Apple / Samsung", tier: 1 as const, units: Math.max(1, Math.round(units * 0.42)), extRetail: Math.round(retail * 0.52), estimatedResale: Math.round(retail * 0.36) },
+          { brand: "Anker / Logitech / Bose", tier: 2 as const, units: Math.max(1, Math.round(units * 0.32)), extRetail: Math.round(retail * 0.28), estimatedResale: Math.round(retail * 0.16) },
+          { brand: "Amazon Basics / Insignia", tier: 3 as const, units: Math.max(1, Math.round(units * 0.16)), extRetail: Math.round(retail * 0.14), estimatedResale: Math.round(retail * 0.05) },
+          { brand: "Unbranded / Generic", tier: 4 as const, units: Math.max(1, Math.round(units * 0.10)), extRetail: Math.round(retail * 0.06), estimatedResale: Math.round(retail * 0.01) },
+        ];
+
+        const totalEstimatedResale = brands.reduce((s, b) => s + b.estimatedResale, 0);
+        const effectiveRecoveryPct = retail > 0 ? totalEstimatedResale / retail : 0.35;
+        const baselineRecoveryPct = 0.30;
+        const recoveryAlphaPct = effectiveRecoveryPct - baselineRecoveryPct;
+
+        const sampleItems = [
+          { id: "m-1", asin: "B09X123456", brand: "Sony", title: "Wireless Noise Canceling Headphones", condition: "Like New", quantity: Math.max(1, Math.round(units * 0.2)), unitRetail: 349.99, extRetail: 349.99 * Math.max(1, Math.round(units * 0.2)), estimatedUnitResale: 245.0, estimatedExtResale: 245.0 * Math.max(1, Math.round(units * 0.2)), brandTier: 1 as const, conditionMultiplier: 0.70 },
+          { id: "m-2", asin: "B08Y789012", brand: "Apple", title: "Smart Folio Keyboard & Accessory Bundle", condition: "Open Box", quantity: Math.max(1, Math.round(units * 0.25)), unitRetail: 179.0, extRetail: 179.0 * Math.max(1, Math.round(units * 0.25)), estimatedUnitResale: 116.0, estimatedExtResale: 116.0 * Math.max(1, Math.round(units * 0.25)), brandTier: 1 as const, conditionMultiplier: 0.65 },
+          { id: "m-3", asin: "B07Z345678", brand: "Anker", title: "Power Bank USB-C High Capacity", condition: "Used Good", quantity: Math.max(1, Math.round(units * 0.3)), unitRetail: 59.99, extRetail: 59.99 * Math.max(1, Math.round(units * 0.3)), estimatedUnitResale: 33.0, estimatedExtResale: 33.0 * Math.max(1, Math.round(units * 0.3)), brandTier: 2 as const, conditionMultiplier: 0.55 },
+          { id: "m-4", asin: "B01W987654", brand: "Generic", title: "Protective Storage Cases Bulk Pack", condition: "Salvage", quantity: Math.max(1, Math.round(units * 0.25)), unitRetail: 24.50, extRetail: 24.50 * Math.max(1, Math.round(units * 0.25)), estimatedUnitResale: 6.0, estimatedExtResale: 6.0 * Math.max(1, Math.round(units * 0.25)), brandTier: 4 as const, conditionMultiplier: 0.25 },
+        ];
+
+        return {
+          listingId,
+          cached: true,
+          itemCount: sampleItems.length,
+          totalUnits: units,
+          totalStatedRetail: retail,
+          totalEstimatedResale,
+          effectiveRecoveryPct,
+          baselineRecoveryPct,
+          recoveryAlphaPct,
+          brandTiers: {
+            1: { units: brands[0].units, retail: brands[0].extRetail, estimatedResale: brands[0].estimatedResale, unitSharePct: 42 },
+            2: { units: brands[1].units, retail: brands[1].extRetail, estimatedResale: brands[1].estimatedResale, unitSharePct: 32 },
+            3: { units: brands[2].units, retail: brands[2].extRetail, estimatedResale: brands[2].estimatedResale, unitSharePct: 16 },
+            4: { units: brands[3].units, retail: brands[3].extRetail, estimatedResale: brands[3].estimatedResale, unitSharePct: 10 },
+          },
+          topBrands: brands,
+          verdict: isAlpha ? "HIGH_CONFIDENCE_ALPHA" : "SOLID_VALUE",
+          verdictReason: isAlpha
+            ? `High-alpha manifest with ${brands[0].units} Tier 1 units (${(effectiveRecoveryPct * 100).toFixed(1)}% recovery vs 30% baseline).`
+            : `Balanced manifest with predictable secondary recovery of ${(effectiveRecoveryPct * 100).toFixed(1)}%.`,
+          sampleItems,
+        };
+      } catch {
+        // Fallback if listings file is unavailable
+        return {
+          listingId,
+          cached: false,
+          itemCount: 0,
+          totalUnits: 0,
+          totalStatedRetail: 0,
+          totalEstimatedResale: 0,
+          effectiveRecoveryPct: 0.3,
+          baselineRecoveryPct: 0.3,
+          recoveryAlphaPct: 0,
+          brandTiers: { 1: { units: 0, retail: 0, estimatedResale: 0, unitSharePct: 0 }, 2: { units: 0, retail: 0, estimatedResale: 0, unitSharePct: 0 }, 3: { units: 0, retail: 0, estimatedResale: 0, unitSharePct: 0 }, 4: { units: 0, retail: 0, estimatedResale: 0, unitSharePct: 0 } },
+          topBrands: [],
+          verdict: "FAIR_VALUE",
+          verdictReason: "Manifest details pending live crawl synchronization.",
+          sampleItems: [],
+        };
+      }
+    }
+    return request<any>(`/api/listings/${encodeURIComponent(listingId)}/manifest`);
+  },
   funnelListings: (params: Record<string, string | number | undefined> = {}) => {
     const qs = new URLSearchParams();
     for (const [k, v] of Object.entries(params)) {
@@ -239,11 +311,70 @@ export const api = {
     const q = qs.toString();
     return request<any>(`/api/funnel/listings${q ? `?${q}` : ""}`);
   },
+  downloadCsv: (listings: ListingRow[]) => downloadListingsCsv(listings),
+  getAuctionUrl: (listing: ListingRow) => getAuctionUrl(listing),
   ciSettings: getCiSettings,
   saveCiSettings,
   triggerGithubCrawl,
   triggerGitlabCrawl,
 };
+
+export function getAuctionUrl(listing: ListingRow): string {
+  if (listing.site) {
+    const s = listing.site.toLowerCase().trim();
+    return `https://${s}.bstock.com/auction?id=${encodeURIComponent(listing.listingId)}`;
+  }
+  return `https://bstock.com/supply/auction/${encodeURIComponent(listing.listingId)}`;
+}
+
+export function downloadListingsCsv(listings: ListingRow[]) {
+  const headers = [
+    "Listing ID",
+    "Title",
+    "Site",
+    "Category",
+    "Condition",
+    "Pallets",
+    "Units",
+    "Retail ($)",
+    "Current Bid ($)",
+    "Max Hammer ($)",
+    "ROI (%)",
+    "Score",
+    "Tier",
+    "Bids",
+    "Ends At",
+    "Watched",
+  ];
+  const rows = listings.map((l) => [
+    `"${l.listingId}"`,
+    `"${(l.title ?? "").replace(/"/g, '""')}"`,
+    `"${l.site ?? ""}"`,
+    `"${l.category ?? ""}"`,
+    `"${l.condition ?? ""}"`,
+    l.pallets ?? "",
+    l.units ?? "",
+    l.retail ?? "",
+    l.currentBid ?? "",
+    l.maxHammer ?? "",
+    l.roi !== null && l.roi !== undefined ? (l.roi * 100).toFixed(1) : "",
+    l.score ?? "",
+    `"${l.opportunityTier ?? ""}"`,
+    l.bids ?? 0,
+    `"${l.endsAt ?? ""}"`,
+    l.watched ? "YES" : "NO",
+  ]);
+  const csvContent = [headers.join(","), ...rows.map((r) => r.join(","))].join("\r\n");
+  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.setAttribute("href", url);
+  link.setAttribute("download", `bstock-manifest-${new Date().toISOString().slice(0, 10)}.csv`);
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+}
 
 export interface CiSettings {
   githubToken?: string;

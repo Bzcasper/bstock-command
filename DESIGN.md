@@ -20,6 +20,10 @@ colors:
   warn-bg: "#2e2107"
   bad: "#f87171"
   bad-bg: "#321317"
+  tier-1: "#10b981"
+  tier-2: "#38bdf8"
+  tier-3: "#fbbf24"
+  tier-4: "#f87171"
 typography:
   display:
     fontFamily: "'Space Grotesk', system-ui, -apple-system, sans-serif"
@@ -27,6 +31,24 @@ typography:
     fontWeight: 700
     lineHeight: 1.2
     letterSpacing: "-0.01em"
+  headline:
+    fontFamily: "'Space Grotesk', system-ui, -apple-system, sans-serif"
+    fontSize: "1.25rem"
+    fontWeight: 600
+    lineHeight: 1.3
+    letterSpacing: "-0.01em"
+  title:
+    fontFamily: "'Space Grotesk', system-ui, -apple-system, sans-serif"
+    fontSize: "1.125rem"
+    fontWeight: 600
+    lineHeight: 1.3
+    letterSpacing: "-0.005em"
+  subtitle:
+    fontFamily: "'Space Grotesk', system-ui, -apple-system, sans-serif"
+    fontSize: "1rem"
+    fontWeight: 500
+    lineHeight: 1.4
+    letterSpacing: "0em"
   body:
     fontFamily: "'Space Grotesk', system-ui, -apple-system, sans-serif"
     fontSize: "0.875rem"
@@ -36,6 +58,12 @@ typography:
   mono:
     fontFamily: "'JetBrains Mono', ui-monospace, Menlo, monospace"
     fontSize: "0.8125rem"
+    fontWeight: 500
+    lineHeight: 1.4
+    letterSpacing: "0.02em"
+  caption:
+    fontFamily: "'Space Grotesk', system-ui, -apple-system, sans-serif"
+    fontSize: "0.75rem"
     fontWeight: 500
     lineHeight: 1.4
     letterSpacing: "0.02em"

@@ -14,8 +14,8 @@
       "units": 816,
       "retail": 714762.29,
       "currency": "USD",
-      "endsAt": "2026-11-10T04:14:54.551Z",
-      "startsAt": "2026-11-07T13:33:30.551Z",
+      "endsAt": "2026-11-11T00:27:44.447Z",
+      "startsAt": "2026-11-08T09:46:20.447Z",
       "bids": 1,
       "currentBid": 549.14,
       "nextMinBid": 599.14,
@@ -53,7 +53,7 @@
       ],
       "watched": false,
       "note": null,
-      "computedAt": "2026-11-09T02:33:30.909Z"
+      "computedAt": "2026-11-09T22:46:22.308Z"
     },
     {
       "listingId": "mock000044",
@@ -68,8 +68,8 @@
       "units": 137,
       "retail": 70453.28,
       "currency": "USD",
-      "endsAt": "2026-11-10T12:17:18.551Z",
-      "startsAt": "2026-11-07T14:33:30.551Z",
+      "endsAt": "2026-11-11T08:30:08.447Z",
+      "startsAt": "2026-11-08T10:46:20.447Z",
       "bids": 0,
       "currentBid": null,
       "nextMinBid": 125,
@@ -105,7 +105,7 @@
       "risks": [],
       "watched": false,
       "note": null,
-      "computedAt": "2026-11-09T02:33:30.909Z"
+      "computedAt": "2026-11-09T22:46:22.308Z"
     },
     {
       "listingId": "mock000003",
@@ -120,8 +120,8 @@
       "units": 371,
       "retail": 854795.94,
       "currency": "USD",
-      "endsAt": "2026-11-12T03:02:18.551Z",
-      "startsAt": "2026-11-08T01:33:30.551Z",
+      "endsAt": "2026-11-12T23:15:08.447Z",
+      "startsAt": "2026-11-08T21:46:20.447Z",
       "bids": 2,
       "currentBid": 143.96,
       "nextMinBid": 168.96,
@@ -157,7 +157,7 @@
       "risks": [],
       "watched": false,
       "note": null,
-      "computedAt": "2026-11-09T02:33:30.909Z"
+      "computedAt": "2026-11-09T22:46:22.308Z"
     },
     {
       "listingId": "mock000043",
@@ -172,8 +172,8 @@
       "units": 345,
       "retail": 212050.22,
       "currency": "USD",
-      "endsAt": "2026-11-11T06:53:54.551Z",
-      "startsAt": "2026-11-07T12:33:30.551Z",
+      "endsAt": "2026-11-12T03:06:44.447Z",
+      "startsAt": "2026-11-08T08:46:20.447Z",
       "bids": 3,
       "currentBid": 650.22,
       "nextMinBid": 700.22,
@@ -208,7 +208,7 @@
       "risks": [],
       "watched": false,
       "note": null,
-      "computedAt": "2026-11-09T02:33:30.909Z"
+      "computedAt": "2026-11-09T22:46:22.308Z"
     },
     {
       "listingId": "mock000047",
@@ -223,8 +223,8 @@
       "units": 743,
       "retail": 310032.72,
       "currency": "USD",
-      "endsAt": "2026-11-13T13:29:18.551Z",
-      "startsAt": "2026-11-08T04:33:30.551Z",
+      "endsAt": "2026-11-14T09:42:08.447Z",
+      "startsAt": "2026-11-09T00:46:20.447Z",
       "bids": 10,
       "currentBid": 1038.99,
       "nextMinBid": 1088.99,
@@ -262,7 +262,7 @@
       ],
       "watched": false,
       "note": null,
-      "computedAt": "2026-11-09T02:33:30.909Z"
+      "computedAt": "2026-11-09T22:46:22.308Z"
     },
     {
       "listingId": "mock000004",
@@ -277,8 +277,8 @@
       "units": 546,
       "retail": 270024.15,
       "currency": "USD",
-      "endsAt": "2026-11-13T02:13:42.551Z",
-      "startsAt": "2026-11-07T21:33:30.551Z",
+      "endsAt": "2026-11-13T22:26:32.447Z",
+      "startsAt": "2026-11-08T17:46:20.447Z",
       "bids": 14,
       "currentBid": 1084.84,
       "nextMinBid": 1134.84,
@@ -300,7 +300,7 @@
       "maxHammer": 73852.76,
       "costToRetail": 0,
       "costPerPallet": 152.56,
-      "bidsPerHour": 0.5,
+      "bidsPerHour": 0.54,
       "uniqueBidders": 5,
       "reasons": [
         "Projected close 1,518.78 → 6221.4% ROI at 0.6% of retail.",
@@ -313,7 +313,7 @@
       "risks": [],
       "watched": false,
       "note": null,
-      "computedAt": "2026-11-09T02:33:30.909Z"
+      "computedAt": "2026-11-09T22:46:22.308Z"
     },
     {
       "listingId": "mock000033",
@@ -328,8 +328,8 @@
       "units": 159,
       "retail": 73967.28,
       "currency": "USD",
-      "endsAt": "2026-11-12T19:05:54.551Z",
-      "startsAt": "2026-11-08T17:33:30.551Z",
+      "endsAt": "2026-11-13T15:18:44.447Z",
+      "startsAt": "2026-11-09T13:46:20.447Z",
       "bids": 2,
       "currentBid": 638.57,
       "nextMinBid": 688.57,
@@ -351,7 +351,7 @@
       "maxHammer": 20230.37,
       "costToRetail": 0.01,
       "costPerPallet": 239.46,
-      "bidsPerHour": 0.08,
+      "bidsPerHour": 0.13,
       "uniqueBidders": 2,
       "reasons": [
         "Projected close 894 → 2841.8% ROI at 1.4% of retail.",
@@ -366,7 +366,7 @@
       ],
       "watched": false,
       "note": null,
-      "computedAt": "2026-11-09T02:33:30.909Z"
+      "computedAt": "2026-11-09T22:46:22.308Z"
     },
     {
       "listingId": "mock000041",
@@ -381,8 +381,8 @@
       "units": 562,
       "retail": 386159.7,
       "currency": "USD",
-      "endsAt": "2026-11-10T15:47:54.551Z",
-      "startsAt": "2026-11-08T03:33:30.551Z",
+      "endsAt": "2026-11-11T12:00:44.447Z",
+      "startsAt": "2026-11-08T23:46:20.447Z",
       "bids": 12,
       "currentBid": 352.4,
       "nextMinBid": 377.4,
@@ -404,7 +404,7 @@
       "maxHammer": 105616.33,
       "costToRetail": 0,
       "costPerPallet": 30.5,
-      "bidsPerHour": 0.5,
+      "bidsPerHour": 0.58,
       "uniqueBidders": 4,
       "reasons": [
         "Projected close 493.36 → 27729.8% ROI at 0.1% of retail.",
@@ -419,7 +419,7 @@
       ],
       "watched": false,
       "note": null,
-      "computedAt": "2026-11-09T02:33:30.909Z"
+      "computedAt": "2026-11-09T22:46:22.308Z"
     },
     {
       "listingId": "mock000021",
@@ -434,8 +434,8 @@
       "units": 289,
       "retail": 1039608.3,
       "currency": "USD",
-      "endsAt": "2026-11-12T04:55:06.551Z",
-      "startsAt": "2026-11-07T23:33:30.551Z",
+      "endsAt": "2026-11-13T01:07:56.447Z",
+      "startsAt": "2026-11-08T19:46:20.447Z",
       "bids": 6,
       "currentBid": 286.46,
       "nextMinBid": 311.46,
@@ -472,7 +472,7 @@
       ],
       "watched": false,
       "note": null,
-      "computedAt": "2026-11-09T02:33:30.909Z"
+      "computedAt": "2026-11-09T22:46:22.308Z"
     },
     {
       "listingId": "mock000012",
@@ -487,8 +487,8 @@
       "units": 430,
       "retail": 422311.49,
       "currency": "USD",
-      "endsAt": "2026-11-09T18:40:42.551Z",
-      "startsAt": "2026-11-07T05:33:30.551Z",
+      "endsAt": "2026-11-10T14:53:32.447Z",
+      "startsAt": "2026-11-08T01:46:20.447Z",
       "bids": 19,
       "currentBid": 443.57,
       "nextMinBid": 468.57,
@@ -510,7 +510,7 @@
       "maxHammer": 115504,
       "costToRetail": 0,
       "costPerPallet": 33.27,
-      "bidsPerHour": 0.42,
+      "bidsPerHour": 0.46,
       "uniqueBidders": 3,
       "reasons": [
         "Projected close 621 → 24079.4% ROI at 0.2% of retail.",
@@ -523,7 +523,7 @@
       "risks": [],
       "watched": false,
       "note": null,
-      "computedAt": "2026-11-09T02:33:30.909Z"
+      "computedAt": "2026-11-09T22:46:22.308Z"
     },
     {
       "listingId": "mock000034",
@@ -538,8 +538,8 @@
       "units": 514,
       "retail": 422274.88,
       "currency": "USD",
-      "endsAt": "2026-11-11T15:31:06.551Z",
-      "startsAt": "2026-11-08T13:33:30.551Z",
+      "endsAt": "2026-11-12T11:43:56.447Z",
+      "startsAt": "2026-11-09T09:46:20.447Z",
       "bids": 24,
       "currentBid": 757.34,
       "nextMinBid": 782.34,
@@ -561,7 +561,7 @@
       "maxHammer": 115493.98,
       "costToRetail": 0,
       "costPerPallet": 77.46,
-      "bidsPerHour": 1,
+      "bidsPerHour": 1.29,
       "uniqueBidders": 5,
       "reasons": [
         "Projected close 1,060.28 → 14060.6% ROI at 0.3% of retail.",
@@ -574,7 +574,7 @@
       "risks": [],
       "watched": false,
       "note": null,
-      "computedAt": "2026-11-09T02:33:30.909Z"
+      "computedAt": "2026-11-09T22:46:22.308Z"
     },
     {
       "listingId": "mock000017",
@@ -589,8 +589,8 @@
       "units": 1304,
       "retail": 648983.01,
       "currency": "USD",
-      "endsAt": "2026-11-10T10:29:54.551Z",
-      "startsAt": "2026-11-07T23:33:30.551Z",
+      "endsAt": "2026-11-11T06:42:44.447Z",
+      "startsAt": "2026-11-08T19:46:20.447Z",
       "bids": 16,
       "currentBid": 455.38,
       "nextMinBid": 480.38,
@@ -612,7 +612,7 @@
       "maxHammer": 177499.63,
       "costToRetail": 0,
       "costPerPallet": 15.07,
-      "bidsPerHour": 0.63,
+      "bidsPerHour": 0.71,
       "uniqueBidders": 5,
       "reasons": [
         "Projected close 637.53 → 36094.4% ROI at 0.1% of retail.",
@@ -625,7 +625,7 @@
       "risks": [],
       "watched": false,
       "note": null,
-      "computedAt": "2026-11-09T02:33:30.909Z"
+      "computedAt": "2026-11-09T22:46:22.308Z"
     },
     {
       "listingId": "mock000019",
@@ -640,8 +640,8 @@
       "units": 269,
       "retail": 153070.88,
       "currency": "USD",
-      "endsAt": "2026-11-10T02:37:06.551Z",
-      "startsAt": "2026-11-07T09:33:30.551Z",
+      "endsAt": "2026-11-10T22:49:56.447Z",
+      "startsAt": "2026-11-08T05:46:20.447Z",
       "bids": 24,
       "currentBid": 879.13,
       "nextMinBid": 904.13,
@@ -663,7 +663,7 @@
       "maxHammer": 41865.54,
       "costToRetail": 0.01,
       "costPerPallet": 197.8,
-      "bidsPerHour": 0.58,
+      "bidsPerHour": 0.67,
       "uniqueBidders": 5,
       "reasons": [
         "Projected close 1,230.78 → 4322.0% ROI at 0.9% of retail.",
@@ -678,7 +678,7 @@
       ],
       "watched": false,
       "note": null,
-      "computedAt": "2026-11-09T02:33:30.909Z"
+      "computedAt": "2026-11-09T22:46:22.308Z"
     },
     {
       "listingId": "mock000025",
@@ -693,8 +693,8 @@
       "units": 1523,
       "retail": 387428.13,
       "currency": "USD",
-      "endsAt": "2026-11-10T11:31:42.551Z",
-      "startsAt": "2026-11-08T10:33:30.551Z",
+      "endsAt": "2026-11-11T07:44:32.447Z",
+      "startsAt": "2026-11-09T06:46:20.447Z",
       "bids": 9,
       "currentBid": 255.02,
       "nextMinBid": 280.02,
@@ -716,7 +716,7 @@
       "maxHammer": 105963.25,
       "costToRetail": 0,
       "costPerPallet": 9.89,
-      "bidsPerHour": 0.38,
+      "bidsPerHour": 0.46,
       "uniqueBidders": 3,
       "reasons": [
         "Projected close 357.03 → 38482.7% ROI at 0.1% of retail.",
@@ -729,7 +729,7 @@
       "risks": [],
       "watched": false,
       "note": null,
-      "computedAt": "2026-11-09T02:33:30.909Z"
+      "computedAt": "2026-11-09T22:46:22.308Z"
     },
     {
       "listingId": "mock000038",
@@ -744,8 +744,8 @@
       "units": 344,
       "retail": 534744.59,
       "currency": "USD",
-      "endsAt": "2026-11-13T15:19:42.551Z",
-      "startsAt": "2026-11-07T09:33:30.551Z",
+      "endsAt": "2026-11-14T11:32:32.447Z",
+      "startsAt": "2026-11-08T05:46:20.447Z",
       "bids": 24,
       "currentBid": 661.68,
       "nextMinBid": 686.68,
@@ -783,7 +783,7 @@
       ],
       "watched": false,
       "note": null,
-      "computedAt": "2026-11-09T02:33:30.909Z"
+      "computedAt": "2026-11-09T22:46:22.308Z"
     },
     {
       "listingId": "mock000007",
@@ -798,8 +798,8 @@
       "units": 274,
       "retail": 153434.09,
       "currency": "USD",
-      "endsAt": "2026-11-13T04:00:30.551Z",
-      "startsAt": "2026-11-07T05:33:30.551Z",
+      "endsAt": "2026-11-14T00:13:20.447Z",
+      "startsAt": "2026-11-08T01:46:20.447Z",
       "bids": 17,
       "currentBid": 520,
       "nextMinBid": 545,
@@ -821,7 +821,7 @@
       "maxHammer": 41964.88,
       "costToRetail": 0,
       "costPerPallet": 146.25,
-      "bidsPerHour": 0.38,
+      "bidsPerHour": 0.42,
       "uniqueBidders": 4,
       "reasons": [
         "Projected close 728 → 7393.7% ROI at 0.5% of retail.",
@@ -835,7 +835,7 @@
       ],
       "watched": false,
       "note": null,
-      "computedAt": "2026-11-09T02:33:30.909Z"
+      "computedAt": "2026-11-09T22:46:22.308Z"
     },
     {
       "listingId": "mock000011",
@@ -850,8 +850,8 @@
       "units": 611,
       "retail": 681877.99,
       "currency": "USD",
-      "endsAt": "2026-11-10T08:34:06.551Z",
-      "startsAt": "2026-11-08T19:33:30.551Z",
+      "endsAt": "2026-11-11T04:46:56.447Z",
+      "startsAt": "2026-11-09T15:46:20.447Z",
       "bids": 25,
       "currentBid": 1717.72,
       "nextMinBid": 1767.72,
@@ -873,7 +873,7 @@
       "maxHammer": 186496.54,
       "costToRetail": 0,
       "costPerPallet": 107.36,
-      "bidsPerHour": 1.04,
+      "bidsPerHour": 1.63,
       "uniqueBidders": 4,
       "reasons": [
         "Projected close 2,404.81 → 9981.7% ROI at 0.4% of retail.",
@@ -888,7 +888,7 @@
       ],
       "watched": false,
       "note": null,
-      "computedAt": "2026-11-09T02:33:30.909Z"
+      "computedAt": "2026-11-09T22:46:22.308Z"
     },
     {
       "listingId": "mock000000",
@@ -903,8 +903,8 @@
       "units": 2196,
       "retail": 774383.58,
       "currency": "USD",
-      "endsAt": "2026-11-11T04:11:18.551Z",
-      "startsAt": "2026-11-07T20:33:30.551Z",
+      "endsAt": "2026-11-12T00:24:08.447Z",
+      "startsAt": "2026-11-08T16:46:20.447Z",
       "bids": 24,
       "currentBid": 478.03,
       "nextMinBid": 503.03,
@@ -926,7 +926,7 @@
       "maxHammer": 211797.22,
       "costToRetail": 0,
       "costPerPallet": 14.53,
-      "bidsPerHour": 0.79,
+      "bidsPerHour": 0.92,
       "uniqueBidders": 2,
       "reasons": [
         "Projected close 669.24 → 41041.4% ROI at 0.1% of retail.",
@@ -940,7 +940,7 @@
       "risks": [],
       "watched": false,
       "note": null,
-      "computedAt": "2026-11-09T02:33:30.909Z"
+      "computedAt": "2026-11-09T22:46:22.308Z"
     },
     {
       "listingId": "mock000032",
@@ -955,8 +955,8 @@
       "units": 522,
       "retail": 385526,
       "currency": "USD",
-      "endsAt": "2026-11-13T19:41:54.551Z",
-      "startsAt": "2026-11-07T06:33:30.551Z",
+      "endsAt": "2026-11-14T15:54:44.447Z",
+      "startsAt": "2026-11-08T02:46:20.447Z",
       "bids": 26,
       "currentBid": 2266.2,
       "nextMinBid": 2316.2,
@@ -994,7 +994,7 @@
       ],
       "watched": false,
       "note": null,
-      "computedAt": "2026-11-09T02:33:30.909Z"
+      "computedAt": "2026-11-09T22:46:22.308Z"
     },
     {
       "listingId": "mock000030",
@@ -1009,8 +1009,8 @@
       "units": 922,
       "retail": 892194.37,
       "currency": "USD",
-      "endsAt": "2026-11-14T00:59:18.551Z",
-      "startsAt": "2026-11-07T11:33:30.551Z",
+      "endsAt": "2026-11-14T21:12:08.447Z",
+      "startsAt": "2026-11-08T07:46:20.447Z",
       "bids": 45,
       "currentBid": 928.15,
       "nextMinBid": 953.15,
@@ -1046,7 +1046,7 @@
       "risks": [],
       "watched": false,
       "note": null,
-      "computedAt": "2026-11-09T02:33:30.909Z"
+      "computedAt": "2026-11-09T22:46:22.308Z"
     },
     {
       "listingId": "mock000029",
@@ -1061,8 +1061,8 @@
       "units": 952,
       "retail": 1376420.19,
       "currency": "USD",
-      "endsAt": "2026-11-10T20:29:18.551Z",
-      "startsAt": "2026-11-07T22:33:30.551Z",
+      "endsAt": "2026-11-11T16:42:08.447Z",
+      "startsAt": "2026-11-08T18:46:20.447Z",
       "bids": 34,
       "currentBid": 1019.53,
       "nextMinBid": 1044.53,
@@ -1084,7 +1084,7 @@
       "maxHammer": 376456.8,
       "costToRetail": 0,
       "costPerPallet": 33.73,
-      "bidsPerHour": 1.21,
+      "bidsPerHour": 1.38,
       "uniqueBidders": 1,
       "reasons": [
         "Projected close 1,427.34 → 34187.1% ROI at 0.1% of retail.",
@@ -1099,7 +1099,7 @@
       ],
       "watched": false,
       "note": null,
-      "computedAt": "2026-11-09T02:33:30.909Z"
+      "computedAt": "2026-11-09T22:46:22.308Z"
     },
     {
       "listingId": "mock000042",
@@ -1114,8 +1114,8 @@
       "units": 339,
       "retail": 411663.2,
       "currency": "USD",
-      "endsAt": "2026-11-11T11:29:54.551Z",
-      "startsAt": "2026-11-08T06:33:30.551Z",
+      "endsAt": "2026-11-12T07:42:44.447Z",
+      "startsAt": "2026-11-09T02:46:20.447Z",
       "bids": 26,
       "currentBid": 2277.15,
       "nextMinBid": 2327.15,
@@ -1137,7 +1137,7 @@
       "maxHammer": 112591.64,
       "costToRetail": 0.01,
       "costPerPallet": 213.48,
-      "bidsPerHour": 1.08,
+      "bidsPerHour": 1.29,
       "uniqueBidders": 4,
       "reasons": [
         "Projected close 3,188.01 → 4491.2% ROI at 0.9% of retail.",
@@ -1150,7 +1150,7 @@
       ],
       "watched": false,
       "note": null,
-      "computedAt": "2026-11-09T02:33:30.909Z"
+      "computedAt": "2026-11-09T22:46:22.308Z"
     },
     {
       "listingId": "mock000023",
@@ -1165,8 +1165,8 @@
       "units": 452,
       "retail": 230472.64,
       "currency": "USD",
-      "endsAt": "2026-11-09T17:45:30.551Z",
-      "startsAt": "2026-11-07T17:33:30.551Z",
+      "endsAt": "2026-11-10T13:58:20.447Z",
+      "startsAt": "2026-11-08T13:46:20.447Z",
       "bids": 7,
       "currentBid": 833,
       "nextMinBid": 883,
@@ -1202,7 +1202,7 @@
       "risks": [],
       "watched": false,
       "note": null,
-      "computedAt": "2026-11-09T02:33:30.909Z"
+      "computedAt": "2026-11-09T22:46:22.308Z"
     },
     {
       "listingId": "mock000036",
@@ -1217,8 +1217,8 @@
       "units": 1345,
       "retail": 1325305.15,
       "currency": "USD",
-      "endsAt": "2026-11-12T04:50:54.551Z",
-      "startsAt": "2026-11-07T23:33:30.551Z",
+      "endsAt": "2026-11-13T01:03:44.447Z",
+      "startsAt": "2026-11-08T19:46:20.447Z",
       "bids": 44,
       "currentBid": 920.65,
       "nextMinBid": 945.65,
@@ -1240,7 +1240,7 @@
       "maxHammer": 362476.62,
       "costToRetail": 0,
       "costPerPallet": 34.52,
-      "bidsPerHour": 1.63,
+      "bidsPerHour": 1.88,
       "uniqueBidders": 1,
       "reasons": [
         "Projected close 1,288.91 → 36459.6% ROI at 0.1% of retail.",
@@ -1255,7 +1255,7 @@
       ],
       "watched": false,
       "note": null,
-      "computedAt": "2026-11-09T02:33:30.909Z"
+      "computedAt": "2026-11-09T22:46:22.308Z"
     },
     {
       "listingId": "mock000018",
@@ -1270,8 +1270,8 @@
       "units": 395,
       "retail": 314645.44,
       "currency": "USD",
-      "endsAt": "2026-11-11T00:59:54.551Z",
-      "startsAt": "2026-11-07T03:33:30.551Z",
+      "endsAt": "2026-11-11T21:12:44.447Z",
+      "startsAt": "2026-11-07T23:46:20.447Z",
       "bids": 45,
       "currentBid": 972.35,
       "nextMinBid": 997.35,
@@ -1293,7 +1293,7 @@
       "maxHammer": 86056.87,
       "costToRetail": 0,
       "costPerPallet": 91.16,
-      "bidsPerHour": 0.96,
+      "bidsPerHour": 1.08,
       "uniqueBidders": 4,
       "reasons": [
         "Projected close 1,361.29 → 8118.2% ROI at 0.5% of retail.",
@@ -1306,7 +1306,7 @@
       "risks": [],
       "watched": false,
       "note": null,
-      "computedAt": "2026-11-09T02:33:30.909Z"
+      "computedAt": "2026-11-09T22:46:22.308Z"
     },
     {
       "listingId": "mock000014",
@@ -1321,8 +1321,8 @@
       "units": 336,
       "retail": 125734.41,
       "currency": "USD",
-      "endsAt": "2026-11-12T04:23:54.551Z",
-      "startsAt": "2026-11-08T10:33:30.551Z",
+      "endsAt": "2026-11-13T00:36:44.447Z",
+      "startsAt": "2026-11-09T06:46:20.447Z",
       "bids": 6,
       "currentBid": 840.46,
       "nextMinBid": 890.46,
@@ -1344,7 +1344,7 @@
       "maxHammer": 34388.9,
       "costToRetail": 0.01,
       "costPerPallet": 94.55,
-      "bidsPerHour": 0.25,
+      "bidsPerHour": 0.29,
       "uniqueBidders": 1,
       "reasons": [
         "Projected close 1,176.64 → 3699.4% ROI at 1.1% of retail.",
@@ -1358,7 +1358,7 @@
       ],
       "watched": false,
       "note": null,
-      "computedAt": "2026-11-09T02:33:30.909Z"
+      "computedAt": "2026-11-09T22:46:22.308Z"
     },
     {
       "listingId": "mock000016",
@@ -1373,8 +1373,8 @@
       "units": 400,
       "retail": 214195.06,
       "currency": "USD",
-      "endsAt": "2026-11-10T02:53:54.551Z",
-      "startsAt": "2026-11-07T20:33:30.551Z",
+      "endsAt": "2026-11-10T23:06:44.447Z",
+      "startsAt": "2026-11-08T16:46:20.447Z",
       "bids": 33,
       "currentBid": 2355.63,
       "nextMinBid": 2405.63,
@@ -1396,7 +1396,7 @@
       "maxHammer": 58583.26,
       "costToRetail": 0.01,
       "costPerPallet": 294.45,
-      "bidsPerHour": 1.13,
+      "bidsPerHour": 1.29,
       "uniqueBidders": 4,
       "reasons": [
         "Projected close 3,297.88 → 2209.3% ROI at 1.7% of retail.",
@@ -1409,7 +1409,7 @@
       "risks": [],
       "watched": false,
       "note": null,
-      "computedAt": "2026-11-09T02:33:30.909Z"
+      "computedAt": "2026-11-09T22:46:22.308Z"
     },
     {
       "listingId": "mock000024",
@@ -1424,8 +1424,8 @@
       "units": 1485,
       "retail": 1155920.52,
       "currency": "USD",
-      "endsAt": "2026-11-11T19:14:18.551Z",
-      "startsAt": "2026-11-07T21:33:30.551Z",
+      "endsAt": "2026-11-12T15:27:08.447Z",
+      "startsAt": "2026-11-08T17:46:20.447Z",
       "bids": 40,
       "currentBid": 1920.52,
       "nextMinBid": 1970.52,
@@ -1447,7 +1447,7 @@
       "maxHammer": 316149.2,
       "costToRetail": 0,
       "costPerPallet": 67.52,
-      "bidsPerHour": 1.38,
+      "bidsPerHour": 1.58,
       "uniqueBidders": 4,
       "reasons": [
         "Projected close 2,688.73 → 15185.8% ROI at 0.3% of retail.",
@@ -1462,7 +1462,7 @@
       ],
       "watched": false,
       "note": null,
-      "computedAt": "2026-11-09T02:33:30.909Z"
+      "computedAt": "2026-11-09T22:46:22.308Z"
     },
     {
       "listingId": "mock000026",
@@ -1477,8 +1477,8 @@
       "units": 54,
       "retail": 36069.21,
       "currency": "USD",
-      "endsAt": "2026-11-11T08:11:18.551Z",
-      "startsAt": "2026-11-08T14:33:30.551Z",
+      "endsAt": "2026-11-12T04:24:08.447Z",
+      "startsAt": "2026-11-09T10:46:20.447Z",
       "bids": 31,
       "currentBid": 885.14,
       "nextMinBid": 910.14,
@@ -1500,7 +1500,7 @@
       "maxHammer": 9865.08,
       "costToRetail": 0.03,
       "costPerPallet": 995.78,
-      "bidsPerHour": 1.29,
+      "bidsPerHour": 1.71,
       "uniqueBidders": 2,
       "reasons": [
         "Projected close 1,239.2 → 934.9% ROI at 3.9% of retail.",
@@ -1516,7 +1516,7 @@
       ],
       "watched": false,
       "note": null,
-      "computedAt": "2026-11-09T02:33:30.909Z"
+      "computedAt": "2026-11-09T22:46:22.308Z"
     },
     {
       "listingId": "mock000015",
@@ -1531,8 +1531,8 @@
       "units": 74,
       "retail": 147202.15,
       "currency": "USD",
-      "endsAt": "2026-11-09T03:39:30.551Z",
-      "startsAt": "2026-11-08T16:33:30.551Z",
+      "endsAt": "2026-11-09T23:52:20.447Z",
+      "startsAt": "2026-11-09T12:46:20.447Z",
       "bids": 43,
       "currentBid": 753.72,
       "nextMinBid": 778.72,
@@ -1554,7 +1554,7 @@
       "maxHammer": 40260.42,
       "costToRetail": 0.01,
       "costPerPallet": 169.59,
-      "bidsPerHour": 1.79,
+      "bidsPerHour": 2.46,
       "uniqueBidders": 3,
       "reasons": [
         "Projected close 1,055.21 → 4860.0% ROI at 0.8% of retail.",
@@ -1570,7 +1570,7 @@
       ],
       "watched": false,
       "note": null,
-      "computedAt": "2026-11-09T02:33:30.909Z"
+      "computedAt": "2026-11-09T22:46:22.308Z"
     },
     {
       "listingId": "mock000039",
@@ -1585,8 +1585,8 @@
       "units": 188,
       "retail": 464969.64,
       "currency": "USD",
-      "endsAt": "2026-11-12T12:34:42.551Z",
-      "startsAt": "2026-11-07T10:33:30.551Z",
+      "endsAt": "2026-11-13T08:47:32.447Z",
+      "startsAt": "2026-11-08T06:46:20.447Z",
       "bids": 41,
       "currentBid": 3480.65,
       "nextMinBid": 3530.65,
@@ -1608,7 +1608,7 @@
       "maxHammer": 127171.18,
       "costToRetail": 0.01,
       "costPerPallet": 261.05,
-      "bidsPerHour": 1.04,
+      "bidsPerHour": 1.17,
       "uniqueBidders": 4,
       "reasons": [
         "Projected close 4,872.91 → 3292.7% ROI at 1.2% of retail.",
@@ -1623,7 +1623,7 @@
       ],
       "watched": false,
       "note": null,
-      "computedAt": "2026-11-09T02:33:30.909Z"
+      "computedAt": "2026-11-09T22:46:22.308Z"
     },
     {
       "listingId": "mock000002",
@@ -1638,8 +1638,8 @@
       "units": 38,
       "retail": 71663.41,
       "currency": "USD",
-      "endsAt": "2026-11-10T08:10:42.551Z",
-      "startsAt": "2026-11-08T11:33:30.551Z",
+      "endsAt": "2026-11-11T04:23:32.447Z",
+      "startsAt": "2026-11-09T07:46:20.447Z",
       "bids": 45,
       "currentBid": 1734.12,
       "nextMinBid": 1759.12,
@@ -1661,7 +1661,7 @@
       "maxHammer": 19600.25,
       "costToRetail": 0.03,
       "costPerPallet": 650.3,
-      "bidsPerHour": 1.88,
+      "bidsPerHour": 2.33,
       "uniqueBidders": 5,
       "reasons": [
         "Projected close 2,427.77 → 949.5% ROI at 3.8% of retail.",
@@ -1676,7 +1676,7 @@
       ],
       "watched": false,
       "note": null,
-      "computedAt": "2026-11-09T02:33:30.909Z"
+      "computedAt": "2026-11-09T22:46:22.308Z"
     },
     {
       "listingId": "mock000037",
@@ -1691,8 +1691,8 @@
       "units": 768,
       "retail": 359921.62,
       "currency": "USD",
-      "endsAt": "2026-11-09T21:37:42.551Z",
-      "startsAt": "2026-11-07T20:33:30.551Z",
+      "endsAt": "2026-11-10T17:50:32.447Z",
+      "startsAt": "2026-11-08T16:46:20.447Z",
       "bids": 36,
       "currentBid": 1837.35,
       "nextMinBid": 1887.35,
@@ -1714,7 +1714,7 @@
       "maxHammer": 98440.1,
       "costToRetail": 0.01,
       "costPerPallet": 187.91,
-      "bidsPerHour": 1.21,
+      "bidsPerHour": 1.38,
       "uniqueBidders": 5,
       "reasons": [
         "Projected close 2,572.29 → 4875.0% ROI at 0.8% of retail.",
@@ -1727,7 +1727,7 @@
       ],
       "watched": false,
       "note": null,
-      "computedAt": "2026-11-09T02:33:30.909Z"
+      "computedAt": "2026-11-09T22:46:22.308Z"
     },
     {
       "listingId": "mock000022",
@@ -1742,8 +1742,8 @@
       "units": 2264,
       "retail": 402374.37,
       "currency": "USD",
-      "endsAt": "2026-11-09T12:04:42.551Z",
-      "startsAt": "2026-11-07T03:33:30.551Z",
+      "endsAt": "2026-11-10T08:17:32.447Z",
+      "startsAt": "2026-11-07T23:46:20.447Z",
       "bids": 17,
       "currentBid": 657.51,
       "nextMinBid": 682.51,
@@ -1765,7 +1765,7 @@
       "maxHammer": 110051.11,
       "costToRetail": 0,
       "costPerPallet": 23.12,
-      "bidsPerHour": 0.38,
+      "bidsPerHour": 0.42,
       "uniqueBidders": 2,
       "reasons": [
         "Projected close 920.51 → 15442.1% ROI at 0.3% of retail.",
@@ -1779,7 +1779,7 @@
       ],
       "watched": false,
       "note": null,
-      "computedAt": "2026-11-09T02:33:30.909Z"
+      "computedAt": "2026-11-09T22:46:22.308Z"
     },
     {
       "listingId": "mock000046",
@@ -1794,8 +1794,8 @@
       "units": 2299,
       "retail": 522481.63,
       "currency": "USD",
-      "endsAt": "2026-11-12T22:40:42.551Z",
-      "startsAt": "2026-11-08T13:33:30.551Z",
+      "endsAt": "2026-11-13T18:53:32.447Z",
+      "startsAt": "2026-11-09T09:46:20.447Z",
       "bids": 22,
       "currentBid": 592.62,
       "nextMinBid": 617.62,
@@ -1817,7 +1817,7 @@
       "maxHammer": 142900.96,
       "costToRetail": 0,
       "costPerPallet": 20.83,
-      "bidsPerHour": 0.92,
+      "bidsPerHour": 1.17,
       "uniqueBidders": 4,
       "reasons": [
         "Projected close 829.67 → 22291.0% ROI at 0.2% of retail.",
@@ -1831,7 +1831,7 @@
       ],
       "watched": false,
       "note": null,
-      "computedAt": "2026-11-09T02:33:30.909Z"
+      "computedAt": "2026-11-09T22:46:22.308Z"
     },
     {
       "listingId": "mock000020",
@@ -1846,8 +1846,8 @@
       "units": 2556,
       "retail": 481404.42,
       "currency": "USD",
-      "endsAt": "2026-11-12T08:01:06.551Z",
-      "startsAt": "2026-11-08T22:33:30.551Z",
+      "endsAt": "2026-11-13T04:13:56.447Z",
+      "startsAt": "2026-11-09T18:46:20.447Z",
       "bids": 24,
       "currentBid": 737.8,
       "nextMinBid": 762.8,
@@ -1869,7 +1869,7 @@
       "maxHammer": 131666.17,
       "costToRetail": 0,
       "costPerPallet": 23.06,
-      "bidsPerHour": 1,
+      "bidsPerHour": 1.96,
       "uniqueBidders": 5,
       "reasons": [
         "Projected close 1,032.92 → 16471.0% ROI at 0.2% of retail.",
@@ -1884,7 +1884,7 @@
       ],
       "watched": false,
       "note": null,
-      "computedAt": "2026-11-09T02:33:30.909Z"
+      "computedAt": "2026-11-09T22:46:22.308Z"
     },
     {
       "listingId": "mock000028",
@@ -1899,8 +1899,8 @@
       "units": 876,
       "retail": 288251.1,
       "currency": "USD",
-      "endsAt": "2026-11-10T08:01:42.551Z",
-      "startsAt": "2026-11-07T06:33:30.551Z",
+      "endsAt": "2026-11-11T04:14:32.447Z",
+      "startsAt": "2026-11-08T02:46:20.447Z",
       "bids": 37,
       "currentBid": 2538.06,
       "nextMinBid": 2588.06,
@@ -1922,7 +1922,7 @@
       "maxHammer": 78837.91,
       "costToRetail": 0.01,
       "costPerPallet": 129.79,
-      "bidsPerHour": 0.83,
+      "bidsPerHour": 0.96,
       "uniqueBidders": 3,
       "reasons": [
         "Projected close 3,553.28 → 2784.4% ROI at 1.4% of retail.",
@@ -1935,7 +1935,7 @@
       "risks": [],
       "watched": false,
       "note": null,
-      "computedAt": "2026-11-09T02:33:30.909Z"
+      "computedAt": "2026-11-09T22:46:22.308Z"
     },
     {
       "listingId": "mock000035",
@@ -1950,8 +1950,8 @@
       "units": 793,
       "retail": 713671.22,
       "currency": "USD",
-      "endsAt": "2026-11-10T21:02:54.551Z",
-      "startsAt": "2026-11-08T22:33:30.551Z",
+      "endsAt": "2026-11-11T17:15:44.447Z",
+      "startsAt": "2026-11-09T18:46:20.447Z",
       "bids": 36,
       "currentBid": 2417.41,
       "nextMinBid": 2467.41,
@@ -1973,7 +1973,7 @@
       "maxHammer": 195192.13,
       "costToRetail": 0,
       "costPerPallet": 73.5,
-      "bidsPerHour": 1.5,
+      "bidsPerHour": 2.92,
       "uniqueBidders": 3,
       "reasons": [
         "Projected close 3,384.37 → 7397.7% ROI at 0.5% of retail.",
@@ -1987,7 +1987,7 @@
       ],
       "watched": false,
       "note": null,
-      "computedAt": "2026-11-09T02:33:30.909Z"
+      "computedAt": "2026-11-09T22:46:22.308Z"
     },
     {
       "listingId": "mock000013",
@@ -2002,8 +2002,8 @@
       "units": 1047,
       "retail": 126368.08,
       "currency": "USD",
-      "endsAt": "2026-11-09T20:02:54.551Z",
-      "startsAt": "2026-11-08T10:33:30.551Z",
+      "endsAt": "2026-11-10T16:15:44.447Z",
+      "startsAt": "2026-11-09T06:46:20.447Z",
       "bids": 24,
       "currentBid": 2236.95,
       "nextMinBid": 2286.95,
@@ -2025,7 +2025,7 @@
       "maxHammer": 34562.21,
       "costToRetail": 0.02,
       "costPerPallet": 167.77,
-      "bidsPerHour": 1,
+      "bidsPerHour": 1.21,
       "uniqueBidders": 5,
       "reasons": [
         "Projected close 3,131.73 → 1334.7% ROI at 2.8% of retail.",
@@ -2040,7 +2040,7 @@
       ],
       "watched": false,
       "note": null,
-      "computedAt": "2026-11-09T02:33:30.909Z"
+      "computedAt": "2026-11-09T22:46:22.308Z"
     },
     {
       "listingId": "mock000031",
@@ -2055,8 +2055,8 @@
       "units": 2261,
       "retail": 277776.26,
       "currency": "USD",
-      "endsAt": "2026-11-13T08:31:42.551Z",
-      "startsAt": "2026-11-08T12:33:30.551Z",
+      "endsAt": "2026-11-14T04:44:32.447Z",
+      "startsAt": "2026-11-09T08:46:20.447Z",
       "bids": 23,
       "currentBid": 718.09,
       "nextMinBid": 743.09,
@@ -2094,7 +2094,7 @@
       ],
       "watched": false,
       "note": null,
-      "computedAt": "2026-11-09T02:33:30.909Z"
+      "computedAt": "2026-11-09T22:46:22.308Z"
     },
     {
       "listingId": "mock000005",
@@ -2109,8 +2109,8 @@
       "units": 1002,
       "retail": 222741.13,
       "currency": "USD",
-      "endsAt": "2026-11-12T00:46:06.551Z",
-      "startsAt": "2026-11-07T17:33:30.551Z",
+      "endsAt": "2026-11-12T20:58:56.447Z",
+      "startsAt": "2026-11-08T13:46:20.447Z",
       "bids": 33,
       "currentBid": 632.5,
       "nextMinBid": 657.5,
@@ -2132,7 +2132,7 @@
       "maxHammer": 60920.65,
       "costToRetail": 0,
       "costPerPallet": 32.34,
-      "bidsPerHour": 1,
+      "bidsPerHour": 1.13,
       "uniqueBidders": 1,
       "reasons": [
         "Projected close 885.5 → 8843.7% ROI at 0.4% of retail.",
@@ -2147,7 +2147,7 @@
       ],
       "watched": false,
       "note": null,
-      "computedAt": "2026-11-09T02:33:30.909Z"
+      "computedAt": "2026-11-09T22:46:22.308Z"
     },
     {
       "listingId": "mock000006",
@@ -2162,8 +2162,8 @@
       "units": 349,
       "retail": 166601.31,
       "currency": "USD",
-      "endsAt": "2026-11-12T23:29:54.551Z",
-      "startsAt": "2026-11-08T21:33:30.551Z",
+      "endsAt": "2026-11-13T19:42:44.447Z",
+      "startsAt": "2026-11-09T17:46:20.447Z",
       "bids": 24,
       "currentBid": 2268.97,
       "nextMinBid": 2318.97,
@@ -2185,7 +2185,7 @@
       "maxHammer": 45566.17,
       "costToRetail": 0.02,
       "costPerPallet": 182.33,
-      "bidsPerHour": 1,
+      "bidsPerHour": 1.75,
       "uniqueBidders": 5,
       "reasons": [
         "Projected close 3,176.56 → 1764.8% ROI at 2.1% of retail.",
@@ -2198,7 +2198,7 @@
       ],
       "watched": false,
       "note": null,
-      "computedAt": "2026-11-09T02:33:30.909Z"
+      "computedAt": "2026-11-09T22:46:22.308Z"
     },
     {
       "listingId": "mock000010",
@@ -2213,8 +2213,8 @@
       "units": 1257,
       "retail": 237874.48,
       "currency": "USD",
-      "endsAt": "2026-11-13T18:12:30.551Z",
-      "startsAt": "2026-11-08T17:33:30.551Z",
+      "endsAt": "2026-11-14T14:25:20.447Z",
+      "startsAt": "2026-11-09T13:46:20.447Z",
       "bids": 34,
       "currentBid": 2215.45,
       "nextMinBid": 2265.45,
@@ -2252,7 +2252,7 @@
       ],
       "watched": false,
       "note": null,
-      "computedAt": "2026-11-09T02:33:30.909Z"
+      "computedAt": "2026-11-09T22:46:22.308Z"
     },
     {
       "listingId": "mock000040",
@@ -2267,8 +2267,8 @@
       "units": 593,
       "retail": 103621.01,
       "currency": "USD",
-      "endsAt": "2026-11-14T01:19:42.551Z",
-      "startsAt": "2026-11-07T05:33:30.551Z",
+      "endsAt": "2026-11-14T21:32:32.447Z",
+      "startsAt": "2026-11-08T01:46:20.447Z",
       "bids": 30,
       "currentBid": 1210.35,
       "nextMinBid": 1235.35,
@@ -2306,7 +2306,7 @@
       ],
       "watched": false,
       "note": null,
-      "computedAt": "2026-11-09T02:33:30.909Z"
+      "computedAt": "2026-11-09T22:46:22.308Z"
     },
     {
       "listingId": "mock000008",
@@ -2321,8 +2321,8 @@
       "units": 213,
       "retail": 76357.22,
       "currency": "USD",
-      "endsAt": "2026-11-13T10:44:18.551Z",
-      "startsAt": "2026-11-08T03:33:30.551Z",
+      "endsAt": "2026-11-14T06:57:08.447Z",
+      "startsAt": "2026-11-08T23:46:20.447Z",
       "bids": 42,
       "currentBid": 2948.72,
       "nextMinBid": 2998.72,
@@ -2358,7 +2358,7 @@
       "risks": [],
       "watched": false,
       "note": null,
-      "computedAt": "2026-11-09T02:33:30.909Z"
+      "computedAt": "2026-11-09T22:46:22.308Z"
     },
     {
       "listingId": "mock000009",
@@ -2373,8 +2373,8 @@
       "units": 154,
       "retail": 47045.69,
       "currency": "USD",
-      "endsAt": "2026-11-12T06:56:18.551Z",
-      "startsAt": "2026-11-07T04:33:30.551Z",
+      "endsAt": "2026-11-13T03:09:08.447Z",
+      "startsAt": "2026-11-08T00:46:20.447Z",
       "bids": 42,
       "currentBid": 1162.32,
       "nextMinBid": 1187.32,
@@ -2396,7 +2396,7 @@
       "maxHammer": 12867.2,
       "costToRetail": 0.03,
       "costPerPallet": 186.8,
-      "bidsPerHour": 0.92,
+      "bidsPerHour": 1.04,
       "uniqueBidders": 1,
       "reasons": [
         "Projected close 1,627.25 → 928.0% ROI at 3.9% of retail.",
@@ -2411,7 +2411,7 @@
       ],
       "watched": false,
       "note": null,
-      "computedAt": "2026-11-09T02:33:30.909Z"
+      "computedAt": "2026-11-09T22:46:22.308Z"
     },
     {
       "listingId": "mock000001",
@@ -2426,8 +2426,8 @@
       "units": 488,
       "retail": 212547.34,
       "currency": "USD",
-      "endsAt": "2026-11-10T11:55:06.551Z",
-      "startsAt": "2026-11-08T23:33:30.551Z",
+      "endsAt": "2026-11-11T08:07:56.447Z",
+      "startsAt": "2026-11-09T19:46:20.447Z",
       "bids": 35,
       "currentBid": 1674.59,
       "nextMinBid": 1724.59,
@@ -2449,7 +2449,7 @@
       "maxHammer": 58132.61,
       "costToRetail": 0.01,
       "costPerPallet": 67.28,
-      "bidsPerHour": 1.46,
+      "bidsPerHour": 2.92,
       "uniqueBidders": 3,
       "reasons": [
         "Projected close 2,344.43 → 3123.5% ROI at 1.2% of retail.",
@@ -2464,7 +2464,7 @@
       ],
       "watched": false,
       "note": null,
-      "computedAt": "2026-11-09T02:33:30.909Z"
+      "computedAt": "2026-11-09T22:46:22.308Z"
     },
     {
       "listingId": "mock000027",
@@ -2479,8 +2479,8 @@
       "units": 1691,
       "retail": 154101.39,
       "currency": "USD",
-      "endsAt": "2026-11-09T10:00:30.551Z",
-      "startsAt": "2026-11-08T09:33:30.551Z",
+      "endsAt": "2026-11-10T06:13:20.447Z",
+      "startsAt": "2026-11-09T05:46:20.447Z",
       "bids": 32,
       "currentBid": 2169.77,
       "nextMinBid": 2219.77,
@@ -2502,7 +2502,7 @@
       "maxHammer": 42147.39,
       "costToRetail": 0.02,
       "costPerPallet": 84.17,
-      "bidsPerHour": 1.33,
+      "bidsPerHour": 1.63,
       "uniqueBidders": 1,
       "reasons": [
         "Projected close 3,037.68 → 1703.7% ROI at 2.2% of retail.",
@@ -2517,7 +2517,7 @@
       ],
       "watched": false,
       "note": null,
-      "computedAt": "2026-11-09T02:33:30.909Z"
+      "computedAt": "2026-11-09T22:46:22.308Z"
     }
   ],
   "facets": {
@@ -2597,5 +2597,6 @@
         "count": 6
       }
     ]
-  }
+  },
+  "generatedAt": "2026-11-09T22:46:22.602Z"
 }

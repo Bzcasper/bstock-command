@@ -1,0 +1,55 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "npm run build",
+  "outputDirectory": "apps/web/dist",
+  "framework": "vite",
+  "rewrites": [
+    {
+      "source": "/data/(.*)",
+      "destination": "/data/$1"
+    },
+    {
+      "source": "/api/listings",
+      "destination": "/data/listings.json"
+    },
+    {
+      "source": "/api/status",
+      "destination": "/data/status.json"
+    },
+    {
+      "source": "/api/bids",
+      "destination": "/data/bids.json"
+    },
+    {
+      "source": "/api/funnel/listings",
+      "destination": "/data/listings.json"
+    },
+    {
+      "source": "/api/funnel/summary",
+      "destination": "/data/funnel-summary.json"
+    },
+    {
+      "source": "/api/(.*)",
+      "destination": "/data/$1.json"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/data/(.*)",
+      "headers": [
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=60, s-maxage=300"
+        }
+      ]
+    }
+  ]
+}

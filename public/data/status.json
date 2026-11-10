@@ -1,16 +1,23 @@
 {
-  "mode": "static",
+  "mode": "ci-mock",
   "stats": {
     "listings": 48,
     "metrics": 48,
-    "bids": 955,
+    "bids": 1910,
     "attempts": 0,
     "watched": 0
   },
-  "generatedAt": "2026-11-09T02:33:30.959Z",
+  "tierCounts": {
+    "ALPHA_GEM": 23,
+    "SOLID_VALUE": 5,
+    "SLEEPER_SNIPE": 0,
+    "SPECULATIVE": 6,
+    "AVOID": 14
+  },
+  "generatedAt": "2026-11-09T22:46:22.602Z",
   "report": {
-    "startedAt": "2026-11-09T02:33:30.726Z",
-    "finishedAt": "2026-11-09T02:33:30.956Z",
+    "startedAt": "2026-11-09T22:46:20.819Z",
+    "finishedAt": "2026-11-09T22:46:22.594Z",
     "pagesFetched": 1,
     "listingsSeen": 48,
     "listingsUpserted": 48,
@@ -20,5 +27,6 @@
     "bidEventsAdded": 955,
     "metricsComputed": 48,
     "errors": []
-  }
+  },
+  "source": "autonomous-ci-workflow"
 }

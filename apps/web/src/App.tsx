@@ -59,9 +59,9 @@ function SettingsIcon() {
   );
 }
 
-function ClockIcon() {
+function ClockIcon({ size = 14 }: { size?: number } = {}) {
   return (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <circle cx="12" cy="12" r="10" />
       <polyline points="12 6 12 12 16 14" />
     </svg>
@@ -178,6 +178,93 @@ function ActivityIcon() {
   );
 }
 
+function DownloadIcon({ size = 16 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+      <polyline points="7 10 12 15 17 10" />
+      <line x1="12" y1="15" x2="12" y2="3" />
+    </svg>
+  );
+}
+
+function ExternalLinkIcon({ size = 14 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+      <polyline points="15 3 21 3 21 9" />
+      <line x1="10" y1="14" x2="21" y2="3" />
+    </svg>
+  );
+}
+
+function InspectIcon({ size = 18 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="11" cy="11" r="8" />
+      <line x1="21" y1="21" x2="16.65" y2="16.65" />
+      <line x1="11" y1="8" x2="11" y2="14" />
+      <line x1="8" y1="11" x2="14" y2="11" />
+    </svg>
+  );
+}
+
+function CheckCircleIcon({ size = 16, color = "#10b981" }: { size?: number; color?: string }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+      <polyline points="22 4 12 14.01 9 11.01" />
+    </svg>
+  );
+}
+
+function CopyIcon({ size = 14 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+    </svg>
+  );
+}
+
+function CameraIcon({ size = 14 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
+      <circle cx="12" cy="13" r="4" />
+    </svg>
+  );
+}
+
+function RocketIcon({ size = 16 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z" />
+      <path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z" />
+      <path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0" />
+      <path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5" />
+    </svg>
+  );
+}
+
+function GlobeIcon({ size = 16 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="10" />
+      <line x1="2" y1="12" x2="22" y2="12" />
+      <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+    </svg>
+  );
+}
+
+function GitLabIcon({ size = 16 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M22.65 14.39L12 22.13 1.35 14.39a.84.84 0 0 1-.3-.94l1.22-3.78 2.44-7.51A.42.42 0 0 1 5.5 2a.43.43 0 0 1 .4.28l2.45 7.54h7.3l2.45-7.54a.43.43 0 0 1 .4-.28.42.42 0 0 1 .39.22l2.44 7.51 1.22 3.78a.84.84 0 0 1-.3.88z" />
+    </svg>
+  );
+}
+
 function ScoreBadge({ score }: { score: number | null }) {
   const s = score ?? 0;
   const tone = s >= 75 ? "good" : s >= 50 ? "mid" : "low";
@@ -201,12 +288,103 @@ function TierBadge({ tier }: { tier?: string | null }) {
   );
 }
 
-function Kpi({ label, value, sub }: { label: string; value: string; sub?: string }) {
+function Kpi({
+  label,
+  value,
+  sub,
+  onClick,
+  active,
+}: {
+  label: string;
+  value: string;
+  sub?: string;
+  onClick?: () => void;
+  active?: boolean;
+}) {
   return (
-    <div className="kpi">
+    <div
+      className={`kpi ${onClick ? "interactive" : ""} ${active ? "active" : ""}`}
+      onClick={onClick}
+      role={onClick ? "button" : undefined}
+      tabIndex={onClick ? 0 : undefined}
+      onKeyDown={(e) => {
+        if (onClick && (e.key === "Enter" || e.key === " ")) {
+          e.preventDefault();
+          onClick();
+        }
+      }}
+    >
       <div className="kpi-label">{label}</div>
       <div className="kpi-value">{value}</div>
       {sub ? <div className="kpi-sub">{sub}</div> : null}
+    </div>
+  );
+}
+
+function ExecutionReceipt({ result, amount, listing }: { result: any; amount: number; listing: ListingRow }) {
+  const [copied, setCopied] = useState(false);
+  const isError = Boolean(result.error);
+  const isDryRun = result.status === "dry-run" || result.payload?.dryRun;
+  const isLive = result.status === "placed";
+  const isPlan = Boolean(result.plan);
+  const token = result.plan?.planToken ?? result.payload?.planToken;
+
+  const onCopy = (text: string) => {
+    navigator.clipboard?.writeText(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  if (isError) {
+    return (
+      <div className="receipt-box receipt-error" role="alert">
+        <div className="receipt-header">
+          <AlertIcon size={16} color="var(--bad)" />
+          <span className="receipt-status">EXECUTION REJECTED</span>
+        </div>
+        <div className="receipt-message">{result.error}</div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="receipt-box receipt-success" role="status">
+      <div className="receipt-header">
+        <CheckCircleIcon size={16} color="var(--good)" />
+        <span className="receipt-status">
+          {isPlan ? "PLAN SIGNED & AUTHORIZED" : isDryRun ? "DRY-RUN SIMULATION CONFIRMED" : "LIVE AUCTION BID EXECUTED"}
+        </span>
+        <span className="receipt-badge">{isPlan ? "10M TOKEN" : isDryRun ? "SIMULATED" : "CONFIRMED"}</span>
+      </div>
+      <div className="receipt-details">
+        <div className="receipt-row">
+          <span>Target Lot</span>
+          <b>{listing.title ? (listing.title.length > 28 ? `${listing.title.slice(0, 28)}...` : listing.title) : listing.listingId}</b>
+        </div>
+        <div className="receipt-row">
+          <span>Max Authorized Bid</span>
+          <b className="accent">{fmtMoney(result.plan?.maxAmount ?? amount)}</b>
+        </div>
+        {token ? (
+          <div className="receipt-row">
+            <span>Cryptographic Token</span>
+            <span
+              className="receipt-token"
+              onClick={() => onCopy(token)}
+              title="Click to copy full token"
+              style={{ cursor: "pointer", display: "inline-flex", alignItems: "center", gap: "4px" }}
+            >
+              {token.slice(0, 20)}... <CopyIcon size={12} />
+              {copied ? <span style={{ color: "var(--good)", fontSize: "12px" }}>copied!</span> : null}
+            </span>
+          </div>
+        ) : null}
+        <div className="receipt-row">
+          <span>Executed At</span>
+          <span>{new Date(result.timestamp ?? Date.now()).toLocaleTimeString()}</span>
+        </div>
+        {result.message ? <div className="receipt-note">{result.message}</div> : null}
+      </div>
     </div>
   );
 }
@@ -227,11 +405,25 @@ export function App() {
 
   // Mobile navigation tab state
   const [mobileTab, setMobileTab] = useState<"auctions" | "watchlist" | "detail" | "kpis">("auctions");
+  const [watchedOnly, setWatchedOnly] = useState(false);
   const [solvingClearance, setSolvingClearance] = useState(false);
   const [viewMode, setViewMode] = useState<"table" | "cards">("table");
   const [selectedTier, setSelectedTier] = useState<string>("ALL");
   const [lightboxImg, setLightboxImg] = useState<string | null>(null);
   const [funnelData, setFunnelData] = useState<any>(null);
+
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setLightboxImg(null);
+        setFilterModalOpen(false);
+        setSettingsOpen(false);
+        setStatusModalOpen(false);
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, []);
 
   const [filters, setFilters] = useState<Record<string, string | number | undefined>>({
     q: "",
@@ -320,17 +512,17 @@ export function App() {
     return { count, avgScore, soon, watched, projectedProfit };
   }, [listings]);
 
-  // Filter listings by active mobile view if in watchlist mode and selected tier
+  // Filter listings by active view if in watchlist mode and selected tier
   const displayedListings = useMemo(() => {
     let list = Array.isArray(listings) ? listings : [];
-    if (mobileTab === "watchlist") {
+    if (mobileTab === "watchlist" || watchedOnly) {
       list = list.filter((l) => l.watched);
     }
     if (selectedTier !== "ALL") {
       list = list.filter((l) => l.opportunityTier === selectedTier);
     }
     return list;
-  }, [listings, mobileTab, selectedTier]);
+  }, [listings, mobileTab, watchedOnly, selectedTier]);
 
   const activeFiltersCount = useMemo(() => {
     let count = 0;
@@ -341,8 +533,9 @@ export function App() {
     if (Number(filters.minRoi ?? 0) > 0) count++;
     if (filters.endingWithinHours) count++;
     if (filters.sort !== "score") count++;
+    if (watchedOnly) count++;
     return count;
-  }, [filters]);
+  }, [filters, watchedOnly]);
 
   const resetFilters = () => {
     setFilters({
@@ -355,6 +548,8 @@ export function App() {
       sort: "score",
       limit: 100,
     });
+    setWatchedOnly(false);
+    setSelectedTier("ALL");
   };
 
   return (
@@ -372,7 +567,8 @@ export function App() {
         <div className="status-cluster" onClick={() => setStatusModalOpen(true)} style={{ cursor: "pointer" }} title="Click to open Autonomous CI & Backend status">
           <span className={`pill pill-${status?.mode ?? "off"}`}>{status?.mode ?? "ready"}</span>
           <span className="pill pill-ok" title="Autonomous CI Serverless Backend (GitHub Actions & GitLab CI)">
-            CI: Free Backend ⚡
+            <LightningIcon size={12} color="var(--good)" />
+            <span>CI: Free Backend</span>
           </span>
           <span className={`pill ${status?.credentials?.hasClearance ? "pill-ok" : "pill-warn"}`}>
             {status?.credentials?.hasClearance ? "clearance OK" : "no clearance"}
@@ -393,14 +589,16 @@ export function App() {
             disabled={solvingClearance}
             title="Solve Cloudflare Turnstile challenge with Scrapling"
           >
-            {solvingClearance ? "Solving Turnstile..." : "⚡ Solve Cloudflare"}
+            <LightningIcon size={14} />
+            <span>{solvingClearance ? "Solving Turnstile..." : "Solve Cloudflare"}</span>
           </button>
           <div className="view-mode-toggle">
             <button className={`view-mode-btn ${viewMode === "table" ? "active" : ""}`} onClick={() => setViewMode("table")}>
               Table
             </button>
             <button className={`view-mode-btn ${viewMode === "cards" ? "active" : ""}`} onClick={() => setViewMode("cards")}>
-              Pallets 📸
+              <CameraIcon size={13} />
+              <span>Pallets</span>
             </button>
           </div>
           <button
@@ -443,17 +641,47 @@ export function App() {
 
       {/* KPI Ribbon (Desktop) */}
       <section className="kpis">
-        <Kpi label="lots in view" value={String(kpis.count)} sub={`${status?.stats?.listings ?? listings.length} stored`} />
-        <Kpi label="avg score" value={kpis.avgScore.toFixed(1)} sub="0-100 composite index" />
-        <Kpi label="ending soon" value={String(kpis.soon)} sub="closing under 6 hours" />
-        <Kpi label="watched lots" value={String(kpis.watched)} sub="saved to review" />
-        <Kpi label="projected profit" value={fmtMoney(kpis.projectedProfit)} sub="estimated at 40% recovery" />
+        <Kpi
+          label="lots in view"
+          value={String(kpis.count)}
+          sub={`${status?.stats?.listings ?? listings.length} stored`}
+          onClick={resetFilters}
+          active={activeFiltersCount === 0 && !watchedOnly && selectedTier === "ALL"}
+        />
+        <Kpi
+          label="avg score"
+          value={kpis.avgScore.toFixed(1)}
+          sub="0-100 composite index"
+          onClick={() => setFilters((f) => ({ ...f, minScore: f.minScore === 75 ? 0 : 75 }))}
+          active={filters.minScore === 75}
+        />
+        <Kpi
+          label="ending soon"
+          value={String(kpis.soon)}
+          sub="closing under 6 hours"
+          onClick={() => setFilters((f) => ({ ...f, endingWithinHours: f.endingWithinHours === 6 ? undefined : 6 }))}
+          active={filters.endingWithinHours === 6}
+        />
+        <Kpi
+          label="watched lots"
+          value={String(kpis.watched)}
+          sub="saved to review"
+          onClick={() => setWatchedOnly((w) => !w)}
+          active={watchedOnly || mobileTab === "watchlist"}
+        />
+        <Kpi
+          label="projected profit"
+          value={fmtMoney(kpis.projectedProfit)}
+          sub="estimated at 40% recovery"
+          onClick={() => setFilters((f) => ({ ...f, minRoi: f.minRoi === 0.3 ? 0 : 0.3 }))}
+          active={filters.minRoi === 0.3}
+        />
       </section>
 
       {/* Mobile Quick Chips */}
       <div className="quick-chips">
         <button
-          className={`chip-btn ${mobileTab === "auctions" && !filters.endingWithinHours && !filters.minRoi ? "active" : ""}`}
+          className={`chip-btn ${mobileTab === "auctions" && !filters.endingWithinHours && !filters.minRoi && !watchedOnly ? "active" : ""}`}
           onClick={() => {
             setMobileTab("auctions");
             resetFilters();
@@ -462,10 +690,13 @@ export function App() {
           All Lots ({listings.length})
         </button>
         <button
-          className={`chip-btn ${mobileTab === "watchlist" ? "active" : ""}`}
-          onClick={() => setMobileTab("watchlist")}
+          className={`chip-btn ${mobileTab === "watchlist" || watchedOnly ? "active" : ""}`}
+          onClick={() => {
+            setMobileTab("watchlist");
+            setWatchedOnly(true);
+          }}
         >
-          <StarIcon filled={mobileTab === "watchlist"} />
+          <StarIcon filled={mobileTab === "watchlist" || watchedOnly} />
           Watched ({kpis.watched})
         </button>
         <button
@@ -541,15 +772,35 @@ export function App() {
           <option value="bids">sort: least contested</option>
           <option value="price">sort: lowest bid</option>
         </select>
-        <button className="btn btn-ghost" onClick={refresh} disabled={loading}>
-          {loading ? "..." : "apply"}
+        <button
+          className={`btn ${watchedOnly ? "btn-primary" : "btn-ghost"}`}
+          onClick={() => setWatchedOnly((w) => !w)}
+          title="Filter to watched lots"
+        >
+          <StarIcon filled={watchedOnly} />
+          <span>Watched ({kpis.watched})</span>
         </button>
+        <button
+          className="btn-export"
+          onClick={() => api.downloadCsv(displayedListings)}
+          title="Export current view to CSV"
+        >
+          <DownloadIcon size={14} />
+          <span>Export CSV</span>
+        </button>
+        {activeFiltersCount > 0 || watchedOnly || selectedTier !== "ALL" ? (
+          <button className="btn btn-ghost" onClick={resetFilters} title="Reset all filters">
+            reset
+          </button>
+        ) : null}
       </section>
 
       {/* Mathematical Funnel Pipeline Stepper */}
       <div className="funnel-pipeline-bar">
         <div className={`funnel-step ${selectedTier === "ALL" ? "active" : ""}`} onClick={() => setSelectedTier("ALL")}>
-          <div className="funnel-step-icon">∑</div>
+          <div className="funnel-step-icon">
+            <PalletBoxIcon size={14} />
+          </div>
           <div className="funnel-step-meta">
             <span className="funnel-step-name">Ingested Lots</span>
             <span className="funnel-step-count">{funnelData?.totalIngested ?? listings.length}</span>
@@ -557,7 +808,9 @@ export function App() {
         </div>
         <span className="funnel-arrow">→</span>
         <div className={`funnel-step ${selectedTier === "SOLID_VALUE" ? "active" : ""}`} onClick={() => setSelectedTier("SOLID_VALUE")}>
-          <div className="funnel-step-icon">1</div>
+          <div className="funnel-step-icon">
+            <ChartUpIcon size={14} />
+          </div>
           <div className="funnel-step-meta">
             <span className="funnel-step-name">Stage 1: Viable</span>
             <span className="funnel-step-count">{funnelData?.stage1Viable ?? listings.length}</span>
@@ -565,7 +818,9 @@ export function App() {
         </div>
         <span className="funnel-arrow">→</span>
         <div className={`funnel-step ${selectedTier === "SLEEPER_SNIPE" ? "active" : ""}`} onClick={() => setSelectedTier("SLEEPER_SNIPE")}>
-          <div className="funnel-step-icon">2</div>
+          <div className="funnel-step-icon">
+            <LightningIcon size={14} />
+          </div>
           <div className="funnel-step-meta">
             <span className="funnel-step-name">Stage 2: Pattern Filter</span>
             <span className="funnel-step-count">{funnelData?.stage2PatternApproved ?? listings.length}</span>
@@ -574,7 +829,7 @@ export function App() {
         <span className="funnel-arrow">→</span>
         <div className={`funnel-step ${selectedTier === "ALPHA_GEM" ? "active" : ""}`} onClick={() => setSelectedTier("ALPHA_GEM")}>
           <div className={`funnel-step-icon ${selectedTier === "ALPHA_GEM" ? "active" : ""}`}>
-            <GemIcon />
+            <GemIcon size={14} />
           </div>
           <div className="funnel-step-meta">
             <span className="funnel-step-name">Stage 3: Alpha Gems</span>
@@ -847,7 +1102,7 @@ export function App() {
           className={`nav-tab-btn ${mobileTab === "detail" ? "active" : ""}`}
           onClick={() => setMobileTab("detail")}
         >
-          <FilterIcon />
+          <InspectIcon />
           <span>{selected ? "Lot Detail" : "Inspect"}</span>
         </button>
         <button
@@ -942,6 +1197,17 @@ export function App() {
               </div>
 
               <div className="ticket-row">
+                <label className="toggle">
+                  <input
+                    type="checkbox"
+                    checked={watchedOnly}
+                    onChange={(e) => setWatchedOnly(e.target.checked)}
+                  />
+                  <span>Show Watched Lots Only ({kpis.watched})</span>
+                </label>
+              </div>
+
+              <div className="ticket-row">
                 <label>Sort Order</label>
                 <select className="select" value={String(filters.sort ?? "score")} onChange={(e) => setFilters((f) => ({ ...f, sort: e.target.value }))}>
                   <option value="score">Composite Deal Score</option>
@@ -1005,7 +1271,9 @@ export function App() {
       {lightboxImg ? (
         <div className="image-modal-overlay" onClick={() => setLightboxImg(null)}>
           <div className="image-modal-content" onClick={(e) => e.stopPropagation()}>
-            <button className="image-modal-close" onClick={() => setLightboxImg(null)} aria-label="Close image">✕</button>
+            <button className="image-modal-close" onClick={() => setLightboxImg(null)} aria-label="Close image">
+              <CloseIcon />
+            </button>
             <img src={lightboxImg} alt="Pallet preview" className="image-modal-img" />
           </div>
         </div>
@@ -1047,6 +1315,8 @@ function DetailPanel({ listing, detail, onRefresh, settings, onOpenImage }: { li
     setResult(null);
     setArmed(false);
     setScrapeNotice(null);
+    setManifestData(null);
+    setManifestError(null);
   }, [listing.listingId]);
 
   const onPlan = async () => {
@@ -1128,7 +1398,19 @@ function DetailPanel({ listing, detail, onRefresh, settings, onOpenImage }: { li
     <div className="detail-inner">
       <div className="detail-head">
         <div>
-          <div className="detail-title">{listing.title ?? listing.listingId}</div>
+          <div className="detail-title" style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
+            <span>{listing.title ?? listing.listingId}</span>
+            <a
+              href={api.getAuctionUrl(listing)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn btn-ghost btn-sm"
+              title="Open auction on B-Stock Marketplace"
+            >
+              <span>B-Stock</span>
+              <ExternalLinkIcon size={12} />
+            </a>
+          </div>
           <div className="detail-sub">{listing.site} · {listing.category} · {listing.condition} · {listing.pallets ?? 1} pallets · {listing.units ?? "-"} units</div>
           <div style={{ marginTop: "6px" }}>
             <TierBadge tier={funnel?.tier ?? listing.opportunityTier ?? (listing.score && listing.score >= 75 ? "ALPHA_GEM" : "SOLID_VALUE")} />
@@ -1155,15 +1437,17 @@ function DetailPanel({ listing, detail, onRefresh, settings, onOpenImage }: { li
 
       <div style={{ display: "flex", gap: "8px", margin: "6px 0 12px 0", flexWrap: "wrap" }}>
         <button className="btn-scraper" onClick={scrapeLotPhotos} disabled={scrapingPhotos}>
-          {scrapingPhotos ? "Scraping Photos..." : "⚡ Scrape Deep Photos (Scrapling)"}
+          <LightningIcon size={13} />
+          <span>{scrapingPhotos ? "Scraping Photos..." : "Scrape Photos"}</span>
         </button>
         {listing.imageUrl ? (
           <button className="btn-scraper" onClick={cachePhoto} disabled={cachingImage}>
-            {cachingImage ? "Caching..." : "💾 Cache to Firebase/Local"}
+            <SaveIcon size={13} />
+            <span>{cachingImage ? "Caching..." : "Cache Photos"}</span>
           </button>
         ) : null}
       </div>
-      {scrapeNotice ? <div style={{ fontSize: "11px", color: "var(--accent-2)", marginBottom: "8px" }}>{scrapeNotice}</div> : null}
+      {scrapeNotice ? <div style={{ fontSize: "12px", color: "var(--accent-2)", marginBottom: "8px" }}>{scrapeNotice}</div> : null}
 
       <div className="detail-grid">
         <div className="metric"><span>retail value</span><b>{fmtMoney(listing.retail)}</b></div>
@@ -1178,7 +1462,7 @@ function DetailPanel({ listing, detail, onRefresh, settings, onOpenImage }: { li
 
       {/* Advanced Mathematical & Algebraic Funnel Card */}
       <div className="block">
-        <div className="block-title">📐 Mathematical & Algebraic Funnel Model</div>
+        <div className="block-title">Mathematical & Algebraic Funnel Model</div>
         <div className="math-breakdown-box">
           <div className="math-row">
             <span className="math-formula">Max Allowable Hammer H_max:</span>
@@ -1222,23 +1506,29 @@ function DetailPanel({ listing, detail, onRefresh, settings, onOpenImage }: { li
       {/* Manifest & Comps Secondary Market Valuation */}
       <div className="block">
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
-          <div className="block-title" style={{ margin: 0 }}>📦 Manifest & Line-Item Comps</div>
-          <button className="btn-scraper" onClick={loadManifest} disabled={loadingManifest} style={{ fontSize: "11px", padding: "3px 8px" }}>
+          <div className="block-title" style={{ margin: 0 }}>Manifest & Line-Item Comps</div>
+          <button className="btn-scraper" onClick={loadManifest} disabled={loadingManifest} style={{ fontSize: "12px", padding: "4px 10px" }}>
             {loadingManifest ? "Analyzing Comps..." : manifestData ? "↻ Refresh Comps" : "Load Manifest & Comps"}
           </button>
         </div>
 
-        {manifestError ? <div style={{ fontSize: "11px", color: "var(--risk-red)", marginBottom: "6px" }}>{manifestError}</div> : null}
+        {manifestError ? <div style={{ fontSize: "12px", color: "var(--risk-red)", marginBottom: "6px" }}>{manifestError}</div> : null}
 
         {manifestData ? (
           <div>
-            <div style={{ display: "flex", gap: "6px", alignItems: "center", marginBottom: "8px", flexWrap: "wrap" }}>
+            <div style={{ display: "flex", gap: "8px", alignItems: "center", marginBottom: "10px", flexWrap: "wrap" }}>
               <span className={`tier-badge tier-${manifestData.verdict}`}>
-                {manifestData.verdict === "HIGH_CONFIDENCE_ALPHA" ? "💎 HIGH CONFIDENCE ALPHA" :
-                 manifestData.verdict === "SOLID_VALUE" ? "📈 SOLID VALUE" :
-                 manifestData.verdict === "INFLATED_RETAIL_RISK" ? "⚠️ INFLATED RETAIL RISK" : "FAIR VALUE"}
+                {manifestData.verdict === "HIGH_CONFIDENCE_ALPHA" ? (
+                  <><GemIcon size={12} /> HIGH CONFIDENCE ALPHA</>
+                ) : manifestData.verdict === "SOLID_VALUE" ? (
+                  <><ChartUpIcon size={12} /> SOLID VALUE</>
+                ) : manifestData.verdict === "INFLATED_RETAIL_RISK" ? (
+                  <><AlertIcon size={12} /> INFLATED RETAIL RISK</>
+                ) : (
+                  <><CheckCircleIcon size={12} color="currentColor" /> FAIR VALUE</>
+                )}
               </span>
-              <span style={{ fontSize: "11px", color: "var(--muted)" }}>
+              <span style={{ fontSize: "12px", color: "var(--text-mute)" }}>
                 {manifestData.totalUnits} units across {manifestData.itemCount} line items
               </span>
             </div>
@@ -1260,44 +1550,44 @@ function DetailPanel({ listing, detail, onRefresh, settings, onOpenImage }: { li
             </div>
 
             {/* Brand Equity Tiers */}
-            <div style={{ fontSize: "11px", fontWeight: 600, color: "var(--muted)", marginBottom: "4px" }}>BRAND EQUITY DISTRIBUTION</div>
-            <div style={{ display: "flex", gap: "6px", marginBottom: "10px", flexWrap: "wrap" }}>
-              <span style={{ fontSize: "11px", padding: "2px 6px", background: "rgba(0, 255, 157, 0.1)", borderRadius: "4px", border: "1px solid rgba(0, 255, 157, 0.3)" }}>
+            <div style={{ fontSize: "12px", fontWeight: 600, color: "var(--text-mute)", marginBottom: "6px" }}>BRAND EQUITY DISTRIBUTION</div>
+            <div style={{ display: "flex", gap: "8px", marginBottom: "12px", flexWrap: "wrap" }}>
+              <span className="brand-tier-1">
                 Tier 1 Premium: {manifestData.brandTiers?.[1]?.unitSharePct ?? 0}%
               </span>
-              <span style={{ fontSize: "11px", padding: "2px 6px", background: "rgba(0, 180, 255, 0.1)", borderRadius: "4px", border: "1px solid rgba(0, 180, 255, 0.3)" }}>
+              <span className="brand-tier-2">
                 Tier 2 Established: {manifestData.brandTiers?.[2]?.unitSharePct ?? 0}%
               </span>
-              <span style={{ fontSize: "11px", padding: "2px 6px", background: "rgba(255, 200, 0, 0.1)", borderRadius: "4px", border: "1px solid rgba(255, 200, 0, 0.3)" }}>
+              <span className="brand-tier-3">
                 Tier 3 Mass: {manifestData.brandTiers?.[3]?.unitSharePct ?? 0}%
               </span>
-              <span style={{ fontSize: "11px", padding: "2px 6px", background: "rgba(255, 100, 100, 0.1)", borderRadius: "4px", border: "1px solid rgba(255, 100, 100, 0.3)" }}>
+              <span className="brand-tier-4">
                 Tier 4 Unbranded: {manifestData.brandTiers?.[4]?.unitSharePct ?? 0}%
               </span>
             </div>
 
             {/* Top Brands Table */}
             {manifestData.topBrands?.length > 0 ? (
-              <div style={{ marginBottom: "10px" }}>
-                <div style={{ fontSize: "11px", fontWeight: 600, color: "var(--muted)", marginBottom: "4px" }}>TOP BRANDS BY VALUE</div>
-                <table style={{ width: "100%", fontSize: "11px", borderCollapse: "collapse" }}>
+              <div style={{ marginBottom: "12px" }}>
+                <div style={{ fontSize: "12px", fontWeight: 600, color: "var(--text-mute)", marginBottom: "6px" }}>TOP BRANDS BY VALUE</div>
+                <table style={{ width: "100%", fontSize: "12px", borderCollapse: "collapse" }}>
                   <thead>
-                    <tr style={{ color: "var(--muted)", borderBottom: "1px solid var(--border)", textAlign: "left" }}>
-                      <th style={{ padding: "3px 4px" }}>Brand</th>
-                      <th style={{ padding: "3px 4px" }}>Tier</th>
-                      <th style={{ padding: "3px 4px" }}>Units</th>
-                      <th style={{ padding: "3px 4px" }}>Retail</th>
-                      <th style={{ padding: "3px 4px" }}>Est. Resale</th>
+                    <tr style={{ color: "var(--text-mute)", borderBottom: "1px solid var(--border)", textAlign: "left" }}>
+                      <th style={{ padding: "4px 6px" }}>Brand</th>
+                      <th style={{ padding: "4px 6px" }}>Tier</th>
+                      <th style={{ padding: "4px 6px" }}>Units</th>
+                      <th style={{ padding: "4px 6px" }}>Retail</th>
+                      <th style={{ padding: "4px 6px" }}>Est. Resale</th>
                     </tr>
                   </thead>
                   <tbody>
                     {manifestData.topBrands.map((b: any, idx: number) => (
                       <tr key={idx} style={{ borderBottom: "1px solid rgba(255, 255, 255, 0.05)" }}>
-                        <td style={{ padding: "3px 4px", fontWeight: 600 }}>{b.brand}</td>
-                        <td style={{ padding: "3px 4px" }}>T{b.tier}</td>
-                        <td style={{ padding: "3px 4px" }}>{b.units}</td>
-                        <td style={{ padding: "3px 4px" }}>{fmtMoney(b.extRetail)}</td>
-                        <td style={{ padding: "3px 4px", color: "var(--accent)" }}>{fmtMoney(b.estimatedResale)}</td>
+                        <td style={{ padding: "4px 6px", fontWeight: 600 }}>{b.brand}</td>
+                        <td style={{ padding: "4px 6px" }}>T{b.tier}</td>
+                        <td style={{ padding: "4px 6px" }}>{b.units}</td>
+                        <td style={{ padding: "4px 6px" }}>{fmtMoney(b.extRetail)}</td>
+                        <td style={{ padding: "4px 6px", color: "var(--accent)" }}>{fmtMoney(b.estimatedResale)}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -1308,29 +1598,29 @@ function DetailPanel({ listing, detail, onRefresh, settings, onOpenImage }: { li
             {/* Sample Line Items Table */}
             {manifestData.sampleItems?.length > 0 ? (
               <div>
-                <div style={{ fontSize: "11px", fontWeight: 600, color: "var(--muted)", marginBottom: "4px" }}>ITEMIZED MANIFEST SAMPLE ({manifestData.sampleItems.length})</div>
-                <div style={{ maxHeight: "200px", overflowY: "auto", border: "1px solid var(--border)", borderRadius: "4px" }}>
-                  <table style={{ width: "100%", fontSize: "10px", borderCollapse: "collapse" }}>
+                <div style={{ fontSize: "12px", fontWeight: 600, color: "var(--text-mute)", marginBottom: "6px" }}>ITEMIZED MANIFEST SAMPLE ({manifestData.sampleItems.length})</div>
+                <div style={{ maxHeight: "200px", overflowY: "auto", border: "1px solid var(--border)", borderRadius: "var(--radius-sm)" }}>
+                  <table style={{ width: "100%", fontSize: "12px", borderCollapse: "collapse" }}>
                     <thead>
-                      <tr style={{ background: "rgba(255, 255, 255, 0.03)", color: "var(--muted)", textAlign: "left", position: "sticky", top: 0 }}>
-                        <th style={{ padding: "3px 4px" }}>Item / ASIN</th>
-                        <th style={{ padding: "3px 4px" }}>Cond</th>
-                        <th style={{ padding: "3px 4px" }}>Qty</th>
-                        <th style={{ padding: "3px 4px" }}>Unit Retail</th>
-                        <th style={{ padding: "3px 4px" }}>Est. Comp</th>
+                      <tr style={{ background: "rgba(255, 255, 255, 0.03)", color: "var(--text-mute)", textAlign: "left", position: "sticky", top: 0 }}>
+                        <th style={{ padding: "4px 6px" }}>Item / ASIN</th>
+                        <th style={{ padding: "4px 6px" }}>Cond</th>
+                        <th style={{ padding: "4px 6px" }}>Qty</th>
+                        <th style={{ padding: "4px 6px" }}>Unit Retail</th>
+                        <th style={{ padding: "4px 6px" }}>Est. Comp</th>
                       </tr>
                     </thead>
                     <tbody>
                       {manifestData.sampleItems.map((it: any, idx: number) => (
                         <tr key={idx} style={{ borderBottom: "1px solid rgba(255, 255, 255, 0.04)" }}>
-                          <td style={{ padding: "3px 4px", maxWidth: "160px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                          <td style={{ padding: "4px 6px", maxWidth: "160px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                             {it.asin ? <span style={{ color: "var(--accent-2)", marginRight: "4px" }}>[{it.asin}]</span> : null}
                             {it.title}
                           </td>
-                          <td style={{ padding: "3px 4px" }}>{it.condition}</td>
-                          <td style={{ padding: "3px 4px" }}>{it.quantity}</td>
-                          <td style={{ padding: "3px 4px" }}>{fmtMoney(it.unitRetail)}</td>
-                          <td style={{ padding: "3px 4px", color: "var(--accent)" }}>{fmtMoney(it.estimatedUnitResale)}</td>
+                          <td style={{ padding: "4px 6px" }}>{it.condition}</td>
+                          <td style={{ padding: "4px 6px" }}>{it.quantity}</td>
+                          <td style={{ padding: "4px 6px" }}>{fmtMoney(it.unitRetail)}</td>
+                          <td style={{ padding: "4px 6px", color: "var(--accent)" }}>{fmtMoney(it.estimatedUnitResale)}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -1340,7 +1630,7 @@ function DetailPanel({ listing, detail, onRefresh, settings, onOpenImage }: { li
             ) : null}
           </div>
         ) : (
-          <div style={{ fontSize: "11px", color: "var(--muted)", padding: "8px 0" }}>
+          <div style={{ fontSize: "12px", color: "var(--text-mute)", padding: "8px 0" }}>
             Click "Load Manifest & Comps" to fetch item-level brand classifications, secondary market valuations, and line-item ASIN details.
           </div>
         )}
@@ -1417,7 +1707,7 @@ function DetailPanel({ listing, detail, onRefresh, settings, onOpenImage }: { li
         ) : null}
 
         {result ? (
-          <pre className="result">{JSON.stringify(result, null, 2)}</pre>
+          <ExecutionReceipt result={result} amount={amount} listing={listing} />
         ) : null}
       </div>
 
@@ -1578,10 +1868,10 @@ function CiStatusModal({ status, onClose, onTriggerSuccess }: { status: any; onC
     setFeedback(null);
     try {
       const res = await api.triggerGithubCrawl({ mode, pages: "5" });
-      setFeedback(`✅ ${res.message}`);
+      setFeedback(res.message);
       onTriggerSuccess();
     } catch (err) {
-      setFeedback(`❌ ${(err as Error).message}`);
+      setFeedback(`error: ${(err as Error).message}`);
     } finally {
       setTriggeringGh(false);
     }
@@ -1592,10 +1882,10 @@ function CiStatusModal({ status, onClose, onTriggerSuccess }: { status: any; onC
     setFeedback(null);
     try {
       const res = await api.triggerGitlabCrawl();
-      setFeedback(`✅ GitLab pipeline #${res.pipeline?.id ?? "active"} initiated!`);
+      setFeedback(`GitLab pipeline #${res.pipeline?.id ?? "active"} initiated successfully!`);
       onTriggerSuccess();
     } catch (err) {
-      setFeedback(`❌ ${(err as Error).message}`);
+      setFeedback(`error: ${(err as Error).message}`);
     } finally {
       setTriggeringGl(false);
     }
@@ -1606,16 +1896,20 @@ function CiStatusModal({ status, onClose, onTriggerSuccess }: { status: any; onC
       <div className="modal" style={{ maxWidth: "680px" }} onClick={(e) => e.stopPropagation()}>
         <div className="modal-head">
           <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-            <span className="block-title">⚡ Autonomous CI Backend (ThePopeBot Pattern)</span>
+            <LightningIcon size={18} color="var(--accent-2)" />
+            <span className="block-title">Autonomous CI Serverless Backend</span>
           </div>
           <button className="btn btn-ghost btn-icon" onClick={onClose} aria-label="Close modal">
             <CloseIcon />
           </button>
         </div>
         <div className="modal-body">
-          <div style={{ background: "rgba(0, 229, 255, 0.05)", border: "1px solid rgba(0, 229, 255, 0.2)", borderRadius: "6px", padding: "12px", marginBottom: "16px", fontSize: "12px", lineHeight: "1.5" }}>
-            <strong>💡 Zero-Cost Serverless Execution Architecture:</strong>
-            <p style={{ margin: "4px 0 0" }}>
+          <div style={{ background: "rgba(0, 229, 255, 0.05)", border: "1px solid rgba(0, 229, 255, 0.2)", borderRadius: "var(--radius-md)", padding: "12px", marginBottom: "16px", fontSize: "12px", lineHeight: "1.5" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "6px", fontWeight: 700, color: "var(--accent-2)", marginBottom: "4px" }}>
+              <BulbIcon size={16} />
+              <span>Zero-Cost Serverless Execution Architecture</span>
+            </div>
+            <p style={{ margin: 0, color: "var(--text-dim)" }}>
               The backend runs 100% free using <strong>GitHub Actions</strong> and <strong>GitLab CI</strong> scheduled cron workers, committing state snapshots directly into Git (Git-as-a-database) and replicating to Firebase Cloud Firestore. No paid VMs, no 24/7 host servers.
             </p>
           </div>
@@ -1634,9 +1928,9 @@ function CiStatusModal({ status, onClose, onTriggerSuccess }: { status: any; onC
               <div className="ticket-row">
                 <label>Opportunity Tiers</label>
                 <div style={{ display: "flex", gap: "6px", flexWrap: "wrap" }}>
-                  <span className="pill pill-ok">💎 {status.tierCounts.ALPHA_GEM} Gems</span>
-                  <span className="pill pill-info">🟢 {status.tierCounts.SOLID_VALUE} Solid</span>
-                  <span className="pill pill-warn">⏱️ {status.tierCounts.SLEEPER_SNIPE} Sleepers</span>
+                  <span className="pill pill-ok"><GemIcon size={12} /> {status.tierCounts.ALPHA_GEM} Gems</span>
+                  <span className="pill pill-info"><ChartUpIcon size={12} /> {status.tierCounts.SOLID_VALUE} Solid</span>
+                  <span className="pill pill-warn"><ClockIcon size={12} /> {status.tierCounts.SLEEPER_SNIPE} Sleepers</span>
                 </div>
               </div>
             ) : null}
@@ -1644,7 +1938,7 @@ function CiStatusModal({ status, onClose, onTriggerSuccess }: { status: any; onC
 
           <div className="ticket" style={{ marginBottom: "14px" }}>
             <div className="block-title">Trigger Autonomous Run</div>
-            <p style={{ fontSize: "11px", color: "var(--muted)", margin: "0 0 10px" }}>
+            <p style={{ fontSize: "12px", color: "var(--text-mute)", margin: "0 0 10px" }}>
               Dispatch an immediate serverless crawl job to GitHub Actions or GitLab CI runners.
             </p>
             <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
@@ -1654,7 +1948,8 @@ function CiStatusModal({ status, onClose, onTriggerSuccess }: { status: any; onC
                 disabled={triggeringGh || !ciSettings?.githubToken}
                 title={!ciSettings?.githubToken ? "Configure GitHub PAT below" : "Trigger GitHub Actions run"}
               >
-                {triggeringGh ? "Dispatching..." : "🚀 Run GitHub Actions (Mock)"}
+                <RocketIcon size={14} />
+                <span>{triggeringGh ? "Dispatching..." : "Run GitHub Actions (Mock)"}</span>
               </button>
               <button
                 className="btn btn-ghost"
@@ -1662,7 +1957,8 @@ function CiStatusModal({ status, onClose, onTriggerSuccess }: { status: any; onC
                 disabled={triggeringGh || !ciSettings?.githubToken}
                 title={!ciSettings?.githubToken ? "Configure GitHub PAT below" : "Trigger Live GitHub Actions crawl"}
               >
-                🌐 Run GitHub (Live)
+                <GlobeIcon size={14} />
+                <span>Run GitHub (Live)</span>
               </button>
               <button
                 className="btn btn-ghost"
@@ -1670,12 +1966,14 @@ function CiStatusModal({ status, onClose, onTriggerSuccess }: { status: any; onC
                 disabled={triggeringGl || !ciSettings?.gitlabToken}
                 title={!ciSettings?.gitlabToken ? "Configure GitLab Trigger Token below" : "Trigger GitLab CI pipeline"}
               >
-                🦊 Run GitLab Pipeline
+                <GitLabIcon size={14} />
+                <span>Run GitLab Pipeline</span>
               </button>
             </div>
             {feedback ? (
-              <div style={{ marginTop: "10px", padding: "8px", borderRadius: "4px", background: "rgba(255,255,255,0.05)", fontSize: "12px" }}>
-                {feedback}
+              <div style={{ marginTop: "10px", padding: "8px 12px", borderRadius: "var(--radius-sm)", background: "var(--bg-3)", border: "1px solid var(--line)", fontSize: "12px", display: "flex", alignItems: "center", gap: "8px" }}>
+                {feedback.startsWith("error:") ? <AlertIcon size={16} color="var(--bad)" /> : <CheckCircleIcon size={16} color="var(--good)" />}
+                <span>{feedback.replace(/^error:\s*/, "")}</span>
               </div>
             ) : null}
           </div>
@@ -1716,22 +2014,24 @@ function CiStatusModal({ status, onClose, onTriggerSuccess }: { status: any; onC
               <button className="btn btn-primary" onClick={saveSettings}>
                 {savedNotice ? "Saved to Browser!" : "Save Tokens"}
               </button>
-              <div style={{ display: "flex", gap: "10px", fontSize: "11px" }}>
+              <div style={{ display: "flex", gap: "10px", fontSize: "12px", alignItems: "center" }}>
                 <a
                   href={`https://github.com/${ciSettings?.githubRepo || "tinydigitalproductlab/bstock-command"}/actions`}
                   target="_blank"
                   rel="noreferrer"
-                  style={{ color: "var(--accent)" }}
+                  style={{ color: "var(--accent)", display: "inline-flex", alignItems: "center", gap: "4px" }}
                 >
-                  View GitHub Actions ↗
+                  <span>View GitHub Actions</span>
+                  <ExternalLinkIcon size={12} />
                 </a>
                 <a
                   href="https://gitlab.com/tinydigitalproductlab/bstock-command/-/pipelines"
                   target="_blank"
                   rel="noreferrer"
-                  style={{ color: "var(--accent)" }}
+                  style={{ color: "var(--accent)", display: "inline-flex", alignItems: "center", gap: "4px" }}
                 >
-                  View GitLab Pipelines ↗
+                  <span>View GitLab Pipelines</span>
+                  <ExternalLinkIcon size={12} />
                 </a>
               </div>
             </div>
