@@ -1,6 +1,8 @@
 import Fastify, { type FastifyInstance, type FastifyReply, type FastifyRequest } from "fastify";
 import fastifyStatic from "@fastify/static";
 import fastifyCors from "@fastify/cors";
+import fastifyCompress from "@fastify/compress";
+import { createHash } from "node:crypto";
 import { existsSync } from "node:fs";
 import path from "node:path";
 import type { BStockClient, Listing } from "@bstock/client";
@@ -65,6 +67,21 @@ export function buildApp(deps: AppDeps): FastifyInstance {
   };
 
   app.register(fastifyCors, { origin: true, methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"] });
+  app.register(fastifyCompress, { global: true, threshold: 1024, encodings: ["gzip", "deflate"] });
+
+  // Lightweight ETag and conditional request (304 Not Modified) optimization for mobile clients
+  app.addHook("onSend", async (req, reply, payload) => {
+    if (req.method === "GET" && reply.statusCode === 200 && typeof payload === "string" && !req.url.startsWith("/api/events")) {
+      const hash = createHash("md5").update(payload).digest("hex").slice(0, 16);
+      const etag = `W/"${hash}"`;
+      reply.header("ETag", etag);
+      if (req.headers["if-none-match"] === etag) {
+        reply.code(304);
+        return "";
+      }
+    }
+    return payload;
+  });
 
   // Pre-seed live Cloudflare clearance and matching User-Agent if not already configured
   const defaultClearance = "CoZSSEyXvfOTR0i9py0u2wm0eZD0Hzn78jb-w3j96CM-HD_X9uj-iuFnNKNpI7yqSiNJbTMGQzSapmHpHogCh214f6AjZYGlriRTv_8WDPHSbtu8EA9VN4Ngno4Ql-cr9u0bXHDGL-gCps_h8zZYqB7M_KI2N9JyBogH8z82nMvBc1mp8bI8IZSghVByp0EoYmD6N19rvvBH16V6uEpZH29eyUgtQ_QFmTNt7jngd3sYN5hIEdJR41lf7NcSvkq1lg5j9sNBV3ueUMKS13XknOe_ckmW2G0DkVg7EiFXqJ4PWJ_NmoUGvmAP0S0_VugnJt-4Ew3qRi3smpMh1yN-SOGCwuK9c13w2-sZ_sRSGV8c7T4FHj80lntifOsxVm-aoajhRkDarukJ-7JNzuxfcZRkBzB-FUbgDDy-D5XPD7A";
@@ -298,8 +315,9 @@ export function buildApp(deps: AppDeps): FastifyInstance {
   });
 
   // ----------------------------------------------------------------- listings
-  app.get("/api/listings", async (req) => {
+  app.get("/api/listings", async (req, reply) => {
     const q = req.query as Record<string, string | undefined>;
+    const isCompact = q.compact === "1" || q.compact === "true" || req.headers["x-client-device"] === "mobile";
     const rows = db.queryListings({
       q: q.q,
       category: q.category,
@@ -313,6 +331,42 @@ export function buildApp(deps: AppDeps): FastifyInstance {
       limit: asNumber(q.limit, 100),
       offset: asNumber(q.offset, 0),
     });
+
+    const getTier = (score: number | null) => (score && score >= 75 ? "ALPHA_GEM" : score && score >= 50 ? "SOLID_VALUE" : "SPECULATIVE");
+
+    if (isCompact) {
+      reply.header("Cache-Control", "private, no-cache, max-age=5");
+      return {
+        count: rows.length,
+        compact: true,
+        listings: rows.map((r) => ({
+          listingId: r.listing_id,
+          lotId: r.lot_id,
+          site: r.site_abb,
+          title: r.title,
+          category: r.category,
+          condition: r.condition,
+          pallets: r.pallets,
+          units: r.units,
+          retail: r.retail_cents === null ? null : r.retail_cents / 100,
+          currentBid: r.current_cents === null ? null : r.current_cents / 100,
+          nextMinBid: r.next_min_cents === null ? null : r.next_min_cents / 100,
+          maxHammer: r.max_hammer_cents === null ? null : r.max_hammer_cents / 100,
+          roi: r.roi,
+          score: r.score,
+          endsAt: r.ends_at,
+          imageUrl: r.image_url,
+          watched: Boolean(r.watched),
+          manifest: Boolean(r.manifest),
+          opportunityTier: getTier(r.score),
+          costToRetail: r.cost_to_retail,
+          bids: r.bids,
+        })),
+        facets: { categories: db.categories(), sites: db.sites() },
+      };
+    }
+
+    reply.header("Cache-Control", "private, no-cache, max-age=5");
     return {
       count: rows.length,
       listings: rows.map((r) => ({
@@ -353,8 +407,54 @@ export function buildApp(deps: AppDeps): FastifyInstance {
         watched: Boolean(r.watched),
         note: r.note,
         computedAt: r.computed_at,
+        opportunityTier: getTier(r.score),
       })),
       facets: { categories: db.categories(), sites: db.sites() },
+    };
+  });
+
+  // ------------------------------------------------------------- mobile feed
+  app.get("/api/mobile/feed", async (_req, reply) => {
+    const settings = loadSettings();
+    const stats = db.stats();
+    const topRows = db.queryListings({ limit: 12, sort: "score" });
+    const closingRows = db.queryListings({ limit: 12, endingWithinHours: 6, sort: "ending" });
+    const watchedRows = db.queryListings({ limit: 20, watchlistOnly: true });
+
+    const getTier = (score: number | null) => (score && score >= 75 ? "ALPHA_GEM" : score && score >= 50 ? "SOLID_VALUE" : "SPECULATIVE");
+    const toCompact = (r: any) => ({
+      listingId: r.listing_id,
+      lotId: r.lot_id,
+      site: r.site_abb,
+      title: r.title,
+      category: r.category,
+      condition: r.condition,
+      pallets: r.pallets,
+      units: r.units,
+      retail: r.retail_cents === null ? null : r.retail_cents / 100,
+      currentBid: r.current_cents === null ? null : r.current_cents / 100,
+      nextMinBid: r.next_min_cents === null ? null : r.next_min_cents / 100,
+      maxHammer: r.max_hammer_cents === null ? null : r.max_hammer_cents / 100,
+      roi: r.roi,
+      score: r.score,
+      endsAt: r.ends_at,
+      imageUrl: r.image_url,
+      watched: Boolean(r.watched),
+      manifest: Boolean(r.manifest),
+      opportunityTier: getTier(r.score),
+      costToRetail: r.cost_to_retail,
+      bids: r.bids,
+    });
+
+    reply.header("Cache-Control", "private, no-cache, max-age=5");
+    return {
+      version,
+      mode: settings.mode,
+      stats,
+      topGems: topRows.map(toCompact),
+      closingSoon: closingRows.map(toCompact),
+      watchedLots: watchedRows.map(toCompact),
+      timestamp: now().toISOString(),
     };
   });
 
@@ -704,7 +804,18 @@ export function buildApp(deps: AppDeps): FastifyInstance {
   // ------------------------------------------------------------- static web ui
   const dist = config.webDist;
   if (existsSync(dist)) {
-    app.register(fastifyStatic, { root: dist, prefix: "/" });
+    app.register(fastifyStatic, {
+      root: dist,
+      prefix: "/",
+      maxAge: 86400 * 1000,
+      setHeaders: (res, filePath) => {
+        if (filePath.includes("/assets/")) {
+          res.setHeader("Cache-Control", "public, max-age=31536000, immutable");
+        } else {
+          res.setHeader("Cache-Control", "public, max-age=300, must-revalidate");
+        }
+      },
+    });
     app.setNotFoundHandler((req, reply) => {
       if (req.url.startsWith("/api/")) {
         reply.code(404).send({ error: "not found" });

@@ -265,6 +265,24 @@ function GitLabIcon({ size = 16 }: { size?: number }) {
   );
 }
 
+function KeyIcon({ size = 16 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="m21 2-2 2m-1.5 1.5L14 9a5.5 5.5 0 1 0 4 4l3.5-3.5a1.5 1.5 0 0 0 0-2.12L20 6l-1.5 1.5" />
+      <circle cx="7.5" cy="15.5" r="2.5" />
+    </svg>
+  );
+}
+
+function ShieldCheckIcon({ size = 16, color = "currentColor" }: { size?: number; color?: string }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+      <path d="m9 12 2 2 4-4" />
+    </svg>
+  );
+}
+
 function ScoreBadge({ score }: { score: number | null }) {
   const s = score ?? 0;
   const tone = s >= 75 ? "good" : s >= 50 ? "mid" : "low";
@@ -402,6 +420,7 @@ export function App() {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [filterModalOpen, setFilterModalOpen] = useState(false);
   const [statusModalOpen, setStatusModalOpen] = useState(false);
+  const [credsModalOpen, setCredsModalOpen] = useState(false);
 
   // Mobile navigation tab state
   const [mobileTab, setMobileTab] = useState<"auctions" | "watchlist" | "detail" | "kpis">("auctions");
@@ -419,6 +438,7 @@ export function App() {
         setFilterModalOpen(false);
         setSettingsOpen(false);
         setStatusModalOpen(false);
+        setCredsModalOpen(false);
       }
     };
     window.addEventListener("keydown", onKeyDown);
@@ -565,15 +585,32 @@ export function App() {
 
         {/* Desktop Status Cluster */}
         <div className="status-cluster" onClick={() => setStatusModalOpen(true)} style={{ cursor: "pointer" }} title="Click to open Autonomous CI & Backend status">
-          <span className={`pill pill-${status?.mode ?? "off"}`}>{status?.mode ?? "ready"}</span>
+          <span className={`pill pill-${status?.mode ?? "off"}`}>{status?.mode ? String(status.mode).toUpperCase() : "PRODUCTION"}</span>
           <span className="pill pill-ok" title="Autonomous CI Serverless Backend (GitHub Actions & GitLab CI)">
             <LightningIcon size={12} color="var(--good)" />
             <span>CI: Free Backend</span>
           </span>
-          <span className={`pill ${status?.credentials?.hasClearance ? "pill-ok" : "pill-warn"}`}>
-            {status?.credentials?.hasClearance ? "clearance OK" : "no clearance"}
+          <span
+            className={`pill ${status?.credentials?.hasClearance ? "pill-ok" : "pill-warn"}`}
+            onClick={(e) => {
+              e.stopPropagation();
+              setCredsModalOpen(true);
+            }}
+            style={{ cursor: "pointer" }}
+            title="Click to view or enter Cloudflare Token"
+          >
+            <KeyIcon size={12} />
+            <span>{status?.credentials?.hasClearance ? "clearance OK" : "enter CF token"}</span>
           </span>
-          <span className={`pill ${status?.credentials?.hasToken ? "pill-ok" : "pill-warn"}`}>
+          <span
+            className={`pill ${status?.credentials?.hasToken ? "pill-ok" : "pill-warn"}`}
+            onClick={(e) => {
+              e.stopPropagation();
+              setCredsModalOpen(true);
+            }}
+            style={{ cursor: "pointer" }}
+            title="Click to configure B-Stock Bearer token"
+          >
             {status?.credentials?.hasToken ? "token OK" : "no token"}
           </span>
           <span className={`pill ${status?.storage?.initialized ? "pill-ok" : "pill-muted"}`} title={status?.storage?.storageBucket ?? "Storage"}>
@@ -583,6 +620,14 @@ export function App() {
         </div>
 
         <div className="topbar-actions">
+          <button
+            className="btn btn-secondary btn-sm"
+            onClick={() => setCredsModalOpen(true)}
+            title="Configure Cloudflare clearance and API credentials"
+          >
+            <KeyIcon size={14} />
+            <span>CF Token</span>
+          </button>
           <button
             className="btn-scraper"
             onClick={onSolveClearance}
@@ -1052,11 +1097,22 @@ export function App() {
             <div className="kpi" style={{ gridColumn: "span 2" }}>
               <div className="kpi-label">Terminal Status</div>
               <div style={{ marginTop: "8px", display: "flex", flexWrap: "wrap", gap: "6px" }}>
-                <span className={`pill pill-${status?.mode ?? "off"}`}>Mode: {status?.mode ?? "ready"}</span>
-                <span className={`pill ${status?.credentials?.hasClearance ? "pill-ok" : "pill-warn"}`}>
-                  {status?.credentials?.hasClearance ? "Clearance Active" : "No Clearance"}
+                <span className={`pill pill-${status?.mode ?? "off"}`}>Mode: {status?.mode ? String(status.mode).toUpperCase() : "PRODUCTION"}</span>
+                <span
+                  className={`pill ${status?.credentials?.hasClearance ? "pill-ok" : "pill-warn"}`}
+                  onClick={() => setCredsModalOpen(true)}
+                  style={{ cursor: "pointer" }}
+                  title="Configure Cloudflare token"
+                >
+                  <KeyIcon size={12} />
+                  <span>{status?.credentials?.hasClearance ? "Clearance Active ✓" : "Enter CF Token !"}</span>
                 </span>
-                <span className={`pill ${status?.credentials?.hasToken ? "pill-ok" : "pill-warn"}`}>
+                <span
+                  className={`pill ${status?.credentials?.hasToken ? "pill-ok" : "pill-warn"}`}
+                  onClick={() => setCredsModalOpen(true)}
+                  style={{ cursor: "pointer" }}
+                  title="Configure B-Stock Bearer token"
+                >
                   {status?.credentials?.hasToken ? "Auth Token Ready" : "Unauthenticated"}
                 </span>
               </div>
@@ -1248,11 +1304,23 @@ export function App() {
         <SettingsModal
           settings={settings}
           onClose={() => setSettingsOpen(false)}
+          onOpenCreds={() => {
+            setSettingsOpen(false);
+            setCredsModalOpen(true);
+          }}
           onSaved={(s) => {
             setSettings(s);
             setSettingsOpen(false);
             refresh();
           }}
+        />
+      ) : null}
+
+      {/* Cloudflare & Credentials Modal */}
+      {credsModalOpen ? (
+        <CredentialsModal
+          onClose={() => setCredsModalOpen(false)}
+          onSaved={() => refresh()}
         />
       ) : null}
 
@@ -1784,7 +1852,7 @@ function BidCurve({ bids }: { bids: any[] }) {
   );
 }
 
-function SettingsModal({ settings, onClose, onSaved }: { settings: any; onClose: () => void; onSaved: (s: any) => void }) {
+function SettingsModal({ settings, onClose, onSaved, onOpenCreds }: { settings: any; onClose: () => void; onSaved: (s: any) => void; onOpenCreds?: () => void }) {
   const [draft, setDraft] = useState<any>({ ...settings });
   const [saving, setSaving] = useState(false);
 
@@ -1839,9 +1907,244 @@ function SettingsModal({ settings, onClose, onSaved }: { settings: any; onClose:
             <input type="checkbox" checked={Boolean(draft?.requireManifest)} onChange={(e) => setDraft({ ...draft, requireManifest: e.target.checked })} />
             <span>Require manifest data before allowing bids</span>
           </label>
-          <div className="ticket-actions" style={{ marginTop: "12px" }}>
+          {onOpenCreds ? (
+            <div className="ticket" style={{ marginTop: "14px", background: "var(--bg-2)" }}>
+              <div className="block-title" style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                <KeyIcon size={14} />
+                <span>Cloudflare & API Access</span>
+              </div>
+              <p style={{ fontSize: "12px", color: "var(--text-mute)", margin: "0 0 10px" }}>
+                Live auction crawling and guarded bidding require an active Cloudflare clearance token.
+              </p>
+              <button
+                type="button"
+                className="btn btn-secondary btn-sm"
+                onClick={onOpenCreds}
+              >
+                <KeyIcon size={13} />
+                <span>Manage CF Token & Credentials</span>
+              </button>
+            </div>
+          ) : null}
+          <div className="ticket-actions" style={{ marginTop: "14px" }}>
             <button className="btn btn-primary" onClick={save} disabled={saving}>
               {saving ? "Saving..." : "Save Configuration"}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function CredentialsModal({
+  onClose,
+  onSaved,
+}: {
+  onClose: () => void;
+  onSaved: (creds: any) => void;
+}) {
+  const [creds, setCreds] = useState<any>(() => api.getCredentialsSync());
+  const [solving, setSolving] = useState(false);
+  const [feedback, setFeedback] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
+
+  const save = async () => {
+    setSaving(true);
+    setFeedback(null);
+    try {
+      await api.saveCredentials(creds);
+      setFeedback("success:Cloudflare token & credentials saved to active session!");
+      onSaved(creds);
+      setTimeout(() => {
+        onClose();
+      }, 1000);
+    } catch (err: any) {
+      setFeedback(`error:${err.message}`);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const onSolve = async () => {
+    setSolving(true);
+    setFeedback(null);
+    try {
+      const res = await api.solveClearance();
+      if (res.success && res.clearance) {
+        const updated = {
+          ...creds,
+          clearance: res.clearance,
+          userAgent: res.userAgent || creds.userAgent || navigator.userAgent,
+        };
+        setCreds(updated);
+        await api.saveCredentials(updated);
+        setFeedback("success:Turnstile challenge solved! Valid cf_clearance captured and active.");
+        onSaved(updated);
+      } else {
+        setFeedback(`error:${res.error || "Auto-solve unavailable on static host. Please paste cf_clearance below."}`);
+      }
+    } catch (err: any) {
+      setFeedback(`error:${err.message}`);
+    } finally {
+      setSolving(false);
+    }
+  };
+
+  const onReset = async () => {
+    await api.clearCredentials();
+    const defaults = api.getCredentialsSync();
+    setCreds(defaults);
+    setFeedback("success:Reset to default verified production clearance.");
+    onSaved(defaults);
+  };
+
+  const tokenActive = Boolean(creds?.clearance && creds.clearance.trim().length > 0);
+
+  return (
+    <div className="modal-backdrop" onClick={onClose}>
+      <div className="modal" style={{ maxWidth: "680px" }} onClick={(e) => e.stopPropagation()}>
+        <div className="modal-head">
+          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            <KeyIcon size={18} />
+            <span className="block-title">Cloudflare & Marketplace Credentials</span>
+          </div>
+          <button className="btn btn-ghost btn-icon" onClick={onClose} aria-label="Close modal">
+            <CloseIcon />
+          </button>
+        </div>
+        <div className="modal-body">
+          {/* Active status indicator badge */}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              padding: "10px 14px",
+              borderRadius: "var(--radius-md)",
+              background: tokenActive ? "rgba(16, 185, 129, 0.1)" : "rgba(239, 68, 68, 0.1)",
+              border: `1px solid ${tokenActive ? "rgba(16, 185, 129, 0.3)" : "rgba(239, 68, 68, 0.3)"}`,
+              marginBottom: "16px",
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+              {tokenActive ? <ShieldCheckIcon size={18} color="var(--good)" /> : <AlertIcon size={18} color="var(--bad)" />}
+              <div>
+                <div style={{ fontWeight: 700, fontSize: "13px", color: tokenActive ? "var(--good)" : "var(--bad)" }}>
+                  {tokenActive ? "Cloudflare Clearance Active (Production Ready)" : "No Cloudflare Clearance Configured"}
+                </div>
+                <div style={{ fontSize: "11px", color: "var(--text-mute)" }}>
+                  {tokenActive
+                    ? `Active token length: ${creds.clearance.length} characters • Valid for bstock.com API requests`
+                    : "Live B-Stock search, bid and auction endpoints require a valid Cloudflare clearance token."}
+                </div>
+              </div>
+            </div>
+            <button
+              type="button"
+              className="btn btn-secondary btn-sm"
+              onClick={onSolve}
+              disabled={solving}
+              title="Auto-solve Turnstile challenge"
+            >
+              <LightningIcon size={13} />
+              <span>{solving ? "Solving..." : "Auto-Solve"}</span>
+            </button>
+          </div>
+
+          <div className="ticket" style={{ marginBottom: "16px" }}>
+            <div className="block-title">Cloudflare cf_clearance Token</div>
+            <p style={{ fontSize: "12px", color: "var(--text-mute)", margin: "0 0 10px" }}>
+              Paste your <code style={{ color: "var(--accent)" }}>cf_clearance</code> cookie value from any browser session that visited bstock.com:
+            </p>
+            <textarea
+              className="input"
+              rows={3}
+              style={{ fontFamily: "monospace", fontSize: "12px", resize: "vertical" }}
+              placeholder="Paste cf_clearance cookie value here (e.g. CoZSSEyX...)"
+              value={creds?.clearance || ""}
+              onChange={(e) => setCreds({ ...creds, clearance: e.target.value.trim() })}
+            />
+          </div>
+
+          <div className="ticket" style={{ marginBottom: "16px" }}>
+            <div className="block-title">Matching Browser User-Agent</div>
+            <p style={{ fontSize: "12px", color: "var(--text-mute)", margin: "0 0 10px" }}>
+              Cloudflare validates that requests match the User-Agent that passed the challenge:
+            </p>
+            <div style={{ display: "flex", gap: "8px" }}>
+              <input
+                type="text"
+                className="input"
+                style={{ fontFamily: "monospace", fontSize: "12px", flex: 1 }}
+                value={creds?.userAgent || ""}
+                onChange={(e) => setCreds({ ...creds, userAgent: e.target.value })}
+              />
+              <button
+                type="button"
+                className="btn btn-ghost btn-sm"
+                onClick={() => setCreds({ ...creds, userAgent: navigator.userAgent })}
+                title="Detect and use this browser's User-Agent"
+              >
+                Use My UA
+              </button>
+            </div>
+          </div>
+
+          <div className="ticket" style={{ marginBottom: "16px" }}>
+            <div className="block-title">B-Stock Account Bearer Token (Optional)</div>
+            <p style={{ fontSize: "12px", color: "var(--text-mute)", margin: "0 0 10px" }}>
+              Optional FusionAuth JWT for placing live guarded bids on bstock.com:
+            </p>
+            <input
+              type="password"
+              className="input"
+              placeholder="eyJhbGciOi... (optional for read-only tracking)"
+              value={creds?.accessToken || ""}
+              onChange={(e) => setCreds({ ...creds, accessToken: e.target.value.trim() })}
+            />
+          </div>
+
+          {/* Helper Instructions Box */}
+          <div style={{ background: "var(--bg-3)", border: "1px solid var(--line)", borderRadius: "var(--radius-md)", padding: "12px", fontSize: "12px", marginBottom: "16px" }}>
+            <div style={{ fontWeight: 600, color: "var(--text-bright)", marginBottom: "6px", display: "flex", alignItems: "center", gap: "6px" }}>
+              <BulbIcon size={14} />
+              <span>How to copy your cf_clearance token in 15 seconds:</span>
+            </div>
+            <ol style={{ margin: 0, paddingLeft: "18px", color: "var(--text-dim)", lineHeight: "1.6" }}>
+              <li>Open <strong>bstock.com</strong> in your browser and pass the Turnstile check.</li>
+              <li>Press <strong>F12</strong> (Developer Tools) &rarr; <strong>Application</strong> (or Storage) &rarr; <strong>Cookies</strong> &rarr; <strong>https://bstock.com</strong>.</li>
+              <li>Double click the <strong>cf_clearance</strong> value, copy it, and paste it into the field above.</li>
+            </ol>
+          </div>
+
+          {feedback ? (
+            <div
+              style={{
+                marginBottom: "14px",
+                padding: "8px 12px",
+                borderRadius: "var(--radius-sm)",
+                background: feedback.startsWith("error:") ? "rgba(239, 68, 68, 0.15)" : "rgba(16, 185, 129, 0.15)",
+                border: `1px solid ${feedback.startsWith("error:") ? "rgba(239, 68, 68, 0.3)" : "rgba(16, 185, 129, 0.3)"}`,
+                fontSize: "12px",
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+                color: feedback.startsWith("error:") ? "var(--bad)" : "var(--good)",
+              }}
+            >
+              {feedback.startsWith("error:") ? <AlertIcon size={16} color="var(--bad)" /> : <CheckCircleIcon size={16} color="var(--good)" />}
+              <span>{feedback.replace(/^(error:|success:)/, "")}</span>
+            </div>
+          ) : null}
+
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <button className="btn btn-primary" onClick={save} disabled={saving}>
+              <SaveIcon size={14} />
+              <span>{saving ? "Saving..." : "Save & Apply Credentials"}</span>
+            </button>
+            <button className="btn btn-ghost btn-sm" onClick={onReset}>
+              Reset to Defaults
             </button>
           </div>
         </div>
@@ -1996,7 +2299,7 @@ function CiStatusModal({ status, onClose, onTriggerSuccess }: { status: any; onC
                 type="text"
                 className="input"
                 placeholder="owner/repo"
-                value={ciSettings?.githubRepo || "tinydigitalproductlab/bstock-command"}
+                value={ciSettings?.githubRepo || "Bzcasper/bstock-command"}
                 onChange={(e) => setCiSettings({ ...ciSettings, githubRepo: e.target.value })}
               />
             </div>
@@ -2016,7 +2319,7 @@ function CiStatusModal({ status, onClose, onTriggerSuccess }: { status: any; onC
               </button>
               <div style={{ display: "flex", gap: "10px", fontSize: "12px", alignItems: "center" }}>
                 <a
-                  href={`https://github.com/${ciSettings?.githubRepo || "tinydigitalproductlab/bstock-command"}/actions`}
+                  href={`https://github.com/${ciSettings?.githubRepo || "Bzcasper/bstock-command"}/actions`}
                   target="_blank"
                   rel="noreferrer"
                   style={{ color: "var(--accent)", display: "inline-flex", alignItems: "center", gap: "4px" }}

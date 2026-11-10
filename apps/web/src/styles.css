@@ -197,10 +197,14 @@ button {
   color: var(--text-mute);
 }
 
+.pill-production,
 .pill-live {
   border-color: var(--good-border);
   color: var(--good);
   background: var(--good-bg);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
 .pill-dry-run {

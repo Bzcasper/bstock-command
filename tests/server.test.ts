@@ -111,4 +111,55 @@ describe("server end-to-end", () => {
       await h.close();
     }
   });
+
+  it("serves mobile-optimized endpoints, gzip compression, and 304 conditional validation", async () => {
+    const h = await startHarness({ mode: "dry-run" });
+    try {
+      await h.collector.sync({ pages: 1, pageSize: 20, withBidsFor: 0 });
+
+      // 1. Verify Gzip compression
+      const compRes = await h.app.inject({
+        method: "GET",
+        url: "/api/listings?limit=10",
+        headers: { "accept-encoding": "gzip" },
+      });
+      expect(compRes.statusCode).toBe(200);
+      expect(compRes.headers["content-encoding"]).toBe("gzip");
+      expect(compRes.headers["etag"]).toBeDefined();
+
+      // 2. Verify 304 Not Modified with ETag
+      const etag = compRes.headers["etag"] as string;
+      const notModRes = await h.app.inject({
+        method: "GET",
+        url: "/api/listings?limit=10",
+        headers: { "if-none-match": etag },
+      });
+      expect(notModRes.statusCode).toBe(304);
+      expect(notModRes.body).toBe("");
+
+      // 3. Verify mobile compact listings payload
+      const compactRes = await h.app.inject({
+        method: "GET",
+        url: "/api/listings?limit=5&compact=1",
+      });
+      expect(compactRes.statusCode).toBe(200);
+      const compactJson = compactRes.json() as { compact: boolean; listings: Array<{ listingId: string; opportunityTier: string }> };
+      expect(compactJson.compact).toBe(true);
+      expect(compactJson.listings.length).toBeGreaterThan(0);
+      expect(compactJson.listings[0].opportunityTier).toBeDefined();
+
+      // 4. Verify dedicated /api/mobile/feed endpoint
+      const feedRes = await h.app.inject({
+        method: "GET",
+        url: "/api/mobile/feed",
+      });
+      expect(feedRes.statusCode).toBe(200);
+      const feedJson = feedRes.json() as { stats: unknown; topGems: unknown[]; closingSoon: unknown[] };
+      expect(feedJson.stats).toBeDefined();
+      expect(Array.isArray(feedJson.topGems)).toBe(true);
+      expect(Array.isArray(feedJson.closingSoon)).toBe(true);
+    } finally {
+      await h.close();
+    }
+  });
 });
