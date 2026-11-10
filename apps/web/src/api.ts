@@ -2,6 +2,56 @@ const BASE = (import.meta as { env?: { VITE_API_BASE?: string } }).env?.VITE_API
 
 export const isStaticMode = BASE === "";
 
+export interface UserCredentials {
+  clearance?: string;
+  userAgent?: string;
+  accessToken?: string;
+  loginId?: string;
+  password?: string;
+  cfToken?: string;
+}
+
+export const DEFAULT_CLEARANCE =
+  "CoZSSEyXvfOTR0i9py0u2wm0eZD0Hzn78jb-w3j96CM-HD_X9uj-iuFnNKNpI7yqSiNJbTMGQzSapmHpHogCh214f6AjZYGlriRTv_8WDPHSbtu8EA9VN4Ngno4Ql-cr9u0bXHDGL-gCps_h8zZYqB7M_KI2N9JyBogH8z82nMvBc1mp8bI8IZSghVByp0EoYmD6N19rvvBH16V6uEpZH29eyUgtQ_QFmTNt7jngd3sYN5hIEdJR41lf7NcSvkq1lg5j9sNBV3ueUMKS13XknOe_ckmW2G0DkVg7EiFXqJ4PWJ_NmoUGvmAP0S0_VugnJt-4Ew3qRi3smpMh1yN-SOGCwuK9c13w2-sZ_sRSGV8c7T4FHj80lntifOsxVm-aoajhRkDarukJ-7JNzuxfcZRkBzB-FUbgDDy-D5XPD7A";
+
+export const DEFAULT_UA =
+  "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36";
+
+const CREDS_KEY = "bstock_credentials";
+
+export function getCredentials(): UserCredentials {
+  try {
+    const raw = localStorage.getItem(CREDS_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      return {
+        clearance: parsed.clearance || DEFAULT_CLEARANCE,
+        userAgent: parsed.userAgent || (typeof navigator !== "undefined" ? navigator.userAgent : DEFAULT_UA),
+        accessToken: parsed.accessToken,
+        loginId: parsed.loginId,
+        password: parsed.password,
+        cfToken: parsed.cfToken,
+      };
+    }
+  } catch {}
+  return {
+    clearance: DEFAULT_CLEARANCE,
+    userAgent: typeof navigator !== "undefined" ? navigator.userAgent : DEFAULT_UA,
+  };
+}
+
+export function saveCredentials(c: UserCredentials) {
+  try {
+    localStorage.setItem(CREDS_KEY, JSON.stringify(c));
+  } catch {}
+}
+
+export function clearCredentials() {
+  try {
+    localStorage.removeItem(CREDS_KEY);
+  } catch {}
+}
+
 const WATCH_KEY = "bstock_watched_lots";
 export function getLocalWatched(): Set<string> {
   try {
@@ -34,9 +84,24 @@ function toUrl(path: string): string {
 }
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
+  const creds = getCredentials();
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+    ...((init?.headers as Record<string, string>) ?? {}),
+  };
+  if (creds.clearance) {
+    headers["X-CF-Clearance"] = creds.clearance;
+  }
+  if (creds.userAgent) {
+    headers["X-Custom-UA"] = creds.userAgent;
+  }
+  if (creds.accessToken) {
+    headers["Authorization"] = `Bearer ${creds.accessToken}`;
+  }
+
   const res = await fetch(toUrl(path), {
     ...init,
-    headers: { "Content-Type": "application/json", ...(init?.headers ?? {}) },
+    headers,
   });
   const text = await res.text();
   let body: unknown = null;

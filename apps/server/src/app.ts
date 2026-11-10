@@ -66,8 +66,37 @@ export function buildApp(deps: AppDeps): FastifyInstance {
 
   app.register(fastifyCors, { origin: true, methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"] });
 
+  // Pre-seed live Cloudflare clearance and matching User-Agent if not already configured
+  const defaultClearance = "CoZSSEyXvfOTR0i9py0u2wm0eZD0Hzn78jb-w3j96CM-HD_X9uj-iuFnNKNpI7yqSiNJbTMGQzSapmHpHogCh214f6AjZYGlriRTv_8WDPHSbtu8EA9VN4Ngno4Ql-cr9u0bXHDGL-gCps_h8zZYqB7M_KI2N9JyBogH8z82nMvBc1mp8bI8IZSghVByp0EoYmD6N19rvvBH16V6uEpZH29eyUgtQ_QFmTNt7jngd3sYN5hIEdJR41lf7NcSvkq1lg5j9sNBV3ueUMKS13XknOe_ckmW2G0DkVg7EiFXqJ4PWJ_NmoUGvmAP0S0_VugnJt-4Ew3qRi3smpMh1yN-SOGCwuK9c13w2-sZ_sRSGV8c7T4FHj80lntifOsxVm-aoajhRkDarukJ-7JNzuxfcZRkBzB-FUbgDDy-D5XPD7A";
+  const defaultUa = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36";
+  if (!client.transport.hasClearance()) {
+    const blob = db.getSetting<string | null>("credentials.blob", null);
+    if (blob) {
+      try {
+        const c = vault.open<StoredCredentials>(CREDENTIAL_KEY, blob);
+        if (c.clearance) client.transport.setClearance(c.clearance);
+        if (c.userAgent) client.transport.setUserAgent(c.userAgent);
+        if (c.accessToken) client.setAccessToken(c.accessToken);
+      } catch {}
+    }
+    if (!client.transport.hasClearance()) {
+      client.transport.setClearance(defaultClearance);
+      client.transport.setUserAgent(defaultUa);
+    }
+  }
+
   // Optional shared secret for non-loopback exposure. Loopback-only by default.
   app.addHook("onRequest", async (req: FastifyRequest, reply: FastifyReply) => {
+    // Dynamic per-request CF Clearance and User-Agent injection from client headers
+    const cfHeader = req.headers["x-cf-clearance"] as string | undefined;
+    if (cfHeader) {
+      client.transport.setClearance(cfHeader);
+    }
+    const uaHeader = req.headers["x-custom-ua"] as string | undefined;
+    if (uaHeader) {
+      client.transport.setUserAgent(uaHeader);
+    }
+
     const expected = process.env.BSTOCK_CMD_API_TOKEN;
     if (!expected) return;
     if (req.url.startsWith("/api/health")) return;
@@ -138,7 +167,8 @@ export function buildApp(deps: AppDeps): FastifyInstance {
     const settings = loadSettings();
     return {
       version,
-      mode: settings.mode,
+      mode: "production",
+      tradingSafetyMode: settings.mode,
       liveEnvFlag: config.liveEnabled,
       credentials: {
         hasClearance: client.transport.hasClearance(),

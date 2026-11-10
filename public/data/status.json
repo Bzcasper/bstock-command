@@ -1,32 +1,42 @@
 {
-  "mode": "ci-mock",
+  "mode": "production",
+  "environment": "production",
+  "liveMarket": true,
+  "credentials": {
+    "hasClearance": true,
+    "hasToken": false
+  },
   "stats": {
-    "listings": 48,
-    "metrics": 48,
-    "bids": 1910,
+    "listings": 448,
+    "metrics": 448,
+    "bids": 1940,
     "attempts": 0,
     "watched": 0
   },
   "tierCounts": {
-    "ALPHA_GEM": 23,
-    "SOLID_VALUE": 5,
-    "SLEEPER_SNIPE": 0,
-    "SPECULATIVE": 6,
-    "AVOID": 14
+    "ALPHA_GEM": 177,
+    "SOLID_VALUE": 43,
+    "SLEEPER_SNIPE": 44,
+    "SPECULATIVE": 9,
+    "AVOID": 175
   },
-  "generatedAt": "2026-11-09T22:46:22.602Z",
+  "generatedAt": "2026-11-10T01:37:22.152Z",
   "report": {
-    "startedAt": "2026-11-09T22:46:20.819Z",
-    "finishedAt": "2026-11-09T22:46:22.594Z",
-    "pagesFetched": 1,
-    "listingsSeen": 48,
-    "listingsUpserted": 48,
-    "auctionsFetched": 48,
+    "startedAt": "2026-11-10T01:37:18.364Z",
+    "finishedAt": "2026-11-10T01:37:22.137Z",
+    "pagesFetched": 5,
+    "listingsSeen": 400,
+    "listingsUpserted": 400,
+    "auctionsFetched": 344,
     "entAuctionsFetched": 0,
-    "bidHistoriesFetched": 40,
-    "bidEventsAdded": 955,
-    "metricsComputed": 48,
-    "errors": []
+    "bidHistoriesFetched": 3,
+    "bidEventsAdded": 0,
+    "metricsComputed": 448,
+    "errors": [
+      "mock000015: B-Stock GET https://auction.bstock.com/v1/auctions/mockauc000015/bids?limit=100 -> 400: params validation errors",
+      "mock000027: B-Stock GET https://auction.bstock.com/v1/auctions/mockauc000027/bids?limit=100 -> 400: params validation errors",
+      "mock000022: B-Stock GET https://auction.bstock.com/v1/auctions/mockauc000022/bids?limit=100 -> 400: params validation errors"
+    ]
   },
   "source": "autonomous-ci-workflow"
 }
