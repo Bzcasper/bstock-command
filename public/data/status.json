@@ -1,42 +1,24 @@
 {
-  "mode": "production",
-  "environment": "production",
-  "liveMarket": true,
-  "credentials": {
-    "hasClearance": true,
-    "hasToken": false
-  },
+  "mode": "static",
   "stats": {
-    "listings": 448,
-    "metrics": 448,
-    "bids": 1940,
+    "listings": 48,
+    "metrics": 48,
+    "bids": 955,
     "attempts": 0,
     "watched": 0
   },
-  "tierCounts": {
-    "ALPHA_GEM": 177,
-    "SOLID_VALUE": 43,
-    "SLEEPER_SNIPE": 44,
-    "SPECULATIVE": 9,
-    "AVOID": 175
-  },
-  "generatedAt": "2026-11-10T01:37:22.152Z",
+  "generatedAt": "2026-11-10T02:03:34.647Z",
   "report": {
-    "startedAt": "2026-11-10T01:37:18.364Z",
-    "finishedAt": "2026-11-10T01:37:22.137Z",
-    "pagesFetched": 5,
-    "listingsSeen": 400,
-    "listingsUpserted": 400,
-    "auctionsFetched": 344,
+    "startedAt": "2026-11-10T02:03:34.537Z",
+    "finishedAt": "2026-11-10T02:03:34.644Z",
+    "pagesFetched": 1,
+    "listingsSeen": 48,
+    "listingsUpserted": 48,
+    "auctionsFetched": 48,
     "entAuctionsFetched": 0,
-    "bidHistoriesFetched": 3,
-    "bidEventsAdded": 0,
-    "metricsComputed": 448,
-    "errors": [
-      "mock000015: B-Stock GET https://auction.bstock.com/v1/auctions/mockauc000015/bids?limit=100 -> 400: params validation errors",
-      "mock000027: B-Stock GET https://auction.bstock.com/v1/auctions/mockauc000027/bids?limit=100 -> 400: params validation errors",
-      "mock000022: B-Stock GET https://auction.bstock.com/v1/auctions/mockauc000022/bids?limit=100 -> 400: params validation errors"
-    ]
-  },
-  "source": "autonomous-ci-workflow"
+    "bidHistoriesFetched": 40,
+    "bidEventsAdded": 955,
+    "metricsComputed": 48,
+    "errors": []
+  }
 }
