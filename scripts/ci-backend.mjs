@@ -47,11 +47,13 @@ let userAgent = process.env.BSTOCK_UA || defaultUa;
 
 console.log(`[ci-backend] Starting market crawl engine (Mode: ${useMock ? "OFFLINE_MOCK" : "LIVE_PRODUCTION"})...`);
 
-// If live mode requested and clearance is missing, try Scrapling stealth solver
+// If live mode requested and clearance is missing, try Turnstile-Solver-NEW
 if (!useMock && !clearance && solveClearance) {
-  console.log("[ci-backend] Attempting Cloudflare Turnstile challenge solve via Scrapling...");
+  console.log("[ci-backend] Attempting Cloudflare Turnstile challenge solve via Turnstile-Solver-NEW...");
   try {
-    const bridgeScript = path.resolve("scripts/scrapling_bridge.py");
+    const solverBridge = path.resolve("solver/bridge.py");
+    const legacyBridge = path.resolve("scripts/scrapling_bridge.py");
+    const bridgeScript = fs.existsSync(solverBridge) ? solverBridge : legacyBridge;
     const venvPy = path.resolve(".venv/bin/python");
     const py = process.env.PYTHON_BIN || (fs.existsSync(venvPy) ? venvPy : "python3");
     const out = execFileSync(py, [bridgeScript, "--action", "solve-clearance"], {

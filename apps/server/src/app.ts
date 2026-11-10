@@ -67,7 +67,7 @@ export function buildApp(deps: AppDeps): FastifyInstance {
   };
 
   app.register(fastifyCors, { origin: true, methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"] });
-  app.register(fastifyCompress, { global: true, threshold: 1024, encodings: ["gzip", "deflate"] });
+  app.register(fastifyCompress, { threshold: 512 });
 
   // Lightweight ETag and conditional request (304 Not Modified) optimization for mobile clients
   app.addHook("onSend", async (req, reply, payload) => {
@@ -172,6 +172,7 @@ export function buildApp(deps: AppDeps): FastifyInstance {
     if (clearanceRefreshTimer) clearInterval(clearanceRefreshTimer);
   });
 
+  app.after(() => {
   // ------------------------------------------------------------------ health
   app.get("/api/health", async () => ({
     ok: true,
@@ -193,6 +194,7 @@ export function buildApp(deps: AppDeps): FastifyInstance {
       },
       stats: db.stats(),
       storage: firebaseService.getStatus(),
+      solver: scraplingService.getStatus(),
       scraper: scraplingService.getStatus(),
       settings,
       serverTime: now().toISOString(),
@@ -682,12 +684,16 @@ export function buildApp(deps: AppDeps): FastifyInstance {
     return pullFirebaseToLocalDb(db, firebaseService, config.dbPath);
   });
 
-  // ---------------------------------------------------------------- scrapling
+  // ---------------------------------------------------------------- turnstile solver
+  app.get("/api/solver/status", async () => {
+    return scraplingService.getStatus();
+  });
+
   app.get("/api/scraper/status", async () => {
     return scraplingService.getStatus();
   });
 
-  app.post("/api/scraper/solve-clearance", async (req) => {
+  const handleSolveClearance = async (req: any) => {
     const body = (req.body as { targetUrl?: string }) || {};
     const res = await scraplingService.solveClearance(body.targetUrl);
     if (res.success && res.clearance) {
@@ -703,6 +709,17 @@ export function buildApp(deps: AppDeps): FastifyInstance {
       db.setSetting("credentials.blob", vault.seal(CREDENTIAL_KEY, { ...current, clearance: res.clearance, userAgent: res.userAgent }));
     }
     return res;
+  };
+
+  app.post("/api/solver/solve-clearance", handleSolveClearance);
+  app.post("/api/scraper/solve-clearance", handleSolveClearance);
+
+  app.post("/api/solver/turnstile", async (req) => {
+    const body = (req.body as { url?: string; sitekey?: string; action?: string }) || {};
+    if (!body.url || !body.sitekey) {
+      return { success: false, error: "url and sitekey required" };
+    }
+    return scraplingService.solveTurnstile(body.url, body.sitekey, body.action);
   });
 
   app.post("/api/scraper/scrape-lot", async (req, reply) => {
@@ -852,6 +869,7 @@ export function buildApp(deps: AppDeps): FastifyInstance {
     },
     workingDirectory: path.basename(config.dataDir),
   }));
+  });
 
   app.addHook("onClose", async () => {
     for (const c of sseClients) c.end();

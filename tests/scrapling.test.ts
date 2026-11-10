@@ -2,14 +2,18 @@ import { describe, expect, it } from "vitest";
 import { startHarness } from "./helpers.ts";
 
 describe("scrapling and funnel server endpoints", () => {
-  it("exposes /api/scraper/status", async () => {
+  it("exposes /api/scraper/status and /api/solver/status with Turnstile-Solver-NEW", async () => {
     const h = await startHarness();
     try {
-      const res = await h.app.inject({ method: "GET", url: "/api/scraper/status" });
+      const res = await h.app.inject({ method: "GET", url: "/api/solver/status" });
       expect(res.statusCode).toBe(200);
-      const body = res.json() as { ready: boolean; venvExists: boolean };
+      const body = res.json() as { ready: boolean; venvExists: boolean; engine: string };
       expect(body).toHaveProperty("ready");
       expect(body).toHaveProperty("venvExists");
+      expect(body.engine).toMatch(/Turnstile-Solver-NEW/);
+
+      const legacyRes = await h.app.inject({ method: "GET", url: "/api/scraper/status" });
+      expect(legacyRes.statusCode).toBe(200);
     } finally {
       await h.close();
     }

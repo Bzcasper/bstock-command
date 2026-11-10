@@ -72,8 +72,8 @@ Usage:
   bstock-command                     Start the Fastify API server + web dashboard
   bstock-command --sync              Crawl B-Stock once and update database
   bstock-command --sync --firebase   Crawl B-Stock and sync database + snapshot to Firebase
-  bstock-command --solve-clearance   Solve Cloudflare challenge via Scrapling stealth browser
-  bstock-command --scraper-status    Print Scrapling stealth scraper installation status
+  bstock-command --solve-clearance   Solve Cloudflare Turnstile challenge via Turnstile-Solver-NEW
+  bstock-command --solver-status     Print Turnstile solver installation and browser engine status
   bstock-command --firebase-sync     Sync local SQLite database to Firebase Storage & Firestore
   bstock-command --firebase-pull     Pull remote watchlist & decisions from Firestore
   bstock-command --firebase-status   Print Firebase connection and bucket status
@@ -84,14 +84,14 @@ Usage:
     return;
   }
 
-  if (args.has("--scraper-status")) {
+  if (args.has("--scraper-status") || args.has("--solver-status")) {
     console.log(JSON.stringify(scrapling.getStatus(), null, 2));
     db.close();
     return;
   }
 
   if (args.has("--solve-clearance")) {
-    console.log("[bstock-command] Solving Cloudflare challenge with Scrapling...");
+    console.log("[bstock-command] Solving Cloudflare Turnstile challenge with Turnstile-Solver-NEW...");
     const res = await scrapling.solveClearance();
     if (res.success && res.clearance) {
       console.log(`[bstock-command] Clearance solved successfully! Token: ${res.clearance.slice(0, 15)}...`);

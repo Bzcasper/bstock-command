@@ -583,6 +583,20 @@ export function App() {
           </div>
         </div>
 
+        {/* Mobile Status Pill Indicator */}
+        <button
+          className="mobile-status-pill"
+          onClick={() => setStatusModalOpen(true)}
+          aria-label="Terminal CI and Clearance status"
+          title="Terminal CI & Clearance status"
+        >
+          <span className={`status-dot dot-${status?.mode ?? "off"}`} />
+          <span className="mobile-status-mode">{status?.mode ? String(status.mode).toUpperCase() : "READY"}</span>
+          <span className={`mobile-status-tag ${status?.credentials?.hasClearance ? "tag-ok" : "tag-warn"}`}>
+            {status?.credentials?.hasClearance ? "CF OK" : "!CF"}
+          </span>
+        </button>
+
         {/* Desktop Status Cluster */}
         <div className="status-cluster" onClick={() => setStatusModalOpen(true)} style={{ cursor: "pointer" }} title="Click to open Autonomous CI & Backend status">
           <span className={`pill pill-${status?.mode ?? "off"}`}>{status?.mode ? String(status.mode).toUpperCase() : "PRODUCTION"}</span>
@@ -616,6 +630,9 @@ export function App() {
           <span className={`pill ${status?.storage?.initialized ? "pill-ok" : "pill-muted"}`} title={status?.storage?.storageBucket ?? "Storage"}>
             {status?.storage?.initialized ? "cloud OK" : "local cache"}
           </span>
+          <span className={`pill ${status?.solver?.ready || status?.scraper?.ready ? "pill-ok" : "pill-muted"}`} title={status?.solver?.engine ?? "Turnstile-Solver-NEW (Patchright)"}>
+            {status?.solver?.ready || status?.scraper?.ready ? "turnstile OK" : "solver off"}
+          </span>
           <span className="pill pill-muted">{status?.stats?.listings ?? listings.length} lots</span>
         </div>
 
@@ -626,24 +643,35 @@ export function App() {
             title="Configure Cloudflare clearance and API credentials"
           >
             <KeyIcon size={14} />
-            <span>CF Token</span>
+            <span className="btn-text-desktop">CF Token</span>
           </button>
           <button
             className="btn-scraper"
             onClick={onSolveClearance}
             disabled={solvingClearance}
-            title="Solve Cloudflare Turnstile challenge with Scrapling"
+            title="Solve Cloudflare Turnstile challenge via Turnstile-Solver-NEW (Patchright real-browser automation)"
           >
             <LightningIcon size={14} />
-            <span>{solvingClearance ? "Solving Turnstile..." : "Solve Cloudflare"}</span>
+            <span className="btn-text-desktop">{solvingClearance ? "Solving..." : "Solve CF"}</span>
           </button>
-          <div className="view-mode-toggle">
-            <button className={`view-mode-btn ${viewMode === "table" ? "active" : ""}`} onClick={() => setViewMode("table")}>
-              Table
+          <div className="view-mode-toggle" title="Toggle dense tactical cards or visual pallet photos">
+            <button
+              className={`view-mode-btn ${viewMode === "table" ? "active" : ""}`}
+              onClick={() => setViewMode("table")}
+              title="Dense Card View"
+              aria-label="Dense Card View"
+            >
+              <BoxIcon />
+              <span className="view-toggle-text">Dense</span>
             </button>
-            <button className={`view-mode-btn ${viewMode === "cards" ? "active" : ""}`} onClick={() => setViewMode("cards")}>
+            <button
+              className={`view-mode-btn ${viewMode === "cards" ? "active" : ""}`}
+              onClick={() => setViewMode("cards")}
+              title="Pallet Photos View"
+              aria-label="Pallet Photos View"
+            >
               <CameraIcon size={13} />
-              <span>Pallets</span>
+              <span className="view-toggle-text">Photos</span>
             </button>
           </div>
           <button
@@ -653,7 +681,8 @@ export function App() {
             title="Filter Auctions"
           >
             <FilterIcon />
-            <span>Filter{activeFiltersCount > 0 ? ` (${activeFiltersCount})` : ""}</span>
+            <span className="btn-text-desktop">Filter</span>
+            {activeFiltersCount > 0 ? <span className="filter-count-badge">{activeFiltersCount}</span> : null}
           </button>
           <button
             className="btn btn-primary"
@@ -662,7 +691,7 @@ export function App() {
             aria-label="Sync auctions with market"
           >
             <SyncIcon spin={syncing} />
-            <span className="btn-desktop-only">{syncing ? "Syncing..." : "Sync Market"}</span>
+            <span className="btn-desktop-only">{syncing ? "Syncing..." : "Sync"}</span>
           </button>
           <button
             className="btn btn-ghost btn-icon"
@@ -1019,74 +1048,169 @@ export function App() {
           ) : null}
         </section>
 
-        {/* Mobile Tactical Cards */}
+        {/* Mobile Auctions View (Dense Tactical Cards or Visual Pallet Photo Cards) */}
         <section className={`mobile-cards-wrap ${mobileTab === "detail" || mobileTab === "kpis" ? "hidden-view" : ""}`}>
-          {displayedListings.map((l) => {
-            const endsIn = hoursUntil(l.endsAt);
-            return (
-              <div
-                key={l.listingId}
-                className={`tactical-card ${selected?.listingId === l.listingId ? "selected" : ""}`}
-                onClick={() => {
-                  loadDetail(l);
-                  setMobileTab("detail");
-                }}
-              >
-                <div className="card-top">
-                  <div className="card-top-left">
-                    <ScoreBadge score={l.score} />
-                    <span className="site-chip">{l.site}</span>
-                    <span className="lot-sub">{l.category}</span>
-                  </div>
-                  <button
-                    className={`watch-btn ${l.watched ? "watched" : ""}`}
-                    aria-label={l.watched ? "Unwatch lot" : "Watch lot"}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      (l.watched ? api.unwatch(l.listingId) : api.watch(l.listingId)).then(refresh);
+          {viewMode === "cards"
+            ? displayedListings.map((l) => {
+                const endsIn = hoursUntil(l.endsAt);
+                return (
+                  <div
+                    key={l.listingId}
+                    className={`pallet-card ${selected?.listingId === l.listingId ? "selected" : ""}`}
+                    onClick={() => {
+                      loadDetail(l);
+                      setMobileTab("detail");
                     }}
                   >
-                    <StarIcon filled={l.watched} />
-                  </button>
-                </div>
+                    <div className="pallet-card-media">
+                      {l.imageUrl ? (
+                        <img src={l.imageUrl} alt={l.title ?? "Pallet lot"} className="pallet-card-img" loading="lazy" />
+                      ) : (
+                        <div className="pallet-card-placeholder">
+                          <PalletBoxIcon size={36} color="var(--text-mute)" />
+                        </div>
+                      )}
+                      <div className="pallet-card-badge-row">
+                        <div style={{ display: "flex", gap: "6px", alignItems: "center" }}>
+                          <ScoreBadge score={l.score} />
+                          <span className="site-chip">{l.site}</span>
+                        </div>
+                        <button
+                          className={`watch-btn ${l.watched ? "watched" : ""}`}
+                          aria-label={l.watched ? "Unwatch lot" : "Watch lot"}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            (l.watched ? api.unwatch(l.listingId) : api.watch(l.listingId)).then(refresh);
+                          }}
+                        >
+                          <StarIcon filled={l.watched} />
+                        </button>
+                      </div>
+                      <div className="pallet-card-tier-tag">
+                        <TierBadge tier={l.opportunityTier ?? (l.score && l.score >= 75 ? "ALPHA_GEM" : "SOLID_VALUE")} />
+                      </div>
+                    </div>
+                    <div className="pallet-card-body">
+                      <div className="pallet-card-title">{l.title ?? l.listingId}</div>
+                      <div className="pallet-card-sub">{l.category} · {l.condition} · {l.pallets ? `${l.pallets} pallets` : "LTL"}</div>
+                      <div className="pallet-card-grid">
+                        <div className="pallet-card-stat">
+                          <span>Max Hammer</span>
+                          <b className="accent">{fmtMoney(l.maxHammer)}</b>
+                        </div>
+                        <div className="pallet-card-stat">
+                          <span>Current Bid</span>
+                          <b>{fmtMoney(l.currentBid)}</b>
+                        </div>
+                        <div className="pallet-card-stat">
+                          <span>Retail Value</span>
+                          <b>{fmtMoney(l.retail)}</b>
+                        </div>
+                        <div className="pallet-card-stat">
+                          <span>Est. ROI</span>
+                          <b className="accent">{fmtPct(l.roi)}</b>
+                        </div>
+                      </div>
+                      <div className="card-bottom" style={{ marginTop: "4px" }}>
+                        <span className="card-bids-count">{l.bids} bids</span>
+                        <span className={`countdown-pill ${endsIn <= 6 ? "countdown-soon" : ""}`}>
+                          <ClockIcon size={12} />
+                          {endsIn <= 0 ? "Ended" : `${endsIn.toFixed(1)}h left`}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })
+            : displayedListings.map((l) => {
+                const endsIn = hoursUntil(l.endsAt);
+                return (
+                  <div
+                    key={l.listingId}
+                    className={`tactical-card ${selected?.listingId === l.listingId ? "selected" : ""}`}
+                    onClick={() => {
+                      loadDetail(l);
+                      setMobileTab("detail");
+                    }}
+                  >
+                    <div className="card-top">
+                      <div className="card-top-left">
+                        <div
+                          className="card-thumb-wrap"
+                          onClick={(e) => {
+                            if (l.imageUrl) {
+                              e.stopPropagation();
+                              setLightboxImg(l.imageUrl);
+                            }
+                          }}
+                        >
+                          {l.imageUrl ? (
+                            <img src={l.imageUrl} alt="" className="card-thumb" loading="lazy" onError={(ev) => { (ev.target as HTMLElement).style.display = "none"; }} />
+                          ) : (
+                            <span className="card-thumb-placeholder"><PalletBoxIcon size={16} /></span>
+                          )}
+                        </div>
+                        <div className="card-meta">
+                          <div style={{ display: "flex", alignItems: "center", gap: "6px", flexWrap: "wrap" }}>
+                            <ScoreBadge score={l.score} />
+                            <span className="site-chip">{l.site}</span>
+                            <TierBadge tier={l.opportunityTier ?? (l.score && l.score >= 75 ? "ALPHA_GEM" : "SOLID_VALUE")} />
+                          </div>
+                          <span className="lot-sub">{l.category}</span>
+                        </div>
+                      </div>
+                      <button
+                        className={`watch-btn ${l.watched ? "watched" : ""}`}
+                        aria-label={l.watched ? "Unwatch lot" : "Watch lot"}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          (l.watched ? api.unwatch(l.listingId) : api.watch(l.listingId)).then(refresh);
+                        }}
+                      >
+                        <StarIcon filled={l.watched} />
+                      </button>
+                    </div>
 
-                <div className="card-title">{l.title ?? l.listingId}</div>
+                    <div className="card-title">{l.title ?? l.listingId}</div>
 
-                <div className="card-metrics-grid">
-                  <div className="card-metric">
-                    <span className="card-metric-label">Max Hammer</span>
-                    <span className="card-metric-val accent">{fmtMoney(l.maxHammer)}</span>
-                  </div>
-                  <div className="card-metric">
-                    <span className="card-metric-label">Current Bid</span>
-                    <span className="card-metric-val">{fmtMoney(l.currentBid)}</span>
-                  </div>
-                  <div className="card-metric">
-                    <span className="card-metric-label">Retail Value</span>
-                    <span className="card-metric-val">{fmtMoney(l.retail)}</span>
-                  </div>
-                  <div className="card-metric">
-                    <span className="card-metric-label">Est. ROI</span>
-                    <span className="card-metric-val accent">{fmtPct(l.roi)}</span>
-                  </div>
-                </div>
+                    <div className="card-metrics-grid">
+                      <div className="card-metric">
+                        <span className="card-metric-label">Max Hammer</span>
+                        <span className="card-metric-val accent">{fmtMoney(l.maxHammer)}</span>
+                      </div>
+                      <div className="card-metric">
+                        <span className="card-metric-label">Current Bid</span>
+                        <span className="card-metric-val">{fmtMoney(l.currentBid)}</span>
+                      </div>
+                      <div className="card-metric">
+                        <span className="card-metric-label">Retail Value</span>
+                        <span className="card-metric-val">{fmtMoney(l.retail)}</span>
+                      </div>
+                      <div className="card-metric">
+                        <span className="card-metric-label">Est. ROI</span>
+                        <span className="card-metric-val accent">{fmtPct(l.roi)}</span>
+                      </div>
+                    </div>
 
-                <div className="card-bottom">
-                  <span>{l.pallets ? `${l.pallets} pallets` : "LTL Lot"} · {l.condition}</span>
-                  <span className={`countdown-pill ${endsIn <= 6 ? "countdown-soon" : ""}`}>
-                    <ClockIcon />
-                    {endsIn <= 0 ? "Ended" : `${endsIn.toFixed(1)}h left`}
-                  </span>
-                </div>
-              </div>
-            );
-          })}
+                    <div className="card-bottom">
+                      <span className="card-pallet-tag">
+                        <PalletBoxIcon size={13} style={{ marginRight: "4px" }} />
+                        {l.pallets ? `${l.pallets} pallets` : "LTL"} · {l.condition}
+                      </span>
+                      <span className={`countdown-pill ${endsIn <= 6 ? "countdown-soon" : ""}`}>
+                        <ClockIcon size={12} />
+                        {endsIn <= 0 ? "Ended" : `${endsIn.toFixed(1)}h left`}
+                      </span>
+                    </div>
+                  </div>
+                );
+              })}
           {displayedListings.length === 0 ? (
             <div className="empty">No lots match active filters. Try clearing search filters.</div>
           ) : null}
         </section>
 
-        {/* Mobile KPIs Full View */}
+        {/* Mobile Full Status & Operations View */}
         {mobileTab === "kpis" ? (
           <section className="kpis mobile-view">
             <Kpi label="lots in view" value={String(kpis.count)} sub={`${status?.stats?.listings ?? listings.length} total stored`} />
@@ -1094,9 +1218,9 @@ export function App() {
             <Kpi label="closing soon" value={String(kpis.soon)} sub="urgent under 6 hours" />
             <Kpi label="watched lots" value={String(kpis.watched)} sub="saved for bidding" />
             <Kpi label="projected profit" value={fmtMoney(kpis.projectedProfit)} sub="est. at 40% recovery" />
-            <div className="kpi" style={{ gridColumn: "span 2" }}>
-              <div className="kpi-label">Terminal Status</div>
-              <div style={{ marginTop: "8px", display: "flex", flexWrap: "wrap", gap: "6px" }}>
+            <div className="kpi mobile-kpi-full" style={{ gridColumn: "span 2" }}>
+              <div className="kpi-label">Terminal Status & Security</div>
+              <div style={{ marginTop: "10px", display: "flex", flexWrap: "wrap", gap: "8px" }}>
                 <span className={`pill pill-${status?.mode ?? "off"}`}>Mode: {status?.mode ? String(status.mode).toUpperCase() : "PRODUCTION"}</span>
                 <span
                   className={`pill ${status?.credentials?.hasClearance ? "pill-ok" : "pill-warn"}`}
@@ -1115,6 +1239,23 @@ export function App() {
                 >
                   {status?.credentials?.hasToken ? "Auth Token Ready" : "Unauthenticated"}
                 </span>
+                <span className={`pill ${status?.storage?.initialized ? "pill-ok" : "pill-muted"}`}>
+                  {status?.storage?.initialized ? "Cloud Storage Synced" : "Local Database"}
+                </span>
+              </div>
+              <div className="mobile-status-actions" style={{ marginTop: "14px", display: "flex", gap: "8px", flexWrap: "wrap" }}>
+                <button className="btn btn-primary btn-sm" onClick={() => setStatusModalOpen(true)}>
+                  <LightningIcon size={14} />
+                  <span>CI Automation Runs</span>
+                </button>
+                <button className="btn btn-secondary btn-sm" onClick={onSolveClearance} disabled={solvingClearance}>
+                  <LightningIcon size={14} />
+                  <span>{solvingClearance ? "Solving..." : "Solve Turnstile"}</span>
+                </button>
+                <button className="btn btn-ghost btn-sm" onClick={() => setSettingsOpen(true)}>
+                  <SettingsIcon />
+                  <span>Trading Settings</span>
+                </button>
               </div>
             </div>
           </section>
@@ -1122,10 +1263,36 @@ export function App() {
 
         {/* Detail Inspection & Execution Pane */}
         <aside className={`detail ${mobileTab === "detail" ? "active-view" : ""}`}>
-          <button className="mobile-back-bar" onClick={() => setMobileTab("auctions")}>
-            <ChevronLeftIcon />
-            <span>Back to All Lots</span>
-          </button>
+          <div className="mobile-detail-header-bar">
+            <button className="mobile-back-bar" onClick={() => setMobileTab("auctions")}>
+              <ChevronLeftIcon />
+              <span>Back to Lots</span>
+            </button>
+            {selected ? (
+              <div className="mobile-detail-quick-actions">
+                <button
+                  className={`btn btn-ghost btn-sm watch-btn-compact ${selected.watched ? "watched" : ""}`}
+                  onClick={() => {
+                    (selected.watched ? api.unwatch(selected.listingId) : api.watch(selected.listingId)).then(refresh);
+                  }}
+                  aria-label={selected.watched ? "Unwatch lot" : "Watch lot"}
+                >
+                  <StarIcon filled={selected.watched} />
+                  <span>{selected.watched ? "Saved" : "Watch"}</span>
+                </button>
+                <a
+                  href={api.getAuctionUrl(selected)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn btn-ghost btn-sm"
+                  title="Open auction on B-Stock Marketplace"
+                >
+                  <span>B-Stock</span>
+                  <ExternalLinkIcon size={12} />
+                </a>
+              </div>
+            ) : null}
+          </div>
 
           {!selected ? (
             <div className="detail-empty">
@@ -1139,10 +1306,12 @@ export function App() {
       </main>
 
       {/* Mobile Bottom Navigation Bar */}
-      <nav className="bottom-nav">
+      <nav className="bottom-nav" role="tablist" aria-label="Mobile Navigation">
         <button
           className={`nav-tab-btn ${mobileTab === "auctions" ? "active" : ""}`}
           onClick={() => setMobileTab("auctions")}
+          role="tab"
+          aria-selected={mobileTab === "auctions"}
         >
           <BoxIcon />
           <span>Auctions</span>
@@ -1150,6 +1319,8 @@ export function App() {
         <button
           className={`nav-tab-btn ${mobileTab === "watchlist" ? "active" : ""}`}
           onClick={() => setMobileTab("watchlist")}
+          role="tab"
+          aria-selected={mobileTab === "watchlist"}
         >
           <StarIcon filled={mobileTab === "watchlist"} />
           <span>Watch ({kpis.watched})</span>
@@ -1157,6 +1328,8 @@ export function App() {
         <button
           className={`nav-tab-btn ${mobileTab === "detail" ? "active" : ""}`}
           onClick={() => setMobileTab("detail")}
+          role="tab"
+          aria-selected={mobileTab === "detail"}
         >
           <InspectIcon />
           <span>{selected ? "Lot Detail" : "Inspect"}</span>
@@ -1164,6 +1337,8 @@ export function App() {
         <button
           className={`nav-tab-btn ${mobileTab === "kpis" ? "active" : ""}`}
           onClick={() => setMobileTab("kpis")}
+          role="tab"
+          aria-selected={mobileTab === "kpis"}
         >
           <ActivityIcon />
           <span>Status</span>
@@ -1174,6 +1349,7 @@ export function App() {
       {filterModalOpen ? (
         <div className="modal-backdrop" onClick={() => setFilterModalOpen(false)}>
           <div className="modal" onClick={(e) => e.stopPropagation()}>
+            <div className="sheet-handle-bar"><div className="sheet-handle" /></div>
             <div className="modal-head">
               <span className="block-title">Filter & Sort Auctions</span>
               <button className="btn btn-ghost btn-icon" onClick={() => setFilterModalOpen(false)} aria-label="Close filters">
@@ -1638,28 +1814,30 @@ function DetailPanel({ listing, detail, onRefresh, settings, onOpenImage }: { li
             {manifestData.topBrands?.length > 0 ? (
               <div style={{ marginBottom: "12px" }}>
                 <div style={{ fontSize: "12px", fontWeight: 600, color: "var(--text-mute)", marginBottom: "6px" }}>TOP BRANDS BY VALUE</div>
-                <table style={{ width: "100%", fontSize: "12px", borderCollapse: "collapse" }}>
-                  <thead>
-                    <tr style={{ color: "var(--text-mute)", borderBottom: "1px solid var(--border)", textAlign: "left" }}>
-                      <th style={{ padding: "4px 6px" }}>Brand</th>
-                      <th style={{ padding: "4px 6px" }}>Tier</th>
-                      <th style={{ padding: "4px 6px" }}>Units</th>
-                      <th style={{ padding: "4px 6px" }}>Retail</th>
-                      <th style={{ padding: "4px 6px" }}>Est. Resale</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {manifestData.topBrands.map((b: any, idx: number) => (
-                      <tr key={idx} style={{ borderBottom: "1px solid rgba(255, 255, 255, 0.05)" }}>
-                        <td style={{ padding: "4px 6px", fontWeight: 600 }}>{b.brand}</td>
-                        <td style={{ padding: "4px 6px" }}>T{b.tier}</td>
-                        <td style={{ padding: "4px 6px" }}>{b.units}</td>
-                        <td style={{ padding: "4px 6px" }}>{fmtMoney(b.extRetail)}</td>
-                        <td style={{ padding: "4px 6px", color: "var(--accent)" }}>{fmtMoney(b.estimatedResale)}</td>
+                <div className="table-scroll-container">
+                  <table style={{ width: "100%", minWidth: "320px", fontSize: "12px", borderCollapse: "collapse" }}>
+                    <thead>
+                      <tr style={{ color: "var(--text-mute)", borderBottom: "1px solid var(--border)", textAlign: "left" }}>
+                        <th style={{ padding: "4px 6px" }}>Brand</th>
+                        <th style={{ padding: "4px 6px" }}>Tier</th>
+                        <th style={{ padding: "4px 6px" }}>Units</th>
+                        <th style={{ padding: "4px 6px" }}>Retail</th>
+                        <th style={{ padding: "4px 6px" }}>Est. Resale</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody>
+                      {manifestData.topBrands.map((b: any, idx: number) => (
+                        <tr key={idx} style={{ borderBottom: "1px solid rgba(255, 255, 255, 0.05)" }}>
+                          <td style={{ padding: "4px 6px", fontWeight: 600 }}>{b.brand}</td>
+                          <td style={{ padding: "4px 6px" }}>T{b.tier}</td>
+                          <td style={{ padding: "4px 6px" }}>{b.units}</td>
+                          <td style={{ padding: "4px 6px" }}>{fmtMoney(b.extRetail)}</td>
+                          <td style={{ padding: "4px 6px", color: "var(--accent)" }}>{fmtMoney(b.estimatedResale)}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             ) : null}
 
@@ -1841,7 +2019,7 @@ function BidCurve({ bids }: { bids: any[] }) {
   const path = pts.map((p, i) => `${i === 0 ? "M" : "L"} ${p.x.toFixed(1)} ${p.y.toFixed(1)}`).join(" ");
 
   return (
-    <svg viewBox={`0 0 ${w} ${h}`} className="chart" preserveAspectRatio="none">
+    <svg viewBox={`0 0 ${w} ${h}`} className="chart bid-curve-svg" preserveAspectRatio="none" style={{ width: "100%", height: "120px", display: "block" }}>
       <path d={path} fill="none" stroke="var(--accent)" strokeWidth={2} />
       {pts.map((p, i) => (
         <circle key={i} cx={p.x} cy={p.y} r={p.winning ? 4.5 : 3} fill={p.winning ? "var(--good)" : "var(--accent-2)"} />
@@ -1881,6 +2059,7 @@ function SettingsModal({ settings, onClose, onSaved, onOpenCreds }: { settings: 
   return (
     <div className="modal-backdrop" onClick={onClose}>
       <div className="modal" onClick={(e) => e.stopPropagation()}>
+        <div className="sheet-handle-bar"><div className="sheet-handle" /></div>
         <div className="modal-head">
           <span className="block-title">Terminal Trading Parameters</span>
           <button className="btn btn-ghost btn-icon" onClick={onClose} aria-label="Close settings">
@@ -2004,6 +2183,7 @@ function CredentialsModal({
   return (
     <div className="modal-backdrop" onClick={onClose}>
       <div className="modal" style={{ maxWidth: "680px" }} onClick={(e) => e.stopPropagation()}>
+        <div className="sheet-handle-bar"><div className="sheet-handle" /></div>
         <div className="modal-head">
           <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
             <KeyIcon size={18} />
@@ -2166,11 +2346,11 @@ function CiStatusModal({ status, onClose, onTriggerSuccess }: { status: any; onC
     setTimeout(() => setSavedNotice(false), 2500);
   };
 
-  const onTriggerGithub = async (mode: "mock" | "live") => {
+  const onTriggerGithub = async () => {
     setTriggeringGh(true);
     setFeedback(null);
     try {
-      const res = await api.triggerGithubCrawl({ mode, pages: "5" });
+      const res = await api.triggerGithubCrawl({ mode: "live", pages: "5" });
       setFeedback(res.message);
       onTriggerSuccess();
     } catch (err) {
@@ -2197,6 +2377,7 @@ function CiStatusModal({ status, onClose, onTriggerSuccess }: { status: any; onC
   return (
     <div className="modal-backdrop" onClick={onClose}>
       <div className="modal" style={{ maxWidth: "680px" }} onClick={(e) => e.stopPropagation()}>
+        <div className="sheet-handle-bar"><div className="sheet-handle" /></div>
         <div className="modal-head">
           <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
             <LightningIcon size={18} color="var(--accent-2)" />
@@ -2247,30 +2428,21 @@ function CiStatusModal({ status, onClose, onTriggerSuccess }: { status: any; onC
             <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
               <button
                 className="btn btn-primary"
-                onClick={() => onTriggerGithub("mock")}
+                onClick={onTriggerGithub}
                 disabled={triggeringGh || !ciSettings?.githubToken}
-                title={!ciSettings?.githubToken ? "Configure GitHub PAT below" : "Trigger GitHub Actions run"}
+                title={!ciSettings?.githubToken ? "Configure GitHub PAT below" : "Trigger Live Market Crawl on GitHub Actions"}
               >
                 <RocketIcon size={14} />
-                <span>{triggeringGh ? "Dispatching..." : "Run GitHub Actions (Mock)"}</span>
-              </button>
-              <button
-                className="btn btn-ghost"
-                onClick={() => onTriggerGithub("live")}
-                disabled={triggeringGh || !ciSettings?.githubToken}
-                title={!ciSettings?.githubToken ? "Configure GitHub PAT below" : "Trigger Live GitHub Actions crawl"}
-              >
-                <GlobeIcon size={14} />
-                <span>Run GitHub (Live)</span>
+                <span>{triggeringGh ? "Dispatching..." : "Run Live Market Crawl (GitHub)"}</span>
               </button>
               <button
                 className="btn btn-ghost"
                 onClick={onTriggerGitlab}
                 disabled={triggeringGl || !ciSettings?.gitlabToken}
-                title={!ciSettings?.gitlabToken ? "Configure GitLab Trigger Token below" : "Trigger GitLab CI pipeline"}
+                title={!ciSettings?.gitlabToken ? "Configure GitLab Trigger Token below" : "Trigger Live Production Pipeline on GitLab CI"}
               >
                 <GitLabIcon size={14} />
-                <span>Run GitLab Pipeline</span>
+                <span>{triggeringGl ? "Triggering..." : "Run Live Pipeline (GitLab)"}</span>
               </button>
             </div>
             {feedback ? (

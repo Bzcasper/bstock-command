@@ -348,6 +348,9 @@ export const api = {
   storageBackup: () => request<any>("/api/storage/backup", { method: "POST" }),
   storageRestore: () => request<any>("/api/storage/restore", { method: "POST" }),
   scraplingStatus: () => request<any>("/api/scraper/status"),
+  solverStatus: () => request<any>("/api/solver/status"),
+  solveTurnstile: (url: string, sitekey: string, action?: string) =>
+    request<any>("/api/solver/turnstile", { method: "POST", body: JSON.stringify({ url, sitekey, action }) }),
   solveClearance: async (targetUrl?: string) => {
     if (!isStaticMode) {
       try {

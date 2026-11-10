@@ -19,6 +19,7 @@ coverage/
 pnpm-lock.yaml
 pnpm-workspace.yaml
 __pycache__/
+*.pyc
 .data/
 .agent/
 .agents/
