@@ -7,8 +7,11 @@ export class BStockAdapter implements MarketplaceAdapter {
   readonly label = "B-Stock";
   readonly baseUrl = "https://bstock.com";
   readonly public = false;
+  private readonly client: BStockClient;
 
-  constructor(private readonly client: BStockClient) {}
+  constructor(client: BStockClient) {
+    this.client = client;
+  }
 
   async searchListings(body: SearchRequest): Promise<{ listings: Listing[]; total: number }> {
     const res = await this.client.searchListings(body);
