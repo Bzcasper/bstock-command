@@ -167,11 +167,37 @@ export interface ListingRow {
 }
 
 export const api = {
-  status: () => isStaticMode ? request<any>("/api/status") : request<any>("/api/status"),
-  settings: () =>
-    isStaticMode
+  status: async () => {
+    let st: any = {};
+    try {
+      st = await request<any>("/api/status");
+    } catch {
+      st = { mode: "production", stats: { listings: 0 } };
+    }
+    const creds = getCredentials();
+    const hasClearance = Boolean(creds.clearance && creds.clearance.trim().length > 0) || Boolean(st?.credentials?.hasClearance);
+    const hasToken = Boolean(creds.accessToken && creds.accessToken.trim().length > 0) || Boolean(st?.credentials?.hasToken);
+
+    return {
+      ...st,
+      mode: "production",
+      environment: "production",
+      credentials: {
+        hasClearance,
+        hasToken,
+        clearanceToken: creds.clearance ? `${creds.clearance.slice(0, 10)}...${creds.clearance.slice(-6)}` : undefined,
+        clearanceLength: creds.clearance?.length ?? 0,
+      },
+    };
+  },
+  settings: () => {
+    try {
+      const raw = localStorage.getItem("bstock_trading_settings");
+      if (raw) return Promise.resolve(JSON.parse(raw));
+    } catch {}
+    return isStaticMode
       ? Promise.resolve({
-          mode: "static",
+          mode: "production",
           perBidCap: 10000,
           dailyCap: 40000,
           minScore: 0,
@@ -186,11 +212,21 @@ export const api = {
           blockedCategories: [],
           requireManifest: false,
         })
-      : request<any>("/api/settings"),
-  saveSettings: (patch: unknown) =>
-    isStaticMode
-      ? Promise.resolve({ ...(typeof patch === "object" && patch !== null ? patch : {}), saved: true })
-      : request<any>("/api/settings", { method: "PUT", body: JSON.stringify(patch) }),
+      : request<any>("/api/settings");
+  },
+  saveSettings: async (patch: unknown) => {
+    try {
+      const current = await api.settings();
+      const merged = { ...current, ...(typeof patch === "object" && patch !== null ? patch : {}) };
+      localStorage.setItem("bstock_trading_settings", JSON.stringify(merged));
+      if (!isStaticMode) {
+        await request<any>("/api/settings", { method: "PUT", body: JSON.stringify(patch) });
+      }
+      return merged;
+    } catch {
+      return patch;
+    }
+  },
   listings: async (params: Record<string, string | number | undefined>) => {
     const qs = new URLSearchParams();
     for (const [k, v] of Object.entries(params)) {
