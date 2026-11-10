@@ -232,8 +232,12 @@ export const api = {
     for (const [k, v] of Object.entries(params)) {
       if (v !== undefined && v !== null && v !== "") qs.set(k, String(v));
     }
+    // Mobile optimization: request compact payload on small screens to save bandwidth and memory
+    if (typeof window !== "undefined" && window.innerWidth <= 880 && !qs.has("compact")) {
+      qs.set("compact", "1");
+    }
     const q = qs.toString();
-    const data = await request<{ count: number; listings: ListingRow[]; facets: { categories: { category: string; count: number }[]; sites: { site_abb: string; count: number }[] } }>(
+    const data = await request<{ count: number; compact?: boolean; listings: ListingRow[]; facets: { categories: { category: string; count: number }[]; sites: { site_abb: string; count: number }[] } }>(
       `/api/listings${q ? `?${q}` : ""}`,
     );
     if (isStaticMode && data?.listings) {
@@ -245,6 +249,7 @@ export const api = {
     }
     return data;
   },
+  mobileFeed: () => request<any>("/api/mobile/feed"),
   listing: async (id: string) => {
     if (isStaticMode) {
       const data = await request<{ listings: ListingRow[] }>("/data/listings.json");

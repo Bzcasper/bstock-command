@@ -1125,6 +1125,22 @@ button {
   padding: 16px;
 }
 
+.sheet-handle-bar {
+  display: none;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 0 4px 0;
+  width: 100%;
+  cursor: grab;
+}
+
+.sheet-handle {
+  width: 40px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--line-2);
+}
+
 .modal {
   background: var(--bg-2);
   border: 1px solid var(--line-2);
@@ -1155,6 +1171,151 @@ button {
   display: flex;
   flex-direction: column;
   gap: 12px;
+}
+
+/* Mobile Status Pill Indicator */
+.mobile-status-pill {
+  display: none;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  background: var(--bg-3);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-full);
+  font-size: 11px;
+  color: var(--text);
+  cursor: pointer;
+  min-height: 36px;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--text-mute);
+  flex-shrink: 0;
+}
+
+.status-dot.dot-ready, .status-dot.dot-production {
+  background: var(--good);
+  box-shadow: 0 0 6px var(--good);
+}
+
+.status-dot.dot-dry-run {
+  background: var(--warn);
+}
+
+.mobile-status-mode {
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.mobile-status-tag {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: 4px;
+}
+
+.mobile-status-tag.tag-ok {
+  background: rgba(16, 185, 129, 0.2);
+  color: #34d399;
+}
+
+.mobile-status-tag.tag-warn {
+  background: rgba(245, 158, 11, 0.2);
+  color: #fbbf24;
+}
+
+.filter-count-badge {
+  background: var(--accent);
+  color: #000;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 1px 6px;
+  border-radius: var(--radius-full);
+  margin-left: 2px;
+}
+
+.card-thumb-wrap {
+  width: 46px;
+  height: 46px;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: var(--bg-3);
+  border: 1px solid var(--line);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.card-thumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.card-thumb-placeholder {
+  opacity: 0.5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.card-pallet-tag {
+  display: inline-flex;
+  align-items: center;
+  font-size: 12px;
+  color: var(--text-mute);
+}
+
+.table-scroll-container {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  margin-bottom: 10px;
+}
+
+/* Mobile Detail Sticky Header */
+.mobile-detail-header-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  position: sticky;
+  top: 0;
+  background: var(--bg-1);
+  padding: 8px 0 10px 0;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 12px;
+  z-index: 20;
+}
+
+.mobile-detail-quick-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.watch-btn-compact {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 10px;
+  font-size: 12px;
+  min-height: 36px;
 }
 
 /* Mobile Bottom Navigation Bar */
@@ -1210,6 +1371,7 @@ button {
   /* Header mobile adjustments */
   .topbar {
     padding: 8px 12px;
+    gap: 8px;
   }
   
   .brand-sub {
@@ -1218,6 +1380,10 @@ button {
   
   .status-cluster {
     display: none;
+  }
+
+  .mobile-status-pill {
+    display: inline-flex;
   }
   
   .topbar-actions .btn-desktop-only {
@@ -1231,16 +1397,63 @@ button {
   .kpis.mobile-view {
     display: grid;
     grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    padding: 12px;
     flex: 1;
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: calc(72px + env(safe-area-inset-bottom));
+  }
+
+  .mobile-kpi-full {
+    grid-column: span 2;
+    padding: 14px;
   }
 
   .filters.desktop-filters {
     display: none;
   }
 
+  .funnel-pipeline-bar {
+    margin: 0 10px 8px 10px;
+    padding: 8px 10px;
+    gap: 8px;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .funnel-pipeline-bar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .funnel-step {
+    scroll-snap-align: start;
+    flex-shrink: 0;
+    min-height: 44px;
+    padding: 4px 8px;
+  }
+
   .quick-chips {
     display: flex;
+    padding: 6px 12px;
+    gap: 8px;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .quick-chips::-webkit-scrollbar {
+    display: none;
+  }
+
+  .chip-btn {
+    min-height: 40px;
+    font-size: 13px;
+    padding: 8px 14px;
+  }
+
+  .chip-btn:active {
+    transform: scale(0.96);
   }
 
   /* Main layout transforms to full single screen with tab switcher */
@@ -1251,6 +1464,7 @@ button {
     min-height: 0;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
+    padding-bottom: calc(64px + env(safe-area-inset-bottom));
   }
 
   .table-wrap {
@@ -1260,14 +1474,25 @@ button {
 
   .mobile-cards-wrap {
     display: flex;
+    flex-direction: column;
+    padding: 10px 12px;
+    gap: 10px;
     flex: 1;
+  }
+
+  .tactical-card:active {
+    transform: scale(0.99);
+    background: var(--bg-3);
   }
 
   .detail {
     display: none;
     height: auto;
     padding: 12px;
+    padding-bottom: calc(76px + env(safe-area-inset-bottom));
     flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
 
   .detail.active-view {
@@ -1278,12 +1503,20 @@ button {
     display: none;
   }
 
-  .mobile-back-bar {
-    display: flex;
-  }
-
   .bottom-nav {
     display: grid;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: calc(56px + env(safe-area-inset-bottom));
+    background: rgba(17, 23, 34, 0.96);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-top: 1px solid var(--line);
+    padding: 4px 8px;
+    padding-bottom: max(4px, env(safe-area-inset-bottom));
+    z-index: 50;
   }
 
   /* Inputs scale up for touch prevention */
@@ -1300,6 +1533,80 @@ button {
   .watch-btn {
     width: 44px;
     height: 44px;
+  }
+}
+
+@media (max-width: 640px) {
+  .btn-text-desktop, .view-toggle-text {
+    display: none;
+  }
+
+  .topbar {
+    padding: 6px 10px;
+    gap: 6px;
+  }
+
+  .brand-title {
+    font-size: 14px;
+  }
+
+  .brand-icon {
+    width: 28px;
+    height: 28px;
+  }
+
+  .modal-backdrop {
+    padding: 0;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.82);
+  }
+
+  .modal {
+    width: 100%;
+    max-width: 100%;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    border-bottom: none;
+    max-height: 90dvh;
+    animation: sheetSlideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    padding-bottom: max(16px, env(safe-area-inset-bottom));
+  }
+
+  .sheet-handle-bar {
+    display: flex;
+  }
+
+  .detail-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .math-row {
+    flex-wrap: wrap;
+    gap: 4px;
+    padding: 6px 0;
+  }
+
+  .ticket-actions {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .ticket-actions .btn {
+    width: 100%;
+  }
+}
+
+@keyframes sheetSlideUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
   }
 }
 
