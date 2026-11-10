@@ -1676,12 +1676,54 @@ button {
     display: none;
   }
   
-  .status-cluster {
+  .status-cluster,
+  .status-pill-badge {
     display: none;
   }
 
   .mobile-status-pill {
     display: inline-flex;
+  }
+  
+  .tier-metrics {
+    display: none;
+  }
+
+  .tier-nav-bar {
+    padding: 6px 10px;
+    gap: 6px;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .tier-tab {
+    scroll-snap-align: start;
+    min-height: 36px;
+    padding: 6px 10px;
+  }
+
+  .action-toolbar {
+    padding: 6px 10px;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .search-box {
+    max-width: 100%;
+    min-width: 0;
+    width: 100%;
+    height: 36px;
+  }
+
+  .toolbar-controls {
+    width: 100%;
+    justify-content: space-between;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .toolbar-controls::-webkit-scrollbar {
+    display: none;
   }
   
   .topbar-actions .btn-desktop-only {

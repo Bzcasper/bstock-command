@@ -606,43 +606,27 @@ export function App() {
           </span>
         </button>
 
-        {/* Desktop Status Cluster */}
-        <div className="status-cluster" onClick={() => setStatusModalOpen(true)} style={{ cursor: "pointer" }} title="Click to open Autonomous CI & Backend status">
-          <span className={`pill pill-${status?.mode ?? "off"}`}>{status?.mode ? String(status.mode).toUpperCase() : "PRODUCTION"}</span>
-          <span className="pill pill-ok" title="Autonomous CI Serverless Backend (GitHub Actions & GitLab CI)">
-            <LightningIcon size={12} color="var(--good)" />
-            <span>CI: Free Backend</span>
-          </span>
+        {/* Unified Terminal Status Badge */}
+        <div
+          className="status-pill-badge"
+          onClick={() => setStatusModalOpen(true)}
+          title="Autonomous CI Production Backend · Click for System Health & Cloud Sync"
+        >
+          <span className="status-live-dot" />
+          <span className="status-mode-label">{status?.mode ? String(status.mode).toUpperCase() : "PRODUCTION"}</span>
+          <span className="status-badge-divider" />
+          <span className="status-lots-label">{status?.stats?.listings ?? listings.length} lots</span>
           <span
-            className={`pill ${status?.credentials?.hasClearance ? "pill-ok" : "pill-warn"}`}
+            className={`status-cf-btn ${status?.credentials?.hasClearance ? "cf-ok" : "cf-warn"}`}
             onClick={(e) => {
               e.stopPropagation();
               setCredsModalOpen(true);
             }}
-            style={{ cursor: "pointer" }}
-            title="Click to view or enter Cloudflare Token"
+            title={status?.credentials?.hasClearance ? "Cloudflare clearance active · Click to manage" : "Cloudflare clearance missing · Click to enter"}
           >
-            <KeyIcon size={12} />
-            <span>{status?.credentials?.hasClearance ? "clearance OK" : "enter CF token"}</span>
+            <KeyIcon size={11} />
+            <span>{status?.credentials?.hasClearance ? "CF Active" : "Enter CF"}</span>
           </span>
-          <span
-            className={`pill ${status?.credentials?.hasToken ? "pill-ok" : "pill-warn"}`}
-            onClick={(e) => {
-              e.stopPropagation();
-              setCredsModalOpen(true);
-            }}
-            style={{ cursor: "pointer" }}
-            title="Click to configure B-Stock Bearer token"
-          >
-            {status?.credentials?.hasToken ? "token OK" : "no token"}
-          </span>
-          <span className={`pill ${status?.storage?.initialized ? "pill-ok" : "pill-muted"}`} title={status?.storage?.storageBucket ?? "Storage"}>
-            {status?.storage?.initialized ? "cloud OK" : "local cache"}
-          </span>
-          <span className={`pill ${status?.solver?.ready || status?.scraper?.ready ? "pill-ok" : "pill-muted"}`} title={status?.solver?.engine ?? "Turnstile-Solver-NEW (Patchright)"}>
-            {status?.solver?.ready || status?.scraper?.ready ? "turnstile OK" : "solver off"}
-          </span>
-          <span className="pill pill-muted">{status?.stats?.listings ?? listings.length} lots</span>
         </div>
 
         <div className="topbar-actions">
@@ -722,204 +706,170 @@ export function App() {
         </div>
       ) : null}
 
-      {/* KPI Ribbon (Desktop) */}
-      <section className="kpis">
-        <Kpi
-          label="lots in view"
-          value={String(kpis.count)}
-          sub={`${status?.stats?.listings ?? listings.length} stored`}
-          onClick={resetFilters}
-          active={activeFiltersCount === 0 && !watchedOnly && selectedTier === "ALL"}
-        />
-        <Kpi
-          label="avg score"
-          value={kpis.avgScore.toFixed(1)}
-          sub="0-100 composite index"
-          onClick={() => setFilters((f) => ({ ...f, minScore: f.minScore === 75 ? 0 : 75 }))}
-          active={filters.minScore === 75}
-        />
-        <Kpi
-          label="ending soon"
-          value={String(kpis.soon)}
-          sub="closing under 6 hours"
-          onClick={() => setFilters((f) => ({ ...f, endingWithinHours: f.endingWithinHours === 6 ? undefined : 6 }))}
-          active={filters.endingWithinHours === 6}
-        />
-        <Kpi
-          label="watched lots"
-          value={String(kpis.watched)}
-          sub="saved to review"
-          onClick={() => setWatchedOnly((w) => !w)}
-          active={watchedOnly || mobileTab === "watchlist"}
-        />
-        <Kpi
-          label="projected profit"
-          value={fmtMoney(kpis.projectedProfit)}
-          sub="estimated at 40% recovery"
-          onClick={() => setFilters((f) => ({ ...f, minRoi: f.minRoi === 0.3 ? 0 : 0.3 }))}
-          active={filters.minRoi === 0.3}
-        />
-      </section>
-
-      {/* Mobile Quick Chips */}
-      <div className="quick-chips">
-        <button
-          className={`chip-btn ${mobileTab === "auctions" && !filters.endingWithinHours && !filters.minRoi && !watchedOnly ? "active" : ""}`}
-          onClick={() => {
-            setMobileTab("auctions");
-            resetFilters();
-          }}
-        >
-          All Lots ({listings.length})
-        </button>
-        <button
-          className={`chip-btn ${mobileTab === "watchlist" || watchedOnly ? "active" : ""}`}
-          onClick={() => {
-            setMobileTab("watchlist");
-            setWatchedOnly(true);
-          }}
-        >
-          <StarIcon filled={mobileTab === "watchlist" || watchedOnly} />
-          Watched ({kpis.watched})
-        </button>
-        <button
-          className={`chip-btn ${filters.endingWithinHours === 6 ? "active" : ""}`}
-          onClick={() => setFilters((f) => ({ ...f, endingWithinHours: f.endingWithinHours === 6 ? undefined : 6 }))}
-        >
-          <ClockIcon />
-          Urgent &lt;6h ({kpis.soon})
-        </button>
-        <button
-          className={`chip-btn ${filters.minScore === 75 ? "active" : ""}`}
-          onClick={() => setFilters((f) => ({ ...f, minScore: f.minScore === 75 ? 0 : 75 }))}
-        >
-          Score 75+
-        </button>
-        <button
-          className={`chip-btn ${filters.minRoi === 0.3 ? "active" : ""}`}
-          onClick={() => setFilters((f) => ({ ...f, minRoi: f.minRoi === 0.3 ? 0 : 0.3 }))}
-        >
-          ROI &gt;30%
-        </button>
-        <button className="chip-btn" onClick={() => setFilterModalOpen(true)}>
-          <FilterIcon />
-          More Filters...
-        </button>
-      </div>
-
-      {/* Filter Bar (Desktop) */}
-      <section className="filters desktop-filters">
-        <input
-          className="input"
-          placeholder="Search lot title, site, condition..."
-          value={String(filters.q ?? "")}
-          onChange={(e) => setFilters((f) => ({ ...f, q: e.target.value }))}
-        />
-        <select className="select" value={String(filters.category ?? "")} onChange={(e) => setFilters((f) => ({ ...f, category: e.target.value }))}>
-          <option value="">all categories</option>
-          {facets?.categories?.map((c: any) => (
-            <option key={c.category} value={c.category}>
-              {c.category} ({c.count})
-            </option>
-          ))}
-        </select>
-        <select className="select" value={String(filters.site ?? "")} onChange={(e) => setFilters((f) => ({ ...f, site: e.target.value }))}>
-          <option value="">all marketplaces</option>
-          {facets?.sites?.map((s: any) => (
-            <option key={s.site_abb} value={s.site_abb}>
-              {s.site_abb} ({s.count})
-            </option>
-          ))}
-        </select>
-        <label className="filter-label">
-          min score
-          <input type="range" min={0} max={100} value={Number(filters.minScore ?? 0)} onChange={(e) => setFilters((f) => ({ ...f, minScore: Number(e.target.value) }))} />
-          <span>{filters.minScore}</span>
-        </label>
-        <label className="filter-label">
-          min ROI
-          <input type="range" min={0} max={1} step={0.05} value={Number(filters.minRoi ?? 0)} onChange={(e) => setFilters((f) => ({ ...f, minRoi: Number(e.target.value) }))} />
-          <span>{fmtPct(Number(filters.minRoi ?? 0))}</span>
-        </label>
-        <select className="select" value={String(filters.endingWithinHours ?? "")} onChange={(e) => setFilters((f) => ({ ...f, endingWithinHours: e.target.value ? Number(e.target.value) : undefined }))}>
-          <option value="">any horizon</option>
-          <option value="6">&le; 6 hours</option>
-          <option value="24">&le; 24 hours</option>
-          <option value="72">&le; 3 days</option>
-        </select>
-        <select className="select" value={String(filters.sort ?? "score")} onChange={(e) => setFilters((f) => ({ ...f, sort: e.target.value }))}>
-          <option value="score">sort: score</option>
-          <option value="roi">sort: ROI</option>
-          <option value="ending">sort: ending soon</option>
-          <option value="discount">sort: cheapest</option>
-          <option value="bids">sort: least contested</option>
-          <option value="price">sort: lowest bid</option>
-        </select>
-        <button
-          className={`btn ${watchedOnly ? "btn-primary" : "btn-ghost"}`}
-          onClick={() => setWatchedOnly((w) => !w)}
-          title="Filter to watched lots"
-        >
-          <StarIcon filled={watchedOnly} />
-          <span>Watched ({kpis.watched})</span>
-        </button>
-        <button
-          className="btn-export"
-          onClick={() => api.downloadCsv(displayedListings)}
-          title="Export current view to CSV"
-        >
-          <DownloadIcon size={14} />
-          <span>Export CSV</span>
-        </button>
-        {activeFiltersCount > 0 || watchedOnly || selectedTier !== "ALL" ? (
-          <button className="btn btn-ghost" onClick={resetFilters} title="Reset all filters">
-            reset
-          </button>
-        ) : null}
-      </section>
-
-      {/* Mathematical Funnel Pipeline Stepper */}
-      <div className="funnel-pipeline-bar">
-        <div className={`funnel-step ${selectedTier === "ALL" ? "active" : ""}`} onClick={() => setSelectedTier("ALL")}>
-          <div className="funnel-step-icon">
+      {/* Streamlined User-Friendly Tier Navigation Ribbon */}
+      <nav className="tier-nav-bar" aria-label="Opportunity tiers and filters">
+        <div className="tier-tabs">
+          <button
+            className={`tier-tab ${selectedTier === "ALL" && !watchedOnly && !filters.endingWithinHours ? "active" : ""}`}
+            onClick={() => {
+              setSelectedTier("ALL");
+              setWatchedOnly(false);
+              setFilters((f) => ({ ...f, endingWithinHours: undefined }));
+            }}
+          >
             <PalletBoxIcon size={14} />
-          </div>
-          <div className="funnel-step-meta">
-            <span className="funnel-step-name">Ingested Lots</span>
-            <span className="funnel-step-count">{funnelData?.totalIngested ?? listings.length}</span>
-          </div>
-        </div>
-        <span className="funnel-arrow">→</span>
-        <div className={`funnel-step ${selectedTier === "SOLID_VALUE" ? "active" : ""}`} onClick={() => setSelectedTier("SOLID_VALUE")}>
-          <div className="funnel-step-icon">
-            <ChartUpIcon size={14} />
-          </div>
-          <div className="funnel-step-meta">
-            <span className="funnel-step-name">Stage 1: Viable</span>
-            <span className="funnel-step-count">{funnelData?.stage1Viable ?? listings.length}</span>
-          </div>
-        </div>
-        <span className="funnel-arrow">→</span>
-        <div className={`funnel-step ${selectedTier === "SLEEPER_SNIPE" ? "active" : ""}`} onClick={() => setSelectedTier("SLEEPER_SNIPE")}>
-          <div className="funnel-step-icon">
-            <LightningIcon size={14} />
-          </div>
-          <div className="funnel-step-meta">
-            <span className="funnel-step-name">Stage 2: Pattern Filter</span>
-            <span className="funnel-step-count">{funnelData?.stage2PatternApproved ?? listings.length}</span>
-          </div>
-        </div>
-        <span className="funnel-arrow">→</span>
-        <div className={`funnel-step ${selectedTier === "ALPHA_GEM" ? "active" : ""}`} onClick={() => setSelectedTier("ALPHA_GEM")}>
-          <div className={`funnel-step-icon ${selectedTier === "ALPHA_GEM" ? "active" : ""}`}>
+            <span>All Lots</span>
+            <span className="tier-count">{funnelData?.totalIngested ?? listings.length}</span>
+          </button>
+          <button
+            className={`tier-tab tier-tab-gem ${selectedTier === "ALPHA_GEM" ? "active" : ""}`}
+            onClick={() => {
+              setSelectedTier("ALPHA_GEM");
+              setWatchedOnly(false);
+            }}
+          >
             <GemIcon size={14} />
+            <span>Alpha Gems</span>
+            <span className="tier-count">{funnelData?.tierCounts?.ALPHA_GEM ?? 0}</span>
+          </button>
+          <button
+            className={`tier-tab tier-tab-solid ${selectedTier === "SOLID_VALUE" ? "active" : ""}`}
+            onClick={() => {
+              setSelectedTier("SOLID_VALUE");
+              setWatchedOnly(false);
+            }}
+          >
+            <ChartUpIcon size={14} />
+            <span>Solid Value</span>
+            <span className="tier-count">{funnelData?.tierCounts?.SOLID_VALUE ?? 0}</span>
+          </button>
+          <button
+            className={`tier-tab tier-tab-snipe ${selectedTier === "SLEEPER_SNIPE" ? "active" : ""}`}
+            onClick={() => {
+              setSelectedTier("SLEEPER_SNIPE");
+              setWatchedOnly(false);
+            }}
+          >
+            <ClockIcon size={14} />
+            <span>Sleepers</span>
+            <span className="tier-count">{funnelData?.tierCounts?.SLEEPER_SNIPE ?? 0}</span>
+          </button>
+          <button
+            className={`tier-tab tier-tab-watch ${watchedOnly ? "active" : ""}`}
+            onClick={() => setWatchedOnly((w) => !w)}
+          >
+            <StarIcon filled={watchedOnly} />
+            <span>Watched</span>
+            <span className="tier-count">{kpis.watched}</span>
+          </button>
+          <button
+            className={`tier-tab tier-tab-urgent ${filters.endingWithinHours === 6 ? "active" : ""}`}
+            onClick={() => setFilters((f) => ({ ...f, endingWithinHours: f.endingWithinHours === 6 ? undefined : 6 }))}
+          >
+            <ClockIcon size={14} />
+            <span>Closing &lt;6h</span>
+            <span className="tier-count">{kpis.soon}</span>
+          </button>
+        </div>
+
+        <div className="tier-metrics">
+          <div className="tier-metric-item" title="Average composite deal score across current view">
+            <span className="tier-metric-label">Avg Score</span>
+            <span className="tier-metric-val">{kpis.avgScore.toFixed(1)}</span>
           </div>
-          <div className="funnel-step-meta">
-            <span className="funnel-step-name">Stage 3: Alpha Gems</span>
-            <span className="funnel-step-count" style={{ color: "#34d399" }}>{funnelData?.tierCounts?.ALPHA_GEM ?? 0}</span>
+          <div className="tier-metric-item" title="Estimated gross secondary profit across current view">
+            <span className="tier-metric-label">Est. Profit</span>
+            <span className="tier-metric-val val-good">{fmtMoney(kpis.projectedProfit)}</span>
           </div>
         </div>
-      </div>
+      </nav>
+
+      {/* Streamlined Action & Search Toolbar */}
+      <section className="action-toolbar" aria-label="Search and filter controls">
+        <div className="search-box">
+          <SearchIcon size={14} />
+          <input
+            className="search-input"
+            placeholder="Search 448 pallet lots by title, site, SKU..."
+            value={String(filters.q ?? "")}
+            onChange={(e) => setFilters((f) => ({ ...f, q: e.target.value }))}
+          />
+          {filters.q ? (
+            <button className="search-clear-btn" onClick={() => setFilters((f) => ({ ...f, q: "" }))} aria-label="Clear search">
+              <CloseIcon />
+            </button>
+          ) : null}
+        </div>
+
+        <div className="toolbar-controls">
+          <select
+            className="toolbar-select"
+            value={String(filters.site ?? "")}
+            onChange={(e) => setFilters((f) => ({ ...f, site: e.target.value }))}
+            aria-label="Filter by marketplace"
+          >
+            <option value="">All Marketplaces</option>
+            {facets?.sites?.map((s: any) => (
+              <option key={s.site_abb} value={s.site_abb}>
+                {s.site_abb} ({s.count})
+              </option>
+            ))}
+          </select>
+
+          <select
+            className="toolbar-select"
+            value={String(filters.category ?? "")}
+            onChange={(e) => setFilters((f) => ({ ...f, category: e.target.value }))}
+            aria-label="Filter by category"
+          >
+            <option value="">All Categories</option>
+            {facets?.categories?.map((c: any) => (
+              <option key={c.category} value={c.category}>
+                {c.category} ({c.count})
+              </option>
+            ))}
+          </select>
+
+          <select
+            className="toolbar-select"
+            value={String(filters.sort ?? "score")}
+            onChange={(e) => setFilters((f) => ({ ...f, sort: e.target.value }))}
+            aria-label="Sort order"
+          >
+            <option value="score">Sort: Highest Score</option>
+            <option value="roi">Sort: Highest ROI</option>
+            <option value="ending">Sort: Ending Soonest</option>
+            <option value="discount">Sort: Deepest Discount</option>
+            <option value="bids">Sort: Least Contested</option>
+            <option value="price">Sort: Lowest Bid</option>
+          </select>
+
+          <button
+            className={`btn btn-sm ${activeFiltersCount > 0 ? "btn-secondary" : "btn-ghost"}`}
+            onClick={() => setFilterModalOpen(true)}
+            title="More Filters (Score, ROI sliders, Horizon)"
+          >
+            <FilterIcon size={13} />
+            <span>Filters</span>
+            {activeFiltersCount > 0 ? <span className="filter-count-badge">{activeFiltersCount}</span> : null}
+          </button>
+
+          {activeFiltersCount > 0 || watchedOnly || selectedTier !== "ALL" || filters.q ? (
+            <button className="btn btn-sm btn-ghost" onClick={resetFilters} title="Reset all filters">
+              Reset
+            </button>
+          ) : null}
+
+          <button
+            className="btn btn-sm btn-ghost btn-export"
+            onClick={() => api.downloadCsv(displayedListings)}
+            title="Export displayed lots to CSV"
+          >
+            <DownloadIcon size={13} />
+            <span className="btn-text-desktop">Export CSV</span>
+          </button>
+        </div>
+      </section>
 
       {/* Main Layout */}
       <main className="layout">
@@ -959,9 +909,20 @@ export function App() {
                           }}
                         >
                           {l.imageUrl ? (
-                            <img src={l.imageUrl} alt="" className="lot-thumb" onError={(ev) => { (ev.target as HTMLElement).style.display = "none"; }} />
+                            <img
+                              src={l.imageUrl}
+                              alt=""
+                              className="lot-thumb"
+                              width={34}
+                              height={34}
+                              loading="lazy"
+                              decoding="async"
+                              onError={(ev) => {
+                                (ev.target as HTMLElement).style.display = "none";
+                              }}
+                            />
                           ) : (
-                            <span className="lot-thumb-placeholder"><PalletBoxIcon /></span>
+                            <span className="lot-thumb-placeholder"><PalletBoxIcon size={14} /></span>
                           )}
                         </div>
                         <div>
@@ -1012,6 +973,10 @@ export function App() {
                         src={l.imageUrl}
                         alt={l.title ?? ""}
                         className="pallet-card-img"
+                        width={280}
+                        height={108}
+                        loading="lazy"
+                        decoding="async"
                         onClick={(e) => {
                           e.stopPropagation();
                           setLightboxImg(l.imageUrl);
@@ -1019,7 +984,7 @@ export function App() {
                         onError={(ev) => { (ev.target as HTMLElement).style.display = "none"; }}
                       />
                     ) : (
-                      <PalletBoxIcon size={44} style={{ opacity: 0.4 }} />
+                      <PalletBoxIcon size={36} style={{ opacity: 0.3 }} />
                     )}
                     <div className="pallet-card-badge-row">
                       <ScoreBadge score={l.score} />
@@ -1073,10 +1038,21 @@ export function App() {
                   >
                     <div className="pallet-card-media">
                       {l.imageUrl ? (
-                        <img src={l.imageUrl} alt={l.title ?? "Pallet lot"} className="pallet-card-img" loading="lazy" />
+                        <img
+                          src={l.imageUrl}
+                          alt={l.title ?? "Pallet lot"}
+                          className="pallet-card-img"
+                          width={280}
+                          height={108}
+                          loading="lazy"
+                          decoding="async"
+                          onError={(ev) => {
+                            (ev.target as HTMLElement).style.display = "none";
+                          }}
+                        />
                       ) : (
                         <div className="pallet-card-placeholder">
-                          <PalletBoxIcon size={36} color="var(--text-mute)" />
+                          <PalletBoxIcon size={32} color="var(--text-mute)" />
                         </div>
                       )}
                       <div className="pallet-card-badge-row">
@@ -1154,9 +1130,20 @@ export function App() {
                           }}
                         >
                           {l.imageUrl ? (
-                            <img src={l.imageUrl} alt="" className="card-thumb" loading="lazy" onError={(ev) => { (ev.target as HTMLElement).style.display = "none"; }} />
+                            <img
+                              src={l.imageUrl}
+                              alt=""
+                              className="card-thumb"
+                              width={38}
+                              height={38}
+                              loading="lazy"
+                              decoding="async"
+                              onError={(ev) => {
+                                (ev.target as HTMLElement).style.display = "none";
+                              }}
+                            />
                           ) : (
-                            <span className="card-thumb-placeholder"><PalletBoxIcon size={16} /></span>
+                            <span className="card-thumb-placeholder"><PalletBoxIcon size={14} /></span>
                           )}
                         </div>
                         <div className="card-meta">
@@ -1681,6 +1668,10 @@ function DetailPanel({ listing, detail, onRefresh, settings, onOpenImage }: { li
               src={img}
               alt="Pallet item"
               className="detail-gallery-thumb"
+              width={50}
+              height={50}
+              loading="lazy"
+              decoding="async"
               onClick={() => onOpenImage?.(img)}
               onError={(e) => { (e.target as HTMLElement).style.display = "none"; }}
             />
