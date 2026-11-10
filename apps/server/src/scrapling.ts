@@ -1,4 +1,4 @@
-import { spawn } from "node:child_process";
+import { spawn, spawnSync } from "node:child_process";
 import path from "node:path";
 import fs from "node:fs";
 
@@ -65,10 +65,22 @@ export class ScraplingService {
   }
 
   getStatus(): ScraplingStatus {
-    const venvExists = fs.existsSync(this.pythonPath);
+    const hasPathSep = this.pythonPath.includes(path.sep);
+    let pythonExecutable = false;
+    if (hasPathSep) {
+      pythonExecutable = fs.existsSync(this.pythonPath);
+    } else {
+      try {
+        const check = spawnSync(this.pythonPath, ["--version"], { stdio: "ignore" });
+        pythonExecutable = check.status === 0;
+      } catch {
+        pythonExecutable = false;
+      }
+    }
+    const bridgeExists = fs.existsSync(this.bridgeScript);
     return {
-      ready: venvExists && fs.existsSync(this.bridgeScript),
-      venvExists,
+      ready: pythonExecutable && bridgeExists,
+      venvExists: pythonExecutable,
       pythonPath: this.pythonPath,
       bridgeScriptPath: this.bridgeScript,
       lastClearanceSolvedAt: this.lastSolvedAt,
